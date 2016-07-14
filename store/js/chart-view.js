@@ -11,7 +11,7 @@ var OPTIONS = {
         type: 'linear',
         id: 'y-axis-1'
       },
-      {
+      /* {
         type: 'linear',
         position: 'right',
         // display: false,
@@ -22,7 +22,7 @@ var OPTIONS = {
           drawOnChartArea: false // only want the grid lines for one axis to show up
         },
         id: 'y-axis-2'
-      }, {
+      }, */ {
         type: 'linear',
         position: 'right',
         // display: false,
@@ -32,7 +32,7 @@ var OPTIONS = {
         gridLines: {
           drawOnChartArea: false // only want the grid lines for one axis to show up
         },
-        id: 'y-axis-3'
+        id: 'y-axis-ratio'
       }
     ]
     ,
@@ -135,29 +135,31 @@ function createChartView(data, options) {
     data1 = getDataPoints('1', data, startDateIndex, endDateIndex, options),
     data2 = getDataPoints('2', data, startDateIndex, endDateIndex, options),
     datasets = [{
-      label: options.event1,
+      label: options.event1 + '/' + options.ua1 + '     ',
+      borderColor: 'rgba(255,110,0,.4)',
+      backgroundColor: 'rgba(255,110,0,0.1)',
       fill: true,
-      backgroundColor: 'rgba(20,20,255,0.1)',
-      borderColor: 'rgba(20,20,255,.4)',
       pointHitRadius: 10,
       data: data1 || [0],
       yAxisID: 'y-axis-1'
     }];
 
   // If event2 is different, add it as a dataset as well as ration between the two
-  if (options.event2 !== options.event1) {
+  if (options.event2 !== options.event1 ||
+      options.ua2 !== options.ua1) {
     datasets = datasets.concat({
-      label: options.event2,
-      borderColor: 'rgba(255,110,0,.4)',
-      backgroundColor: 'rgba(255,110,0,0.1)',
+      label: options.event2 + '/' + options.ua2 + '     ',
+      backgroundColor: 'rgba(20,20,255,0.1)',
+      borderColor: 'rgba(20,20,255,.4)',
+      pointHitRadius: 10,
       data: data2 || [0],
-      yAxisID: 'y-axis-2'
+      yAxisID: 'y-axis-1'
     });
     if (data1 && data2) {
       datasets = datasets.concat({
         label: 'ratio',
         data: getRatioDataPoints(data1, data2),
-        yAxisID: 'y-axis-3'
+        yAxisID: 'y-axis-ratio'
       });
     }
   }

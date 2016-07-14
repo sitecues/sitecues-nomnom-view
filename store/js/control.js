@@ -81,8 +81,8 @@ function initEventOptions(allEventTotals) {
   });
 
   // Set defaults
-  $('#event1').val('page-visited');
-  $('#event2').val('badge-hovered');
+  $('#event1').val('badge-hovered');
+  $('#event2').val('page-visited');
 }
 
 function initSiteOptions(siteInfo) {
