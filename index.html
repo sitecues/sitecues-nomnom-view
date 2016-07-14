@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="chart-view.css"/>
+    <link rel="stylesheet" href="control.css"/>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <!-- Charts -->
+    <!-- From CDN -- they have minified versions too: see the list at https://cdnjs.com/libraries/Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.js"></script>
+    <!-- Custom script -->
+    <script src="chart-view.js"></script>
+    <script src="control.js"></script>
+
+  </head>
+  <body>
+    <form id="controller">
+
+    <h1 class="title">
+      Metrics
+    </h1>
+
+    <fieldset>
+      <legend>Events to view</legend>
+      <div class="item">
+        <select size="1" id="event1" class="event-chooser"></select>
+      </div>
+      <div>
+        <select size="1" id="event2" class="event-chooser"></select>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>UAs to view</legend>
+      <div class="item">
+        <select size="1" id="ua1" class="ua-chooser"></select>
+      </div>
+      <div>
+        <select size="1" id="ua2" class="ua-chooser"></select>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>
+        Limit to a specific site? (blank for all)
+      </legend>
+      <div class="item">
+        <label for="domain">Domain: </label><input id="domain" type="text"> or
+      </div>
+      <div class="item">
+        <label for="siteId">Site id: </label><input id="siteId" type="text">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Date range</legend>
+      <div class="item">
+        <input id="startDate" class="date" type="text" value="01/26/2016"> to
+      </div>
+      <div>
+        <input id="endDate" class="date" type="text">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Options</legend>
+      <div class="item">
+        <input id="doSmooth" type="checkbox" checked><label for="doSmooth">Smooth</label>
+      </div>
+      <div>
+        &nbsp;
+      </div>
+    </fieldset>
+
+    </form>
+
+    <canvas id="chartView" width="1100" height="500"></canvas>
+
+  </body>
+</html>

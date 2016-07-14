@@ -1,0 +1,25 @@
+body {
+  font-family: Arial;
+}
+
+h1.title {
+  display: inline-block;
+  width: 100px;
+  margin-right: 50px;
+  font-style: italic;
+}
+
+fieldset {
+  height: 4.5em;
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.item > label {
+  width: 70px;
+  display: inline-block;
+}
+
+legend {
+  margin-bottom: .5em;
+}
