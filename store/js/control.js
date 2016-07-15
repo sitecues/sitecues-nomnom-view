@@ -18,7 +18,7 @@ function getChartOptions() {
 function onDataAvailable(data) {
   initEventOptions(data.eventTotals.byNameOnly);
   initUserAgentOptions(data.eventTotals.byUserAgentOnly);
-  initSiteOptions(data.siteInfo);
+  initLocationOptions(data.eventTotals.byLocation);
   initDatePickers();
 
   function updateView() {
@@ -31,6 +31,9 @@ function onDataAvailable(data) {
     return false;
   });
 
+  $('input').addClass("ui-widget ui-widget-content ui-corner-all");
+
+  $('#controller').css('visibility', 'visible');
   updateView();
 }
 
@@ -56,24 +59,17 @@ function initUserAgentOptions(userAgentTotals) {
   });
 
   // Set defaults
-  $('#ua1').val('any');
-  $('#ua2').val('any');
+  $uaSelects
+    .val('any')
+    .combobox();
 }
 
 // TODO get dynamically via Object.keys(data.views[0].report.totals)
 function initEventOptions(allEventTotals) {
-  var allEventNames = Object.keys(allEventTotals),
+  var allEventNames = Object.keys(allEventTotals).sort(),
     $eventNameSelects = $('.event-chooser');
 
-  // $eventNameSelects.autocomplete({
-  //   source: allEventNames,
-  //   autoFocus: true,
-  //   matchContains: false
-  // }).click(function() {
-  //   $(this).autocomplete('search', '');
-  // });
-
-  allEventNames.sort().forEach(function(eventName) {
+  allEventNames.forEach(function(eventName) {
     $eventNameSelects.each(function() {
       var option = createOption(eventName);
       $(this).append(option);
@@ -81,29 +77,28 @@ function initEventOptions(allEventTotals) {
   });
 
   // Set defaults
-  $('#event1').val('badge-hovered');
-  $('#event2').val('page-visited');
+  $('#event1')
+    .val('badge-hovered')
+    .combobox();
+  $('#event2')
+    .val('page-visited')
+    .combobox();
 }
 
-function initSiteOptions(siteInfo) {
-  var domains = Object.keys(siteInfo.domainToSiteIdMap).map(function(domain) { return domain+ ' (' + siteInfo.domainToSiteIdMap[domain] + ')'; }),
-    siteIdList = siteInfo.allSiteIds.map(function(siteId) { return siteId + ' ' + Object.keys(siteInfo.siteIdToDomainsMap[siteId]).join(',')});
+function initLocationOptions(locationTotals) {
+  var allLocations = Object.keys(locationTotals).sort(),
+    $locationSelects = $('.location-chooser');
 
-  $('#domain')
-    .autocomplete({
-      source: ['any'].concat(domains.sort()),
-      autoFocus: true,
-      matchContains: true
-    })
-    .val('any');
+  allLocations.forEach(function(locationName) {
+    $locationSelects.each(function() {
+      var option = createOption(locationName);
+      $(this).append(option);
+    });
+  });
 
-  $('#siteId')
-    .autocomplete({
-      source: ['any'].concat(siteIdList.sort()),
-      autoFocus: true,
-      matchContains: true
-    })
-    .val('any');
+  $locationSelects
+    .val('@any')
+    .combobox();
 }
 
 function initDatePickers() {

@@ -1,7 +1,16 @@
 body {
-  font-family: Arial;
+  font-family: Verdana,Arial,sans-serif;;
+  font-size: 16px;
 }
 
+#controller {
+  visibility: hidden;
+  display: flex;
+}
+
+#controller.ready {
+  visibility: visible;
+}
 h1.title {
   display: inline-block;
   width: 100px;
@@ -10,7 +19,7 @@ h1.title {
 }
 
 fieldset {
-  height: 4.5em;
+  height: 6em;
   display: inline-block;
   margin-right: 20px;
 }
@@ -22,4 +31,13 @@ fieldset {
 
 legend {
   margin-bottom: .5em;
+}
+
+.date {
+  height: 27px;
+  margin-bottom: 2px;
+}
+
+.ui-widget {
+  font-size: 16px !important;
 }
