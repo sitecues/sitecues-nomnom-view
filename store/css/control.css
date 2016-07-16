@@ -18,7 +18,7 @@ h1.title {
   font-style: italic;
 }
 
-fieldset {
+fieldset:not(:last-of-type) {
   height: 6em;
   display: inline-block;
   margin-right: 20px;
@@ -36,6 +36,7 @@ legend {
 .date {
   height: 27px;
   margin-bottom: 2px;
+  width: 110px;
 }
 
 .ui-widget {
