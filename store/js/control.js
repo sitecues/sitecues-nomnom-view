@@ -48,7 +48,7 @@ function createOption(eventName) {
 }
 
 function initUserAgentOptions(userAgentTotals) {
-  var userAgentNames = ['any'].concat(Object.keys(userAgentTotals).sort()),
+  var userAgentNames = ['@any'].concat(Object.keys(userAgentTotals).sort()),
     $uaSelects = $('.ua-chooser');
 
   userAgentNames.forEach(function(eventName) {
@@ -60,7 +60,7 @@ function initUserAgentOptions(userAgentTotals) {
 
   // Set defaults
   $uaSelects
-    .val('any')
+    .val('@any')
     .combobox();
 }
 
@@ -81,7 +81,7 @@ function initEventOptions(allEventTotals) {
     .val('badge-hovered')
     .combobox();
   $('#event2')
-    .val('page-visited')
+    .val('page-visited::supported')
     .combobox();
 }
 

@@ -110,12 +110,9 @@ function getDataPoints(which, data, startDateIndex, endDateIndex, options) {
 // which === '1'|'2' for which line in the graph
 function getDataSource(which, data, options) {
   var eventName = options['event' + which],
-    uaName = options['ua' + which] || 'any',
-    siteId = options.siteId !== 'any' && options.siteId,
-    domain = options.domain !== 'any' && options.domain,  // Takes precedences over siteId
+    uaName = options['ua' + which] || '@any',
     eventTotals = data.eventTotals,
-    eventMap = domain ? eventTotals.forDomain[domain] :
-      (siteId ? eventTotals.forSiteId[siteId] : eventTotals.forAnywhere.any);
+    eventMap = eventTotals.byLocation[options['loc' + which]];
 
   return eventMap && eventMap[eventName] && eventMap[eventName][uaName];
 }
@@ -179,6 +176,8 @@ function createChartView(data, options) {
 }
 
 function refresh(data, options) {
+  refresh.data = data;
+
   if (refresh.chartView) {
     refresh.chartView.destroy();
   }
@@ -186,6 +185,11 @@ function refresh(data, options) {
   refresh.chartView = createChartView(data, options);
 
   return refresh.view;
+}
+
+// To help with debugging
+function getData() {
+  return refresh.data;
 }
 
 function updateChartView(data, options) {
