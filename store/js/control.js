@@ -60,7 +60,7 @@ function initUserAgentOptions(userAgentTotals) {
 
   // Set defaults
   $uaSelects
-    .val('@any')
+    .val('@supported')
     .combobox();
 }
 
