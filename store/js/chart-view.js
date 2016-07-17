@@ -110,9 +110,10 @@ function getDataPoints(which, data, startDateIndex, endDateIndex, options) {
 // which === '1'|'2' for which line in the graph
 function getDataSource(which, data, options) {
   var eventName = options['event' + which],
-    uaName = options['ua' + which] || '@any',
+    uaName = options['ua' + which],
+    location = options['loc' + which],
     eventTotals = data.eventTotals,
-    eventMap = eventTotals.byLocation[options['loc' + which]];
+    eventMap = eventTotals.byLocation[location];
 
   return eventMap && eventMap[eventName] && eventMap[eventName][uaName];
 }
@@ -132,7 +133,7 @@ function createChartView(data, options) {
     data1 = getDataPoints('1', data, startDateIndex, endDateIndex, options),
     data2 = getDataPoints('2', data, startDateIndex, endDateIndex, options),
     datasets = [{
-      label: options.event1 + '/' + options.ua1 + '     ',
+      label: options.event1 + '/' + options.ua1 + '/' + options.loc1 + '     ',
       borderColor: 'rgba(255,110,0,.4)',
       backgroundColor: 'rgba(255,110,0,0.1)',
       fill: true,
@@ -143,9 +144,10 @@ function createChartView(data, options) {
 
   // If event2 is different, add it as a dataset as well as ration between the two
   if (options.event2 !== options.event1 ||
-      options.ua2 !== options.ua1) {
+      options.ua2 !== options.ua1 ||
+      options.loc2 !== options.loc1) {
     datasets = datasets.concat({
-      label: options.event2 + '/' + options.ua2 + '     ',
+      label: options.event2 + '/' + options.ua2 + '/' + options.loc2 + '     ',
       backgroundColor: 'rgba(20,20,255,0.1)',
       borderColor: 'rgba(20,20,255,.4)',
       pointHitRadius: 10,

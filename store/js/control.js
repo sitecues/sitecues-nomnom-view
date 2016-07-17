@@ -8,8 +8,8 @@ function getChartOptions() {
     event2: getValue('event2'),
     ua1: getValue('ua1'),
     ua2: getValue('ua2'),
-    domain: getValue('domain'),
-    siteId: getValue('siteId'),
+    loc1: getValue('loc1'),
+    loc2: getValue('loc2'),
     startDate: getValue('startDate'),
     endDate: getValue('endDate'),
     smoothSize: $('#doSmooth').is(':checked') ? 3 : 0
@@ -48,7 +48,7 @@ function createOption(eventName) {
 }
 
 function initUserAgentOptions(userAgentTotals) {
-  var userAgentNames = ['@any'].concat(Object.keys(userAgentTotals).sort()),
+  var userAgentNames = Object.keys(userAgentTotals).sort(),
     $uaSelects = $('.ua-chooser');
 
   userAgentNames.forEach(function(eventName) {
@@ -81,7 +81,7 @@ function initEventOptions(allEventTotals) {
     .val('badge-hovered')
     .combobox();
   $('#event2')
-    .val('page-visited::supported')
+    .val('page-visited')
     .combobox();
 }
 
