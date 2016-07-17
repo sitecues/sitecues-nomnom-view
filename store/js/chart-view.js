@@ -103,7 +103,7 @@ function removeHolesFromData(dataPoints, missingDays) {
     length = copyOfDataPoints.length,
     prevValue = copyOfDataPoints[0];
   for (var index = 1; index < length; index ++) {
-    if (copyOfDataPoints[index] === null) {
+    if (copyOfDataPoints[index] === 0 && missingDays.indexOf(index) >= 0) {
       copyOfDataPoints[index] = prevValue;
     }
     else {
