@@ -12,7 +12,8 @@ function getChartOptions() {
     loc2: getValue('loc2'),
     startDate: getValue('startDate'),
     endDate: getValue('endDate'),
-    smoothSize: $('#doSmooth').is(':checked') ? 3 : 0
+    smoothSize: $('#doSmooth').is(':checked') ? 3 : 0,
+    doFixHoles: $('#doFixHoles').is(':checked')
   };
 }
 function onDataAvailable(data) {
@@ -25,11 +26,13 @@ function onDataAvailable(data) {
     updateChartView(data, getChartOptions());
   }
 
-  $('#controller').on('submit change', function(submitEvent) {
+  $(window).on('submit change', function(submitEvent) {
     submitEvent.preventDefault();
     updateView();
     return false;
   });
+
+  $('.ui-menu').on('click', updateView); // Our weird unsupported autocomplete hack isn't creating change events
 
   $('input').addClass("ui-widget ui-widget-content ui-corner-all");
 

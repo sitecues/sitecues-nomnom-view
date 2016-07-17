@@ -95,15 +95,38 @@ function smoothData(origData, smoothSize) {
   return movingAverage;
 }
 
+// When a data point is null, it means we are missing data
+// This function will just copy the previous value -- so it assumes that we have good data on day 1
+// TODO consider a special fix for July 3-5 that uses average of July 2 & 6
+function removeHolesFromData(dataPoints, missingDays) {
+  var copyOfDataPoints = dataPoints.slice(),
+    length = copyOfDataPoints.length,
+    prevValue = copyOfDataPoints[0];
+  for (var index = 1; index < length; index ++) {
+    if (copyOfDataPoints[index] === null) {
+      copyOfDataPoints[index] = prevValue;
+    }
+    else {
+      prevValue = copyOfDataPoints[index];
+    }
+  }
+
+  return copyOfDataPoints;
+}
+
 // which === '1'|'2' for which line in the graph
 function getDataPoints(which, data, startDateIndex, endDateIndex, options) {
   var smoothSize = options.smoothSize,
     dataSource = getDataSource(which, data, options),
-    dataToUse;
+    correctedData,
+    smoothedData,
+    doFixHoles;
 
   if (dataSource) {
-    dataToUse = smoothData(dataSource, smoothSize);
-    return dataToUse.slice(startDateIndex, endDateIndex + 1);
+    doFixHoles = options.doFixHoles && data.missingDays && data.missingDays.length;
+    correctedData = doFixHoles ? removeHolesFromData(dataSource, data.missingDays) : dataSource;
+    smoothedData = smoothData(correctedData, smoothSize);
+    return smoothedData.slice(startDateIndex, endDateIndex + 1);
   }
 }
 
