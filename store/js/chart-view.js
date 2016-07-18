@@ -155,6 +155,25 @@ function getAverage(data1, data2) {
   return data1.reduce(sum, 0) / data2.reduce(sum, 0);
 }
 
+function getLabel(options, which) {
+  var eventName = options['event' + which],
+    uaName = options['ua' + which],
+    locName = options['loc' + which],
+    labelParts = [];
+
+  if (options.event1 !== options.event2) {
+    labelParts.push(eventName);
+  }
+  if (options.ua1 !== options.ua2) {
+    labelParts.push('using ' + uaName);
+  }
+  if (options.loc1 !== options.loc2) {
+    labelParts.push('on ' + locName);
+  }
+
+  return labelParts.join('  ') + '          ';
+}
+
 function createChartView(data, options) {
   var
     datesWithDataAvailable = data.summary.config.dates,
@@ -163,7 +182,7 @@ function createChartView(data, options) {
     data1 = getDataPoints('1', data, startDateIndex, endDateIndex, options),
     data2 = getDataPoints('2', data, startDateIndex, endDateIndex, options),
     datasets = [{
-      label: options.event1 + '/' + options.ua1 + '/' + options.loc1 + '     ',
+      label: getLabel(options, '1'),
       borderColor: 'rgba(255,110,0,.4)',
       backgroundColor: 'rgba(255,110,0,0.1)',
       fill: true,
@@ -177,7 +196,7 @@ function createChartView(data, options) {
       options.ua2 !== options.ua1 ||
       options.loc2 !== options.loc1) {
     datasets = datasets.concat({
-      label: options.event2 + '/' + options.ua2 + '/' + options.loc2 + '     ',
+      label: getLabel(options, '2'),
       backgroundColor: 'rgba(20,20,255,0.1)',
       borderColor: 'rgba(20,20,255,.4)',
       pointHitRadius: 10,

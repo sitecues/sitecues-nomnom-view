@@ -1,5 +1,3 @@
-// TODO can we have more readable labels for graph lines?
-// TODO average not working?
 function getValue(id) {
   return $('#' + id).val();
 }
