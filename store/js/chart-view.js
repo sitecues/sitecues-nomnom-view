@@ -147,15 +147,15 @@ function getRatioDataPoints(data1, data2) {
   });
 }
 
-function getAverage(data1, data2) {
+function getTotal(data) {
   function sum(a, b) {
     return a + b;
   }
 
-  return data1.reduce(sum, 0) / data2.reduce(sum, 0);
+  return data.reduce(sum, 0);
 }
 
-function getLabel(options, which) {
+function getLabel(options, which, total) {
   var eventName = options['event' + which],
     uaName = options['ua' + which],
     locName = options['loc' + which],
@@ -171,7 +171,7 @@ function getLabel(options, which) {
     labelParts.push('on ' + locName);
   }
 
-  return labelParts.join('  ') + '          ';
+  return labelParts.join('  ') + ' [' + total + ']         ';
 }
 
 function createChartView(data, options) {
@@ -181,8 +181,10 @@ function createChartView(data, options) {
     endDateIndex = convertDateToIndex(options.endDate, datesWithDataAvailable, data.summary.config.dates.length - 1),
     data1 = getDataPoints('1', data, startDateIndex, endDateIndex, options),
     data2 = getDataPoints('2', data, startDateIndex, endDateIndex, options),
+    total1 = getTotal(data1),
+    total2,
     datasets = [{
-      label: getLabel(options, '1'),
+      label: getLabel(options, '1', total1),
       borderColor: 'rgba(255,110,0,.4)',
       backgroundColor: 'rgba(255,110,0,0.1)',
       fill: true,
@@ -195,8 +197,9 @@ function createChartView(data, options) {
   if (options.event2 !== options.event1 ||
       options.ua2 !== options.ua1 ||
       options.loc2 !== options.loc1) {
+    total2 = getTotal(data2);
     datasets = datasets.concat({
-      label: getLabel(options, '2'),
+      label: getLabel(options, '2', total2),
       backgroundColor: 'rgba(20,20,255,0.1)',
       borderColor: 'rgba(20,20,255,.4)',
       pointHitRadius: 10,
@@ -205,7 +208,7 @@ function createChartView(data, options) {
     });
     if (data1 && data2) {
       datasets = datasets.concat({
-        label: 'ratio #1/#2 (average = ' + getAverage(data1, data2).toFixed(4) + ')',
+        label: 'ratio #1/#2 [average = ' + (total1 / total2).toFixed(4) + ']',
         data: getRatioDataPoints(data1, data2),
         yAxisID: 'y-axis-ratio'
       });
