@@ -1,8 +1,4 @@
 var OPTIONS = {
-  title: {
-    display: true,
-    text: 'Chart.js Line Chart - Custom Tooltips'
-  },
   stacked: true,
   scales: {
     yAxes: [
