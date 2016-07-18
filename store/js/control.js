@@ -1,3 +1,5 @@
+// TODO can we have more readable labels for graph lines?
+// TODO average not working?
 function getValue(id) {
   return $('#' + id).val();
 }
@@ -19,7 +21,7 @@ function getChartOptions() {
 function onDataAvailable(data) {
   initEventOptions(data.eventTotals.byNameOnly);
   initUserAgentOptions(data.eventTotals.byUserAgentOnly);
-  initLocationOptions(data.eventTotals.byLocation);
+  initLocationOptions(data.siteInfo.locationToSiteIdMap, data.siteInfo.siteIdToLocationsMap);
   initDatePickers();
 
   function updateView() {
@@ -45,9 +47,9 @@ function onError($xhr, textStatus, errorThrown) {
   $('#report').text('An error occured: ' + errorThrown);
 }
 
-function createOption(eventName) {
+function createOption(optionName, readableName) {
   return $('<option></option>')
-    .attr('value', eventName).text(eventName);
+    .attr('value', optionName).text(readableName || optionName);
 }
 
 function initUserAgentOptions(userAgentTotals) {
@@ -88,13 +90,83 @@ function initEventOptions(allEventTotals) {
     .combobox();
 }
 
-function initLocationOptions(locationTotals) {
-  var allLocations = Object.keys(locationTotals).sort(),
-    $locationSelects = $('.location-chooser');
+function getNumPageVisits(locationToSiteIdMap, locationName) {
+  var siteIdToPageVisitsMap = locationToSiteIdMap[locationName];
+
+  if (!siteIdToPageVisitsMap) {
+    return;
+  }
+
+  var siteIdsForLocation = Object.keys(siteIdToPageVisitsMap),
+    index = siteIdsForLocation.length,
+    totalPageVisits = 0,
+    currentSiteId;
+
+  while (index --) {
+    currentSiteId = siteIdsForLocation[index];
+    totalPageVisits += siteIdToPageVisitsMap[currentSiteId];
+  }
+
+  return totalPageVisits;
+}
+
+function getReadableNameForSiteId(locationMap, siteId) {
+  function isInterestingLocation(locationName) {
+    var PAGE_VISIT_THRESHOLD = 0;
+    return locationName !== siteId && locationName.charAt(0) !== '@' &&
+      locationMap[locationName] > PAGE_VISIT_THRESHOLD ;
+  }
+
+  function pageVisitsComparator(a, b) {
+    return locationMap[b] - locationMap[a];
+  }
+
+  function addPageVisits(locationName) {
+    return locationName.split(' ')[0] + '[' + locationMap[locationName] + ']';
+  }
+
+  var locationNames =
+    Object.keys(locationMap)
+      .filter(isInterestingLocation)
+      .sort(pageVisitsComparator);
+
+  return siteId + ' (' + locationNames.map(addPageVisits).join(', ') +')';
+}
+
+function locationNameComparator(a,b) {
+  var isAGroup = a.charAt(0) === '@',
+    isBGroup = b.charAt(0) === '@';
+  if (isAGroup !== isBGroup) {
+    return (+isBGroup) - (+isAGroup);
+  }
+  else {
+    return b > a ? -1 : 1;
+  }
+}
+
+function initLocationOptions(locationToSiteIdMap, siteIdToLocationsMap) {
+  var allLocations = Object.keys(locationToSiteIdMap).sort(locationNameComparator),
+    $locationSelects = $('.location-chooser'),
+    PAGE_VISIT_THRESHOLD = 100, // Don't list locations with fewer than this # of page visits
+    SITE_ID_REGEX = /^#s-[\da-f\?]{8}$/;
 
   allLocations.forEach(function(locationName) {
-    $locationSelects.each(function() {
-      var option = createOption(locationName);
+    var readableName = locationName,
+      totalPageVisits = getNumPageVisits(locationToSiteIdMap, locationName);
+
+    if (totalPageVisits < PAGE_VISIT_THRESHOLD) {
+      return;  // Otherwise we list too many
+    }
+
+    if (locationName.match(SITE_ID_REGEX)) {
+      readableName = getReadableNameForSiteId(siteIdToLocationsMap[locationName], locationName);
+    }
+    else {
+      readableName += ' [' + totalPageVisits + ']';
+    }
+
+    $locationSelects.each(function () {
+      var option = createOption(locationName, readableName);
       $(this).append(option);
     });
   });

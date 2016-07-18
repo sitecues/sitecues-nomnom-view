@@ -1,4 +1,3 @@
-// TODO second and third lines are near bottom, scales for them are -1 to 1
 var OPTIONS = {
   title: {
     display: true,
@@ -148,6 +147,14 @@ function getRatioDataPoints(data1, data2) {
   });
 }
 
+function getAverage(data1, data2) {
+  function sum(a, b) {
+    return a + b;
+  }
+
+  return data1.reduce(sum, 0) / data2.reduce(sum, 0);
+}
+
 function createChartView(data, options) {
   var
     datesWithDataAvailable = data.summary.config.dates,
@@ -179,7 +186,7 @@ function createChartView(data, options) {
     });
     if (data1 && data2) {
       datasets = datasets.concat({
-        label: 'ratio',
+        label: 'ratio #1/#2 (average = ' + getAverage(data1, data2).toFixed(4) + ')',
         data: getRatioDataPoints(data1, data2),
         yAxisID: 'y-axis-ratio'
       });
