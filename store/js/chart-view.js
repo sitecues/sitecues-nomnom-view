@@ -1,4 +1,8 @@
 var OPTIONS = {
+  // title: {
+  //   display: true,
+  //   text: 'Sitecues Metrics Chart'
+  // },
   stacked: true,
   scales: {
     yAxes: [
