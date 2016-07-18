@@ -139,19 +139,21 @@ function getReadableNameForSiteId(locationMap, siteId) {
   return siteId + ' (' + locationNames.map(addPageVisits).join(', ') +')';
 }
 
-function locationNameComparator(a,b) {
-  var isAGroup = a.charAt(0) === '@',
-    isBGroup = b.charAt(0) === '@';
+function locationNameComparator(locA, locB) {
+  var isAGroup = locA.charAt(0) === '@',
+    isBGroup = locB.charAt(0) === '@';
   if (isAGroup !== isBGroup) {
     return (+isBGroup) - (+isAGroup);
   }
   else {
-    return b > a ? -1 : 1;
+    return locB > locA ? -1 : 1;
   }
 }
 
 function initLocationOptions(locationToSiteIdMap, siteIdToLocationsMap) {
-  var allLocations = Object.keys(locationToSiteIdMap).sort(locationNameComparator),
+  var allLocations = Object.keys(locationToSiteIdMap)
+      .sort(locationNameComparator)
+      .filter(function(locName) { return locName.indexOf('#s-????????') < 0; }),
     $locationSelects = $('.location-chooser'),
     PAGE_VISIT_THRESHOLD = 100, // Don't list locations with fewer than this # of page visits
     SITE_ID_REGEX = /^#s-[\da-f\?]{8}$/;

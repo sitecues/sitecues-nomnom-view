@@ -171,7 +171,7 @@ function getLabel(options, which, total) {
     labelParts.push('on ' + locName);
   }
 
-  return labelParts.join('  ') + ' [' + total + ']         ';
+  return labelParts.join('  ') + ' [' + total.toLocaleString() + ']         ';
 }
 
 function createChartView(data, options) {
