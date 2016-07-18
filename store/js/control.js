@@ -27,17 +27,24 @@ function onDataAvailable(data) {
     updateChartView(data, getChartOptions());
   }
 
+  // Listen for changes
   $(window).on('submit change', function(submitEvent) {
     submitEvent.preventDefault();
     updateView();
     return false;
   });
-
   $('.ui-menu').on('click', updateView); // Our weird unsupported autocomplete hack isn't creating change events
 
+  // Make native inputs have similar size and font
   $('input').addClass("ui-widget ui-widget-content ui-corner-all");
 
+  // Show form
   $('#controller').css('visibility', 'visible');
+
+  // Use jQuery UI tooltips
+  $(document).tooltip();
+
+  // Show current visualization
   updateView();
 }
 
