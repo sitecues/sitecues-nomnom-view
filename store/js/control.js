@@ -13,7 +13,8 @@ function getChartOptions() {
     startDate: getValue('startDate'),
     endDate: getValue('endDate'),
     smoothSize: $('#doSmooth').is(':checked') ? 3 : 0,
-    doFixHoles: $('#doFixHoles').is(':checked')
+    doFixHoles: $('#doFixHoles').is(':checked'),
+    doStretch: $('#doStretch').is(':checked')
   };
 }
 function onDataAvailable(data) {

@@ -10,7 +10,7 @@ var OPTIONS = {
         type: 'linear',
         id: 'y-axis-1'
       },
-      /* {
+      {
         type: 'linear',
         position: 'right',
         // display: false,
@@ -21,7 +21,7 @@ var OPTIONS = {
           drawOnChartArea: false // only want the grid lines for one axis to show up
         },
         id: 'y-axis-2'
-      }, */ {
+      }, {
         type: 'linear',
         position: 'right',
         // display: false,
@@ -204,7 +204,7 @@ function createChartView(data, options) {
       borderColor: 'rgba(20,20,255,.4)',
       pointHitRadius: 10,
       data: data2 || [0],
-      yAxisID: 'y-axis-1'
+      yAxisID: options.doStretch ? 'y-axis-2' : 'y-axis-1'
     });
     if (data1 && data2) {
       datasets = datasets.concat({
