@@ -1,3 +1,5 @@
+// TODO clean up code
+
 var OPTIONS = {
   // title: {
   //   display: true,
