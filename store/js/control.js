@@ -39,7 +39,7 @@ function onDataAvailable(data) {
   $('input').addClass("ui-widget ui-widget-content ui-corner-all");
 
   // Show form
-  $('#controller').css('visibility', 'visible');
+  $('body').addClass('ready');
 
   // Use jQuery UI tooltips
   $(document).tooltip();
@@ -116,6 +116,11 @@ function getNumPageVisits(locationToSiteIdMap, locationName) {
   return totalPageVisits;
 }
 
+function getReadableNameForDomain(siteIdMap, domain, totalPageVisits) {
+  var siteId = siteIdMap[domain];
+  return domain + ' (' + siteId + ') [' + totalPageVisits.toLocaleString() + ']';
+}
+
 function getReadableNameForSiteId(locationMap, siteId) {
   function isInterestingLocation(locationName) {
     var PAGE_VISIT_THRESHOLD = 0;
@@ -170,7 +175,7 @@ function initLocationOptions(locationToSiteIdMap, siteIdToLocationsMap) {
       readableName = getReadableNameForSiteId(siteIdToLocationsMap[locationName], locationName);
     }
     else {
-      readableName += ' [' + totalPageVisits + ']';
+      readableName = getReadableNameForDomain(locationToSiteIdMap[locationName], locationName, totalPageVisits);
     }
 
     $locationSelects.each(function () {
