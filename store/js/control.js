@@ -2,6 +2,14 @@
  * View controller
  */
 
+// TODO allow user to copy link to different defaults
+// TODO param for which lines to show
+// TODO fix bug where it no longer redraws on change
+// TODO show all urls for each site id
+// TODO why is there a location called simply '.' ?
+// TODO alarms, e.g. Fullerton hiding badge in IE
+// TODO older versions of browsers should be isSupported for older Sitecues
+
 // Get a parameter value fro the URL query
 function getStringParameterByName(name, defaultVal) {
   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
