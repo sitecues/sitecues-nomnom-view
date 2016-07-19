@@ -1,27 +1,94 @@
-function getValue(id) {
+/**
+ * View controller
+ */
+
+// Get a parameter value fro the URL query
+function getStringParameterByName(name, defaultVal) {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+    results = regex.exec(location.search);
+  return results === null ? (defaultVal || ''): decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function getBooleanParameterByName(name, defaultVal) {
+  return Boolean(getStringParameterByName(name, defaultVal));
+}
+
+function getToday() {
+  var today = new Date(),
+    month = today.getMonth() + 1,
+    monthStr = month > 9 ? '' + month : '0' + month,
+    day = today.getDate(),
+    dayStr = day > 9 ? '' + day : '0' + day,
+    year = today.getFullYear();
+  return monthStr + '/' + dayStr + '/' + year;
+}
+
+function getParameterMap() {
+  var BEGINNING_OF_TIME = '01/26/2016';
+  return {
+    event1: getStringParameterByName('event1', 'badge-hovered'),
+    event2: getStringParameterByName('event2', 'page-visited'),
+    ua1: getStringParameterByName('ua1', '@supported'),
+    ua2: getStringParameterByName('ua2', '@supported'),
+    loc1: getStringParameterByName('loc1', '@any'),
+    loc2: getStringParameterByName('loc2', '@any'),
+    startDate: getStringParameterByName('startDate', BEGINNING_OF_TIME),
+    endDate: getStringParameterByName('endDate', getToday()),
+    doSmooth: getBooleanParameterByName('doSmooth', true),
+    doFixHoles: getBooleanParameterByName('doFixHoles', true),
+    doStretch: getBooleanParameterByName('doStretch', false)
+  }
+}
+
+function getStringValue(id) {
   return $('#' + id).val();
+}
+
+function getBooleanValue(id) {
+  return $('#' + id).is(':checked');
 }
 
 function getChartOptions() {
   return {
-    event1: getValue('event1'),
-    event2: getValue('event2'),
-    ua1: getValue('ua1'),
-    ua2: getValue('ua2'),
-    loc1: getValue('loc1'),
-    loc2: getValue('loc2'),
-    startDate: getValue('startDate'),
-    endDate: getValue('endDate'),
-    smoothSize: $('#doSmooth').is(':checked') ? 3 : 0,
-    doFixHoles: $('#doFixHoles').is(':checked'),
-    doStretch: $('#doStretch').is(':checked')
+    event1: getStringValue('event1'),
+    event2: getStringValue('event2'),
+    ua1: getStringValue('ua1'),
+    ua2: getStringValue('ua2'),
+    loc1: getStringValue('loc1'),
+    loc2: getStringValue('loc2'),
+    startDate: getStringValue('startDate'),
+    endDate: getStringValue('endDate'),
+    doSmooth: getBooleanValue('doSmooth'),
+    doFixHoles: getBooleanValue('doFixHoles'),
+    doStretch: getBooleanValue('doStretch')
   };
 }
+
+function initStringDefaultValue(id, val) {
+  $('#' + id).val(val);
+}
+
+function initBooleanDefaultValue(id, isChecked) {
+  $('#' + id).prop('checked', isChecked);
+}
+
+// Inits non-combo box defaults which have to be done in a different place
+function initDefaultValues() {
+  var paramMap = getParameterMap();
+  initStringDefaultValue('startDate', paramMap.startDate);
+  initStringDefaultValue('endDate', paramMap.endDate);
+  initBooleanDefaultValue('doSmooth', paramMap.doSmooth);
+  initBooleanDefaultValue('doFixHoles', paramMap.doFixHoles);
+  initBooleanDefaultValue('doStretch', paramMap.doStretch);
+}
+
 function onDataAvailable(data) {
   initEventOptions(data.eventTotals.byNameOnly);
   initUserAgentOptions(data.eventTotals.byUserAgentOnly);
   initLocationOptions(data.siteInfo.locationToSiteIdMap, data.siteInfo.siteIdToLocationsMap);
   initDatePickers();
+  initDefaultValues();
 
   function updateView() {
     updateChartView(data, getChartOptions());
@@ -70,8 +137,11 @@ function initUserAgentOptions(userAgentTotals) {
   });
 
   // Set defaults
-  $uaSelects
-    .val('@supported')
+  $('#ua1')
+    .val(getStringParameterByName('ua1', '@any'))
+    .combobox();
+  $('#ua2')
+    .val(getStringParameterByName('ua2', '@any'))
     .combobox();
 }
 
@@ -89,10 +159,10 @@ function initEventOptions(allEventTotals) {
 
   // Set defaults
   $('#event1')
-    .val('badge-hovered')
+    .val(getStringParameterByName('event1', 'badge-hovered'))
     .combobox();
   $('#event2')
-    .val('page-visited')
+    .val(getStringParameterByName('event2', 'page-visited'))
     .combobox();
 }
 
@@ -116,9 +186,14 @@ function getNumPageVisits(locationToSiteIdMap, locationName) {
   return totalPageVisits;
 }
 
-function getReadableNameForDomain(siteIdMap, domain, totalPageVisits) {
-  var siteId = siteIdMap[domain];
-  return domain + ' (' + siteId + ') [' + totalPageVisits.toLocaleString() + ']';
+function getReadableNameForLocation(siteIdMap, location, totalPageVisits) {
+  var siteId = siteIdMap[location],
+    readableName = location;
+  if (siteId) {
+    readableName += ' (' + siteId + ')';
+  }
+  readableName += ' [' + totalPageVisits.toLocaleString() + ']';
+  return readableName;
 }
 
 function getReadableNameForSiteId(locationMap, siteId) {
@@ -174,8 +249,8 @@ function initLocationOptions(locationToSiteIdMap, siteIdToLocationsMap) {
     if (locationName.match(SITE_ID_REGEX)) {
       readableName = getReadableNameForSiteId(siteIdToLocationsMap[locationName], locationName);
     }
-    else {
-      readableName = getReadableNameForDomain(locationToSiteIdMap[locationName], locationName, totalPageVisits);
+    else { // Not a group or TLD
+      readableName = getReadableNameForLocation(locationToSiteIdMap[locationName], locationName, totalPageVisits);
     }
 
     $locationSelects.each(function () {
@@ -184,8 +259,11 @@ function initLocationOptions(locationToSiteIdMap, siteIdToLocationsMap) {
     });
   });
 
-  $locationSelects
-    .val('@any')
+  $('#loc1')
+    .val(getStringParameterByName('loc1', '@any'))
+    .combobox();
+  $('#loc2')
+    .val(getStringParameterByName('loc2', '@any'))
     .combobox();
 }
 
@@ -198,7 +276,7 @@ function initDatePickers() {
 }
 
 function onReady() {
-  var webServiceUrl = 'http://localhost:3001/all.json';
+  var webServiceUrl = 'http://ec2-54-221-79-114.compute-1.amazonaws.com:3001/all.json';
   $.ajax({
     url: webServiceUrl,
     dataType: 'json',

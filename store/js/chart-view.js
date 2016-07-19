@@ -117,7 +117,7 @@ function removeHolesFromData(dataPoints, missingDays) {
 
 // which === '1'|'2' for which line in the graph
 function getDataPoints(which, data, startDateIndex, endDateIndex, options) {
-  var smoothSize = options.smoothSize,
+  var smoothSize = options.doSmooth ? 3 : 0,
     dataSource = getDataSource(which, data, options),
     correctedData,
     smoothedData,
