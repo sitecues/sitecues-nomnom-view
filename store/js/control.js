@@ -124,14 +124,12 @@ function onDataAvailable(data) {
   setFormValues();
 
   function onFormChange() {
-    console.log('form change');
     var options = getChartOptions();
     updateUrlAndTitle(options);
     updateChartView(data, options);
   }
 
   function onHistoryChange() {
-    console.log('history change');
     setFormValues();
     updateChartView(data, getChartOptions());
   }
@@ -220,38 +218,41 @@ function getNumPageVisits(locationToSiteIdMap, locationName) {
   return totalPageVisits;
 }
 
-function getReadableNameForLocation(siteIdMap, location, totalPageVisits) {
-  var siteId = siteIdMap[location],
-    readableName = location;
-  if (siteId) {
-    readableName += ' (' + siteId + ')';
+function getReadableNameForLocation(locationToPageVisitsMap, location, totalPageVisits) {
+  function isTLDOrGroup(location) {
+    var firstChar = location.charAt(0);
+    return firstChar === '.' || firstChar === '@';
   }
-  readableName += ' [' + totalPageVisits.toLocaleString() + ']';
-  return readableName;
-}
 
-function getReadableNameForSiteId(locationMap, siteId) {
-  function isInterestingLocation(locationName) {
+  function isInterestingLocation(subLocation) {
     var PAGE_VISIT_THRESHOLD = 0;
-    return locationName !== siteId && locationName.charAt(0) !== '@' &&
-      locationName.charAt(0) !== '.' &&
-      locationMap[locationName] > PAGE_VISIT_THRESHOLD ;
+    return subLocation !== location &&
+      !isTLDOrGroup(subLocation) &&
+      locationToPageVisitsMap[subLocation] > PAGE_VISIT_THRESHOLD ;
   }
 
   function pageVisitsComparator(a, b) {
-    return locationMap[b] - locationMap[a];
+    return locationToPageVisitsMap[b] - locationToPageVisitsMap[a];
   }
 
   function addPageVisits(locationName) {
-    return locationName.split(' ')[0] + '[' + locationMap[locationName] + ']';
+    return locationName.split(' ')[0] + ':' + locationToPageVisitsMap[locationName];
   }
 
-  var locationNames =
-    Object.keys(locationMap)
+
+
+  var locationNames = [];
+  if (locationToPageVisitsMap && !isTLDOrGroup(location)) {
+    locationNames = Object.keys(locationToPageVisitsMap || {})
       .filter(isInterestingLocation)
       .sort(pageVisitsComparator);
+  }
 
-  return siteId + ' (' + locationNames.map(addPageVisits).join(', ') +')';
+  if (!locationNames.length) {
+    return location + ':' + totalPageVisits;
+  }
+
+  return location + ' => ' + locationNames.map(addPageVisits).join(', ');
 }
 
 function locationNameComparator(locA, locB) {
@@ -271,23 +272,19 @@ function initLocationOptions(locationToSiteIdMap, siteIdToLocationsMap) {
       .filter(function(locName) { return locName.indexOf('#s-????????') < 0; }),
     $locationSelects = $('.location-chooser'),
     PAGE_VISIT_THRESHOLD = 100, // Don't list locations with fewer than this # of page visits
-    SITE_ID_REGEX = /^#s-[\da-f\?]{8}$/;
+    SITE_ID_REGEX = /^#s-[\da-f\?]{8}$/;   // Currently no use
 
   allLocations.forEach(function(locationName) {
     var readableName = locationName,
-      totalPageVisits = getNumPageVisits(locationToSiteIdMap, locationName);
+      totalPageVisits = getNumPageVisits(locationToSiteIdMap, locationName),
+      locationToPageVisitsMap;
 
     if (totalPageVisits < PAGE_VISIT_THRESHOLD) {
       return;  // Otherwise we list too many
     }
 
-    if (locationName.match(SITE_ID_REGEX)) {
-      readableName = getReadableNameForSiteId(siteIdToLocationsMap[locationName], locationName);
-    }
-    else { // Not a group or TLD
-      readableName = getReadableNameForLocation(locationToSiteIdMap[locationName], locationName, totalPageVisits);
-    }
-
+    locationToPageVisitsMap = locationName.match(SITE_ID_REGEX) ? siteIdToLocationsMap : locationToSiteIdMap;
+    readableName = getReadableNameForLocation(locationToPageVisitsMap[locationName], locationName, totalPageVisits);
     $locationSelects.each(function () {
       var option = createOption(locationName, readableName);
       $(this).append(option);

@@ -222,7 +222,7 @@ function createChartView(data, options) {
       total2 = getTotal(data2);
       averageRatio = toPrecision(total1 / total2, 4);
       datasets = datasets.concat({
-        label: 'ratio #1/#2', //[average = ' + (total1 / total2).toFixed(4) + ']',
+        label: 'ratio #1/#2    ', //[average = ' + (total1 / total2).toFixed(4) + ']',
         data: getRatioDataPoints(data1, data2),
         yAxisID: 'y-axis-ratio'
       }, {
