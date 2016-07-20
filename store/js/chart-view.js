@@ -173,7 +173,8 @@ function getLabel(options, which, total) {
     labelParts.push('on ' + locName);
   }
 
-  return labelParts.join('  ') + ' [' + total.toLocaleString() + ']         ';
+  var labelWithoutTotal = labelParts.join(' ');
+  return labelWithoutTotal + (typeof total === 'undefined' ? '' : ' [' + total.toLocaleString() + ']         ');
 }
 
 function createChartView(data, options) {
@@ -250,7 +251,7 @@ function getData() {
 
 function updateChartView(data, options) {
 
-  var chartView = refresh(data, options);
+  refresh(data, options);
 
   // Snippet to update points and animate to new values
   // myLiveChart.datasets[1].points[indexToUpdate].value = Math.random() * 100;

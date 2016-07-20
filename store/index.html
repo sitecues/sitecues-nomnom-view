@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Sitecues metrics viewer</title>
     <link rel="stylesheet" href="./css/chart-view.css"/>
     <link rel="stylesheet" href="./css/control.css"/>
     <link rel="stylesheet" href="./css/autocomplete-combo.css"/>
@@ -20,16 +21,18 @@
   </head>
   <body>
     <form id="security" action="javascript:void(0);">
-      <label for="password">Password:</label> <input type="password" id="password"/>
+      <label for="password">Password:</label> <input type="password" id="password" autofocus/>
       <button type="submit">Go</button>
     </form>
     <img id="wait" src="./images/wait.svg"/>
     <p id="error"></p>
     <form id="controller" action="javascript:void(0);">
 
-      <h1 class="title">
-        Metrics
-      </h1>
+      <div class="title">
+        <h1>
+          Metrics
+        </h1>
+      </div>
 
       <fieldset>
         <legend>Comparison</legend>

@@ -5,11 +5,7 @@
 // TODO allow user to copy link to different defaults
 // TODO param for which lines to show
 // TODO fix bug where it no longer redraws on change
-// TODO show all urls for each site id
-// TODO why is there a location called simply '.' ?
 // TODO alarms, e.g. Fullerton hiding badge in IE
-// TODO older versions of browsers should be isSupported for older Sitecues
-// TODO secure with password
 
 // Get a parameter value fro the URL query
 function getStringParameterByName(name, defaultVal) {
@@ -21,6 +17,31 @@ function getStringParameterByName(name, defaultVal) {
 
 function getBooleanParameterByName(name, defaultVal) {
   return Boolean(getStringParameterByName(name, defaultVal));
+}
+
+function changeUrl(title, url) {
+  if (typeof (history.pushState) != "undefined") {
+    var obj = {title: title, URL: url};
+    history.pushState(obj, obj.Title, obj.Url);
+    document.title = title;
+  }
+}
+
+function updateUrlAndTitle(options) {
+  function getCurrentLocationWithoutParams() {
+    var currLoc = window.location.toString();
+
+    return currLoc.substr(0, currLoc.length - window.location.search.length);
+  }
+
+  var params = [];
+  Object.keys(options).forEach(function(optionName) {
+    params.push(encodeURIComponent(optionName) + '=' + encodeURIComponent(options[optionName]));
+  });
+
+  var href = getCurrentLocationWithoutParams() + '?' + params.join('&'),
+    title = 'Sitecues ' + getLabel(options, '1') + ' vs ' + getLabel(options, '2');
+  changeUrl(title, href);
 }
 
 function getToday() {
@@ -74,22 +95,35 @@ function getChartOptions() {
   };
 }
 
-function initStringDefaultValue(id, val) {
-  $('#' + id).val(val);
+function changeStringValue(id, val) {
+  var $formControl = $('#' + id);
+  $formControl.val(val);
+  if ($formControl.is('select')) {
+    var $possibleInput = $formControl.next().children().first();
+    if ($possibleInput.is('input')) {
+      $possibleInput.val(val);
+    }
+  }
 }
 
-function initBooleanDefaultValue(id, isChecked) {
+function changeBooleanValue(id, isChecked) {
   $('#' + id).prop('checked', isChecked);
 }
 
 // Inits non-combo box defaults which have to be done in a different place
 function initDefaultValues() {
   var paramMap = getParameterMap();
-  initStringDefaultValue('startDate', paramMap.startDate);
-  initStringDefaultValue('endDate', paramMap.endDate);
-  initBooleanDefaultValue('doSmooth', paramMap.doSmooth);
-  initBooleanDefaultValue('doFixHoles', paramMap.doFixHoles);
-  initBooleanDefaultValue('doStretch', paramMap.doStretch);
+  changeStringValue('event1', paramMap.event1);
+  changeStringValue('event2', paramMap.event2);
+  changeStringValue('ua1', paramMap.ua1);
+  changeStringValue('ua2', paramMap.ua2);
+  changeStringValue('loc1', paramMap.loc1);
+  changeStringValue('loc2', paramMap.loc2);
+  changeStringValue('startDate', paramMap.startDate);
+  changeStringValue('endDate', paramMap.endDate);
+  changeBooleanValue('doSmooth', paramMap.doSmooth);
+  changeBooleanValue('doFixHoles', paramMap.doFixHoles);
+  changeBooleanValue('doStretch', paramMap.doStretch);
 }
 
 function onDataAvailable(data) {
@@ -100,8 +134,17 @@ function onDataAvailable(data) {
   initDefaultValues();
 
   function updateView() {
+    var options = getChartOptions();
+    updateUrlAndTitle(options);
+    updateChartView(data, options);
+  }
+
+  function onHistoryChange() {
+    initDefaultValues();
     updateChartView(data, getChartOptions());
   }
+
+  window.addEventListener('popstate', onHistoryChange);
 
   // Listen for changes
   $(window).on('submit change', function(submitEvent) {
@@ -204,6 +247,7 @@ function getReadableNameForSiteId(locationMap, siteId) {
   function isInterestingLocation(locationName) {
     var PAGE_VISIT_THRESHOLD = 0;
     return locationName !== siteId && locationName.charAt(0) !== '@' &&
+      locationName.charAt(0) !== '.' &&
       locationMap[locationName] > PAGE_VISIT_THRESHOLD ;
   }
 
@@ -295,12 +339,8 @@ function loadData(submitEvent) {
 
   var username = 'sitecues',
     password = $('#password').val(),
-    webServiceUrl = 'http://localhost:3001/all.json';
-    // webServiceUrl = 'http://ec2-54-221-79-114.compute-1.amazonaws.com:3001/all.json';
-
-  // Add password
-  // webServiceUrl = webServiceUrl.replace('http://', 'http://' + username + ':' + password + '@');
-  console.log(webServiceUrl);
+    // webServiceUrl = 'http://localhost:3001/all.json';
+    webServiceUrl = 'http://ec2-54-221-79-114.compute-1.amazonaws.com:3001/all.json';
 
   var xhr = new XMLHttpRequest();
   xhr.open("GET", webServiceUrl, true);
