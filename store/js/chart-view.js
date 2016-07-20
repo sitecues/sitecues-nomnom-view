@@ -117,7 +117,7 @@ function removeHolesFromData(dataPoints, missingDays) {
 
 // which === '1'|'2' for which line in the graph
 function getDataPoints(which, data, startDateIndex, endDateIndex, options) {
-  var smoothSize = options.doSmooth ? 3 : 0,
+  var smoothSize = options.doSmooth ? 3 : 0, // +/- 3 days = 1 week
     dataSource = getDataSource(which, data, options),
     correctedData,
     smoothedData,
@@ -142,10 +142,15 @@ function getDataSource(which, data, options) {
   return eventMap && eventMap[eventName] && eventMap[eventName][uaName];
 }
 
+function toPrecision(val, precision) {
+  var precisionHelper = Math.pow(10, precision);
+  return Math.floor(val * precisionHelper) / precisionHelper;
+}
+
 function getRatioDataPoints(data1, data2) {
   return data1.map(function(value, index) {
     var value2 = data2[index];
-    return value2 ? value / data2[index] : null; // null means skip this data point -- no data
+    return value2 ? toPrecision(value / data2[index], 4) : null; // null means skip this data point -- no data
   });
 }
 
@@ -187,8 +192,9 @@ function createChartView(data, options) {
     endDateIndex = convertDateToIndex(options.endDate, datesWithDataAvailable, data.summary.config.dates.length - 1),
     data1 = getDataPoints('1', data, startDateIndex, endDateIndex, options),
     data2 = getDataPoints('2', data, startDateIndex, endDateIndex, options),
-    total1 = getTotal(data1),
+    total1,
     total2,
+    averageRatio,
     datasets = [{
       label: getLabel(options, '1') + '     ',
       borderColor: 'rgba(255,110,0,.4)',
@@ -203,7 +209,6 @@ function createChartView(data, options) {
   if (options.event2 !== options.event1 ||
       options.ua2 !== options.ua1 ||
       options.loc2 !== options.loc1) {
-    total2 = getTotal(data2);
     datasets = datasets.concat({
       label: getLabel(options, '2') + '     ',
       backgroundColor: 'rgba(20,20,255,0.1)',
@@ -213,9 +218,18 @@ function createChartView(data, options) {
       yAxisID: options.doStretch ? 'y-axis-2' : 'y-axis-1'
     });
     if (data1 && data2) {
+      total1 = getTotal(data1);
+      total2 = getTotal(data2);
+      averageRatio = toPrecision(total1 / total2, 4);
       datasets = datasets.concat({
-        label: 'ratio #1/#2 [average = ' + (total1 / total2).toFixed(4) + ']',
+        label: 'ratio #1/#2', //[average = ' + (total1 / total2).toFixed(4) + ']',
         data: getRatioDataPoints(data1, data2),
+        yAxisID: 'y-axis-ratio'
+      }, {
+        label: 'average ratio',
+        backgroundColor: 'rgba(0,0,0,0)',
+        pointBorderColor: 'rgba(0,0,0,0)',
+        data: new Array(data1.length).fill( averageRatio ),
         yAxisID: 'y-axis-ratio'
       });
     }
