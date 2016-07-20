@@ -137,11 +137,7 @@ function onDataAvailable(data) {
   window.addEventListener('popstate', onHistoryChange);
 
   // Listen for changes
-  $(window).on('submit change', function(submitEvent) {
-    submitEvent.preventDefault();
-    onFormChange();
-    return false;
-  });
+  $(window).on('submit change', onFormChange);
   $('.ui-menu').on('click', onFormChange); // Our weird unsupported autocomplete hack isn't creating change events
 
   // Make native inputs have similar size and font
@@ -336,9 +332,6 @@ function loadData(submitEvent) {
     }
   };
   xhr.send();
-
-  submitEvent.preventDefault();
-  return false;
 }
 
 $(document).ready(onReady);
