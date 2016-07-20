@@ -44,16 +44,6 @@ function updateUrlAndTitle(options) {
   changeUrl(title, href);
 }
 
-function getToday() {
-  var today = new Date(),
-    month = today.getMonth() + 1,
-    monthStr = month > 9 ? '' + month : '0' + month,
-    day = today.getDate(),
-    dayStr = day > 9 ? '' + day : '0' + day,
-    year = today.getFullYear();
-  return monthStr + '/' + dayStr + '/' + year;
-}
-
 function getParameterMap() {
   var BEGINNING_OF_TIME = '01/26/2016';
   return {
@@ -64,10 +54,10 @@ function getParameterMap() {
     loc1: getStringParameterByName('loc1', '@any'),
     loc2: getStringParameterByName('loc2', '@any'),
     startDate: getStringParameterByName('startDate', BEGINNING_OF_TIME),
-    endDate: getStringParameterByName('endDate', getToday()),
-    doSmooth: getBooleanParameterByName('doSmooth', true),
-    doFixHoles: getBooleanParameterByName('doFixHoles', true),
-    doStretch: getBooleanParameterByName('doStretch', false)
+    endDate: getStringParameterByName('endDate', ''),
+    doSmooth: getBooleanParameterByName('doSmooth', 'true'),
+    doFixHoles: getBooleanParameterByName('doFixHoles', 'true'),
+    doStretch: getBooleanParameterByName('doStretch', 'false')
   }
 }
 
@@ -111,7 +101,7 @@ function changeBooleanValue(id, isChecked) {
 }
 
 // Inits non-combo box defaults which have to be done in a different place
-function initDefaultValues() {
+function setFormValues() {
   var paramMap = getParameterMap();
   changeStringValue('event1', paramMap.event1);
   changeStringValue('event2', paramMap.event2);
@@ -131,7 +121,7 @@ function onDataAvailable(data) {
   initUserAgentOptions(data.eventTotals.byUserAgentOnly);
   initLocationOptions(data.siteInfo.locationToSiteIdMap, data.siteInfo.siteIdToLocationsMap);
   initDatePickers();
-  initDefaultValues();
+  setFormValues();
 
   function onFormChange() {
     console.log('form change');
@@ -142,7 +132,7 @@ function onDataAvailable(data) {
 
   function onHistoryChange() {
     console.log('history change');
-    initDefaultValues();
+    setFormValues();
     updateChartView(data, getChartOptions());
   }
 
@@ -187,10 +177,8 @@ function initUserAgentOptions(userAgentTotals) {
 
   // Set defaults
   $('#ua1')
-    .val(getStringParameterByName('ua1', '@any'))
     .combobox();
   $('#ua2')
-    .val(getStringParameterByName('ua2', '@any'))
     .combobox();
 }
 
@@ -208,10 +196,8 @@ function initEventOptions(allEventTotals) {
 
   // Set defaults
   $('#event1')
-    .val(getStringParameterByName('event1', 'badge-hovered'))
     .combobox();
   $('#event2')
-    .val(getStringParameterByName('event2', 'page-visited'))
     .combobox();
 }
 
@@ -310,10 +296,8 @@ function initLocationOptions(locationToSiteIdMap, siteIdToLocationsMap) {
   });
 
   $('#loc1')
-    .val(getStringParameterByName('loc1', '@any'))
     .combobox();
   $('#loc2')
-    .val(getStringParameterByName('loc2', '@any'))
     .combobox();
 }
 
