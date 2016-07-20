@@ -2,7 +2,6 @@
  * View controller
  */
 
-// TODO allow user to copy link to different defaults
 // TODO param for which lines to show
 // TODO fix bug where it no longer redraws on change
 // TODO alarms, e.g. Fullerton hiding badge in IE
@@ -16,13 +15,13 @@ function getStringParameterByName(name, defaultVal) {
 }
 
 function getBooleanParameterByName(name, defaultVal) {
-  return Boolean(getStringParameterByName(name, defaultVal));
+  return getStringParameterByName(name, defaultVal) === 'true';
 }
 
 function changeUrl(title, url) {
   if (typeof (history.pushState) != "undefined") {
     var obj = {title: title, URL: url};
-    history.pushState(obj, obj.Title, obj.Url);
+    history.pushState(obj, obj.title, obj.URL);
     document.title = title;
   }
 }
@@ -41,6 +40,7 @@ function updateUrlAndTitle(options) {
 
   var href = getCurrentLocationWithoutParams() + '?' + params.join('&'),
     title = 'Sitecues ' + getLabel(options, '1') + ' vs ' + getLabel(options, '2');
+
   changeUrl(title, href);
 }
 
@@ -133,13 +133,15 @@ function onDataAvailable(data) {
   initDatePickers();
   initDefaultValues();
 
-  function updateView() {
+  function onFormChange() {
+    console.log('form change');
     var options = getChartOptions();
     updateUrlAndTitle(options);
     updateChartView(data, options);
   }
 
   function onHistoryChange() {
+    console.log('history change');
     initDefaultValues();
     updateChartView(data, getChartOptions());
   }
@@ -149,10 +151,10 @@ function onDataAvailable(data) {
   // Listen for changes
   $(window).on('submit change', function(submitEvent) {
     submitEvent.preventDefault();
-    updateView();
+    onFormChange();
     return false;
   });
-  $('.ui-menu').on('click', updateView); // Our weird unsupported autocomplete hack isn't creating change events
+  $('.ui-menu').on('click', onFormChange); // Our weird unsupported autocomplete hack isn't creating change events
 
   // Make native inputs have similar size and font
   $('input').addClass("ui-widget ui-widget-content ui-corner-all");
@@ -164,7 +166,7 @@ function onDataAvailable(data) {
   $(document).tooltip();
 
   // Show current visualization
-  updateView();
+  updateChartView(data, getChartOptions());
 }
 
 function createOption(optionName, readableName) {

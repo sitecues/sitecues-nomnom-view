@@ -157,7 +157,7 @@ function getTotal(data) {
   return data.reduce(sum, 0);
 }
 
-function getLabel(options, which, total) {
+function getLabel(options, which) {
   var eventName = options['event' + which],
     uaName = options['ua' + which],
     locName = options['loc' + which],
@@ -173,8 +173,7 @@ function getLabel(options, which, total) {
     labelParts.push('on ' + locName);
   }
 
-  var labelWithoutTotal = labelParts.join(' ');
-  return labelWithoutTotal + (typeof total === 'undefined' ? '' : ' [' + total.toLocaleString() + ']         ');
+  return labelParts.join(' ');
 }
 
 function createChartView(data, options) {
@@ -187,7 +186,7 @@ function createChartView(data, options) {
     total1 = getTotal(data1),
     total2,
     datasets = [{
-      label: getLabel(options, '1', total1),
+      label: getLabel(options, '1') + '     ',
       borderColor: 'rgba(255,110,0,.4)',
       backgroundColor: 'rgba(255,110,0,0.1)',
       fill: true,
@@ -202,7 +201,7 @@ function createChartView(data, options) {
       options.loc2 !== options.loc1) {
     total2 = getTotal(data2);
     datasets = datasets.concat({
-      label: getLabel(options, '2', total2),
+      label: getLabel(options, '2') + '     ',
       backgroundColor: 'rgba(20,20,255,0.1)',
       borderColor: 'rgba(20,20,255,.4)',
       pointHitRadius: 10,
