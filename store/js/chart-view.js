@@ -150,6 +150,10 @@ function getRatioDataPoints(data1, data2) {
 }
 
 function getTotal(data) {
+  if (!data) {
+    return 0;
+  }
+
   function sum(a, b) {
     return a + b;
   }

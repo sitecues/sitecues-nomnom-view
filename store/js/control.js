@@ -48,11 +48,11 @@ function getParameterMap() {
   var BEGINNING_OF_TIME = '01/26/2016';
   return {
     event1: getStringParameterByName('event1', 'badge-hovered'),
-    event2: getStringParameterByName('event2', 'page-visited'),
+    event2: getStringParameterByName('event2', 'page-visited::badge-visible'),
     ua1: getStringParameterByName('ua1', '@supported'),
     ua2: getStringParameterByName('ua2', '@supported'),
-    loc1: getStringParameterByName('loc1', '@any'),
-    loc2: getStringParameterByName('loc2', '@any'),
+    loc1: getStringParameterByName('loc1', '@long-running-customers'),
+    loc2: getStringParameterByName('loc2', '@long-running-customers'),
     startDate: getStringParameterByName('startDate', BEGINNING_OF_TIME),
     endDate: getStringParameterByName('endDate', ''),
     doSmooth: getBooleanParameterByName('doSmooth', 'true'),
@@ -182,7 +182,6 @@ function initUserAgentOptions(userAgentTotals) {
     .combobox();
 }
 
-// TODO get dynamically via Object.keys(data.views[0].report.totals)
 function initEventOptions(allEventTotals) {
   var allEventNames = Object.keys(allEventTotals).sort(),
     $eventNameSelects = $('.event-chooser');
