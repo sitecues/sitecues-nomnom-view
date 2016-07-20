@@ -229,6 +229,7 @@ function createChartView(data, options) {
         label: 'average ratio',
         backgroundColor: 'rgba(0,0,0,0)',
         pointBorderColor: 'rgba(0,0,0,0)',
+        borderDash: [10, 5],
         data: new Array(data1.length).fill( averageRatio ),
         yAxisID: 'y-axis-ratio'
       });
