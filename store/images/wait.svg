@@ -3,31 +3,31 @@
   <g transform="rotate(0 50 50)">
     <circle r="12" cx="15" cy="50">
       <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite" dur="1s" values="0 0;24.18440519687684 -33.28697807033037" keyTimes="0;1"/>
-      <animate attributeName="fill" dur="1s" begin="0s" repeatCount="indefinite"  keyTimes="0;1" values="#fff;#999"/>
+      <animate attributeName="fill" dur="1s" begin="0s" repeatCount="indefinite"  keyTimes="0;1" values="00f;#00a"/>
     </circle>
   </g>
   <g transform="rotate(72 50 50)">
     <circle r="12" cx="15" cy="50">
       <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite" dur="1s" values="0 0;24.18440519687684 -33.28697807033037" keyTimes="0;1"/>
-      <animate attributeName="fill" dur="1s" begin="0s" repeatCount="indefinite"  keyTimes="0;1" values="#999;#000"/>
+      <animate attributeName="fill" dur="1s" begin="0s" repeatCount="indefinite"  keyTimes="0;1" values="#00a;#002"/>
     </circle>
   </g>
   <g transform="rotate(144 50 50)">
     <circle r="12" cx="15" cy="50">
       <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite" dur="1s" values="0 0;24.18440519687684 -33.28697807033037" keyTimes="0;1"/>
-      <animate attributeName="fill" dur="1s" begin="0s" repeatCount="indefinite"  keyTimes="0;1" values="#000;#fff"/>
+      <animate attributeName="fill" dur="1s" begin="0s" repeatCount="indefinite"  keyTimes="0;1" values="#002;#00f"/>
     </circle>
   </g>
   <g transform="rotate(216 50 50)">
     <circle r="12" cx="15" cy="50">
       <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite" dur="1s" values="0 0;24.18440519687684 -33.28697807033037" keyTimes="0;1"/>
-      <animate attributeName="fill" dur="1s" begin="0s" repeatCount="indefinite"  keyTimes="0;1" values="#fff;#999"/>
+      <animate attributeName="fill" dur="1s" begin="0s" repeatCount="indefinite"  keyTimes="0;1" values="#00f;#00a"/>
     </circle>
   </g>
   <g transform="rotate(288 50 50)">
     <circle r="12" cx="15" cy="50">
       <animateTransform attributeName="transform" type="translate" begin="0s" repeatCount="indefinite" dur="1s" values="0 0;24.18440519687684 -33.28697807033037" keyTimes="0;1"/>
-      <animate attributeName="fill" dur="1s" begin="0s" repeatCount="indefinite"  keyTimes="0;1" values="#999;#000"/>
+      <animate attributeName="fill" dur="1s" begin="0s" repeatCount="indefinite"  keyTimes="0;1" values="#00a;#002"/>
     </circle>
   </g>
 </svg>

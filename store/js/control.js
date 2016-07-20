@@ -9,6 +9,7 @@
 // TODO why is there a location called simply '.' ?
 // TODO alarms, e.g. Fullerton hiding badge in IE
 // TODO older versions of browsers should be isSupported for older Sitecues
+// TODO secure with password
 
 // Get a parameter value fro the URL query
 function getStringParameterByName(name, defaultVal) {
@@ -121,11 +122,6 @@ function onDataAvailable(data) {
 
   // Show current visualization
   updateView();
-}
-
-function onError($xhr, textStatus, errorThrown) {
-  console.log(textStatus);
-  $('#report').text('An error occured: ' + errorThrown);
 }
 
 function createOption(optionName, readableName) {
@@ -284,13 +280,43 @@ function initDatePickers() {
 }
 
 function onReady() {
-  var webServiceUrl = 'http://ec2-54-221-79-114.compute-1.amazonaws.com:3001/all.json';
-  $.ajax({
-    url: webServiceUrl,
-    dataType: 'json',
-    error: onError,
-    success: onDataAvailable
-  });
+  $('#security').one('submit', loadData);
+}
+
+function onError(statusCode, textStatus) {
+  console.log(statusCode);
+  console.log(textStatus);
+  $('body').addClass('error');
+  $('#error').text('An error occurred: ' + statusCode + ' ' + textStatus);
+}
+
+function loadData(submitEvent) {
+  $('body').addClass('password-entered');
+
+  var username = 'sitecues',
+    password = $('#password').val(),
+    webServiceUrl = 'http://localhost:3001/all.json';
+    // webServiceUrl = 'http://ec2-54-221-79-114.compute-1.amazonaws.com:3001/all.json';
+
+  // Add password
+  // webServiceUrl = webServiceUrl.replace('http://', 'http://' + username + ':' + password + '@');
+  console.log(webServiceUrl);
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", webServiceUrl, true);
+  xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ':' + password));
+  xhr.onload = function() {
+    if (xhr.status < 400) {
+      onDataAvailable(JSON.parse(xhr.responseText));
+    }
+    else {
+      onError(xhr.status, xhr.statusText);
+    }
+  };
+  xhr.send();
+
+  submitEvent.preventDefault();
+  return false;
 }
 
 $(document).ready(onReady);

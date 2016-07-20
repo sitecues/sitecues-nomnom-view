@@ -3,7 +3,17 @@ body {
   font-size: 16px;
 }
 
+#security {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -140px;
+  margin-top: -.5em;
+  transition: opacity .2s;
+}
+
 #wait {
+  display: none;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -12,8 +22,28 @@ body {
   transition: opacity .2s;
 }
 
+body.password-entered #security {
+  display: none;
+}
+
+body.password-entered #wait {
+  display: block;
+}
+
+body.error #wait {
+  display: none;
+}
+
 body.ready #wait {
   opacity: 0;
+}
+
+#error {
+  display: none;
+}
+
+.error #error {
+  display: block;
 }
 
 #controller {
