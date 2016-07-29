@@ -1,50 +1,75 @@
 // TODO clean up code
 
-var OPTIONS = {
-  // title: {
-  //   display: true,
-  //   text: 'Sitecues Metrics Chart'
-  // },
-  stacked: true,
-  scales: {
-    yAxes: [
-      {
-        type: 'linear',
-        id: 'y-axis-1'
-      },
-      {
+function getChartConfig(options, isLine2Different) {
+  var yAxes = [
+    {
+      type: 'linear',
+      id: 'y-axis-1',
+      position: 'left',
+      beginAtZero: !options.doStretch,
+      scaleLabel: {
+        display: true,
+        fontColor: 'rgba(255,110,0,1)',
+        fontSize: 14,
+        labelString: getLabel(options, '1')
+      }
+    }
+  ];
+
+  if (isLine2Different) {
+    if (options.doStretch) {
+      yAxes = yAxes.concat({
         type: 'linear',
         position: 'right',
-        // display: false,
-        min: 0,
-        max: 7000,
+        scaleLabel: {
+          display: true,
+          fontColor: 'rgba(20,20,255,1)',
+          fontSize: 14,
+          labelString: getLabel(options, '2')
+        },
         // grid line settings
         gridLines: {
           drawOnChartArea: false // only want the grid lines for one axis to show up
         },
         id: 'y-axis-2'
-      }, {
-        type: 'linear',
-        position: 'right',
-        // display: false,
-        min: 0,
-        max: 7000,
-        // grid line settings
-        gridLines: {
-          drawOnChartArea: false // only want the grid lines for one axis to show up
-        },
-        id: 'y-axis-ratio'
-      }
-    ]
-    ,
-    xAxes: [{
-      type: 'time'
-    }]
-  },
-  time: {
-    parser: 'MM/DD/YY'
+      });
+    }
+    yAxes = yAxes.concat({
+      type: 'linear',
+      position: 'right',
+      // display: false,
+      beginAtZero: true,
+      min: 0,
+      scaleLabel: {
+        display: true,
+        labelString: 'ratio',
+        fontSize: 14
+      },
+      // grid line settings
+      gridLines: {
+        drawOnChartArea: false // only want the grid lines for one axis to show up
+      },
+      id: 'y-axis-ratio'
+    });
   }
-};
+
+  return {
+    // title: {
+    //   display: true,
+    //   text: 'Sitecues Metrics Chart'
+    // },
+    stacked: true,
+    scales: {
+      yAxes: yAxes,
+      xAxes: [{
+        type: 'time'
+      }],
+    },
+    time: {
+      parser: 'MM/DD/YYYY'
+    }
+  };
+}
 
 function convertDateToIndex(date, datesWithDataAvailable, defaultValueIfNotFound) {
   var extractParts = date.split('/'),
@@ -143,8 +168,7 @@ function getDataSource(which, data, options) {
 }
 
 function toPrecision(val, precision) {
-  var precisionHelper = Math.pow(10, precision);
-  return Math.floor(val * precisionHelper) / precisionHelper;
+  return parseFloat(val.toPrecision(precision));
 }
 
 function getRatioDataPoints(data1, data2) {
@@ -192,45 +216,66 @@ function createChartView(data, options) {
     endDateIndex = convertDateToIndex(options.endDate, datesWithDataAvailable, data.summary.config.dates.length - 1),
     data1 = getDataPoints('1', data, startDateIndex, endDateIndex, options),
     data2 = getDataPoints('2', data, startDateIndex, endDateIndex, options),
-    total1,
+    isLine2Different = options.event2 !== options.event1 ||
+      options.ua2 !== options.ua1 ||
+      options.loc2 !== options.loc1,
+    numDays = data1.length,
+    total1 = getTotal(data1),
     total2,
     averageRatio,
     datasets = [{
-      label: getLabel(options, '1') + '     ',
-      borderColor: 'rgba(255,110,0,.4)',
+      label: getLabel(options, '1'),
+      borderColor: 'rgba(255,110,0,.5)',
       backgroundColor: 'rgba(255,110,0,0.1)',
       fill: true,
       pointHitRadius: 10,
       data: data1 || [0],
       yAxisID: 'y-axis-1'
+    }, {
+      label: 'total: ' + total1 + ', average ' + toPrecision(total1 / numDays, 4),
+      backgroundColor: 'rgba(0,0,0,0)',
+      pointBorderColor: 'rgba(0,0,0,0)',
+      borderColor: 'rgba(255,110,0,.4)',
+      borderDash: [10, 5],
+      fill: false,
+      pointHitRadius: 0,
+      data: new Array(numDays).fill(toPrecision(total1 / numDays, 4)),
+      yAxisID: 'y-axis-1'
     }];
 
   // If event2 is different, add it as a dataset as well as ration between the two
-  if (options.event2 !== options.event1 ||
-      options.ua2 !== options.ua1 ||
-      options.loc2 !== options.loc1) {
-    datasets = datasets.concat({
-      label: getLabel(options, '2') + '     ',
+  if (isLine2Different) {
+    total2 = getTotal(data2);
+    datasets = datasets.concat([{
+      label: getLabel(options, '2'),
       backgroundColor: 'rgba(20,20,255,0.1)',
       borderColor: 'rgba(20,20,255,.4)',
       pointHitRadius: 10,
       data: data2 || [0],
       yAxisID: options.doStretch ? 'y-axis-2' : 'y-axis-1'
-    });
+    }, {
+      label: 'total: ' + total2 + ', average ' + toPrecision(total2 / numDays, 4),
+      backgroundColor: 'rgba(0,0,0,0)',
+      borderColor: 'rgba(20,20,255,.4)',
+      pointBorderColor: 'rgba(0,0,0,0)',
+      borderDash: [10, 5],
+      pointHitRadius: 0,
+      data: new Array(numDays).fill(toPrecision(total2 / numDays, 4)),
+      yAxisID: options.doStretch ? 'y-axis-2' : 'y-axis-1'
+    }]);
     if (data1 && data2) {
-      total1 = getTotal(data1);
-      total2 = getTotal(data2);
       averageRatio = toPrecision(total1 / total2, 4);
       datasets = datasets.concat({
-        label: 'ratio #1/#2    ', //[average = ' + (total1 / total2).toFixed(4) + ']',
+        label: 'ratio #1/#2', //[average = ' + (total1 / total2).toFixed(4) + ']',
         data: getRatioDataPoints(data1, data2),
         yAxisID: 'y-axis-ratio'
       }, {
-        label: 'average ratio',
+        label: 'average ratio ' + averageRatio,
         backgroundColor: 'rgba(0,0,0,0)',
         pointBorderColor: 'rgba(0,0,0,0)',
         borderDash: [10, 5],
-        data: new Array(data1.length).fill( averageRatio ),
+        pointHitRadius: 0,
+        data: new Array(numDays).fill( averageRatio ),
         yAxisID: 'y-axis-ratio'
       });
     }
@@ -246,7 +291,7 @@ function createChartView(data, options) {
   return new Chart(chartEl, {
     type: 'line',
     data: lineChartData,
-    options: OPTIONS
+    options: getChartConfig(options, isLine2Different)
   });
 }
 

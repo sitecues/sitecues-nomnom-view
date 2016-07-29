@@ -48,7 +48,7 @@ function getParameterMap() {
   var BEGINNING_OF_TIME = '01/26/2016';
   return {
     event1: getStringParameterByName('event1', 'badge-hovered'),
-    event2: getStringParameterByName('event2', 'page-visited::badge-visible'),
+    event2: getStringParameterByName('event2', 'page-visited::operational'),
     ua1: getStringParameterByName('ua1', '@supported'),
     ua2: getStringParameterByName('ua2', '@supported'),
     loc1: getStringParameterByName('loc1', '@long-running-customers'),
