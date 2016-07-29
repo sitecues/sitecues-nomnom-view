@@ -232,7 +232,7 @@ function createChartView(data, options) {
       data: data1 || [0],
       yAxisID: 'y-axis-1'
     }, {
-      label: 'total: ' + total1 + ', average ' + toPrecision(total1 / numDays, 4),
+      label: 'total: ' + total1.toLocaleString() + ' (' + toPrecision(total1 / numDays, 4).toLocaleString() + ' per day)',
       backgroundColor: 'rgba(0,0,0,0)',
       pointBorderColor: 'rgba(0,0,0,0)',
       borderColor: 'rgba(255,110,0,.4)',
@@ -254,7 +254,7 @@ function createChartView(data, options) {
       data: data2 || [0],
       yAxisID: options.doStretch ? 'y-axis-2' : 'y-axis-1'
     }, {
-      label: 'total: ' + total2 + ', average ' + toPrecision(total2 / numDays, 4),
+      label: 'total: ' + total2.toLocaleString() + ' (' + toPrecision(total2 / numDays, 4).toLocaleString() + ' per day)',
       backgroundColor: 'rgba(0,0,0,0)',
       borderColor: 'rgba(20,20,255,.4)',
       pointBorderColor: 'rgba(0,0,0,0)',
