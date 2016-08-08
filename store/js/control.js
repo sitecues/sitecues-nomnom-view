@@ -141,7 +141,11 @@ function onDataAvailable(data) {
   $('.ui-menu').on('click', onFormChange); // Our weird unsupported autocomplete hack isn't creating change events
 
   // Make native inputs have similar size and font
-  $('input').addClass("ui-widget ui-widget-content ui-corner-all");
+  $('input')
+    .addClass('ui-widget ui-widget-content ui-corner-all')
+    .on('focus', function(evt) {
+      evt.target.select();
+    });
 
   // Show form
   $('body').addClass('ready');
@@ -176,8 +180,13 @@ function initUserAgentOptions(userAgentTotals) {
     .combobox();
 }
 
+// Sort alphabetically except for panel-clicked (show at end)
+function eventNameComparator(event1, event2) {
+  return event1.replace(/^panel-clicked::/, 'zzz::') > event2.replace(/^panel-clicked::/, 'zzz::') ? 1 : -1;
+}
+
 function initEventOptions(allEventTotals) {
-  var allEventNames = Object.keys(allEventTotals).sort(),
+  var allEventNames = Object.keys(allEventTotals).sort(eventNameComparator),
     $eventNameSelects = $('.event-chooser');
 
   allEventNames.forEach(function(eventName) {
