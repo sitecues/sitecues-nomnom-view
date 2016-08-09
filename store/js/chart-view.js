@@ -107,16 +107,26 @@ function smoothData(origData, options) {
     smoothSize = options.doSmooth ? (options.doUltraSmooth ? 10 : 3) : 0, // +/- 3 days = 1 week vs +/- 10 days = 3 weeks
     movingAverage = [],
     numPointsAveragedPerPoint = 1 + smoothSize * 2; // Current point + number on each side
-  for (var index = 0; index < length; index++)
-  {
+  for (var index = 0; index < length; index++) {
     var total = origData[index],
-      smoothDistance = smoothSize;
+      smoothDistance = smoothSize,
+      numPointsAveragedThisPoint = numPointsAveragedPerPoint;
     while (smoothDistance > 0) {
-      total += origData[Math.max(0, index - smoothDistance)] +
-        origData[Math.min(length - 1, index + smoothDistance)];
+      if (index - smoothDistance >= 0) {
+        total += origData[index - smoothDistance];
+      }
+      else {
+        -- numPointsAveragedThisPoint;
+      }
+      if (index + smoothDistance < length) {
+        total += origData[index + smoothDistance];
+      }
+      else {
+        -- numPointsAveragedThisPoint;
+      }
       -- smoothDistance;
     }
-    movingAverage.push(toPrecision(total / numPointsAveragedPerPoint, 4));
+    movingAverage.push(toPrecision(total / numPointsAveragedThisPoint, 4));
   }
 
   return movingAverage;
