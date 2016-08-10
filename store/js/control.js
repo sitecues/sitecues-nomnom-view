@@ -403,7 +403,7 @@ function loadData(submitEvent) {
   var username = 'sitecues',
     password = $('#password').val(),
     // webServiceUrl = 'http://localhost:3001/all.json';
-    webServiceUrl = 'http://ec2-54-221-79-114.compute-1.amazonaws.com:3001/all.json';
+    webServiceUrl = window.location.protocol + '//' + window.location.hostname + ':3001/all.json';
 
   var xhr = new XMLHttpRequest();
   xhr.open("GET", webServiceUrl, true);
