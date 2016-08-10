@@ -11,7 +11,7 @@ function getChartConfig(options, isLine2Different) {
       beginAtZero: !options.doStretch,
       scaleLabel: {
         display: true,
-        fontColor: 'rgba(255,110,0,1)',
+        fontColor: 'rgba(20,20,255,1)',
         fontSize: 14,
         labelString: getLabel(options, '1')
       }
@@ -25,7 +25,7 @@ function getChartConfig(options, isLine2Different) {
         position: 'right',
         scaleLabel: {
           display: true,
-          fontColor: 'rgba(20,20,255,1)',
+          fontColor: 'rgba(255,110,0,1)',
           fontSize: 14,
           labelString: getLabel(options, '2')
         },
