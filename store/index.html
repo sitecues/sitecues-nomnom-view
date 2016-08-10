@@ -26,58 +26,61 @@
     </form>
     <img id="wait" src="./images/wait.svg"/>
     <p id="error"></p>
-    <form id="controller" action="javascript:void(0);">
+    <div id="controllerAndView">
+      <form id="controller" action="javascript:void(0);">
 
-      <div class="title">
-        <h1>
-          Sitecues<br>Metrics
-        </h1>
-        <button id="reset">Reset</button>
+        <div class="title">
+          <h1>
+            Sitecues<br>Metrics
+          </h1>
+          <button id="reset">Reset</button>
+        </div>
+
+        <fieldset>
+          <legend>Comparison</legend>
+          <div class="item">
+            <input type="checkbox" id="doEnableLine1"><label for="doEnableLine1">Line 1:</label>
+            <select size="1" id="event1" class="event-chooser"></select> using
+            <select size="1" id="ua1" class="ua-chooser"></select> on
+            <select size="1" id="loc1" class="location-chooser"></select>
+          </div>
+          <div class="item">
+            <input type="checkbox" id="doEnableLine2"><label for="doEnableLine2">Line 2:</label>
+            <select size="1" id="event2" class="event-chooser"></select> using
+            <select size="1" id="ua2" class="ua-chooser"></select> on
+            <select size="1" id="loc2" class="location-chooser"></select>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Date range</legend>
+          <div class="item">
+            <input id="startDate" class="date" type="text" value="01/26/2016"> to
+          </div>
+          <div>
+            <input id="endDate" class="date" type="text">
+          </div>
+        </fieldset>
+
+        <fieldset class="options-group">
+          <legend>Options</legend>
+          <div class="item" title="Smooth: Show moving average using 1 week spread">
+            <input id="doSmooth" type="checkbox"><label for="doSmooth">Smooth&nbsp;week</label>
+          </div>
+          <div class="item" title="Ultra smooth: Show moving average using 3 week spread">
+            <input id="doUltraSmooth" type="checkbox"><label for="doUltraSmooth">Smooth&nbsp;3&nbsp;weeks</label>&nbsp;
+          </div>
+          <div class="item" title="Stretch: Use independent y axes for line 1 and line 2, allowing easier trend line comparison">
+            <input id="doStretch" type="checkbox"><label for="doStretch">Stretch</label>&nbsp;
+          </div>
+        </fieldset>
+
+      </form>
+
+      <div id="chartContainer">
+        <canvas id="chartView"></canvas>
       </div>
 
-      <fieldset>
-        <legend>Comparison</legend>
-        <div class="item">
-          <input type="checkbox" id="doEnableLine1"><label for="doEnableLine1">Line 1:</label>
-          <select size="1" id="event1" class="event-chooser"></select> using
-          <select size="1" id="ua1" class="ua-chooser"></select> on
-          <select size="1" id="loc1" class="location-chooser"></select>
-        </div>
-        <div class="item">
-          <input type="checkbox" id="doEnableLine2"><label for="doEnableLine2">Line 2:</label>
-          <select size="1" id="event2" class="event-chooser"></select> using
-          <select size="1" id="ua2" class="ua-chooser"></select> on
-          <select size="1" id="loc2" class="location-chooser"></select>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Date range</legend>
-        <div class="item">
-          <input id="startDate" class="date" type="text" value="01/26/2016"> to
-        </div>
-        <div>
-          <input id="endDate" class="date" type="text">
-        </div>
-      </fieldset>
-
-      <fieldset class="options-group">
-        <legend>Options</legend>
-        <div class="item" title="Smooth: Show moving average using 1 week spread">
-          <input id="doSmooth" type="checkbox"><label for="doSmooth">Smooth&nbsp;week</label>
-        </div>
-        <div class="item" title="Ultra smooth: Show moving average using 3 week spread">
-          <input id="doUltraSmooth" type="checkbox"><label for="doUltraSmooth">Smooth&nbsp;3&nbsp;weeks</label>&nbsp;
-        </div>
-        <div class="item" title="Stretch: Use independent y axes for line 1 and line 2, allowing easier trend line comparison">
-          <input id="doStretch" type="checkbox"><label for="doStretch">Stretch</label>&nbsp;
-        </div>
-      </fieldset>
-
-    </form>
-
-    <div id="chartContainer">
-      <canvas id="chartView"></canvas>
     </div>
 
   </body>
