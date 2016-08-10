@@ -48,7 +48,6 @@ body.ready #wait {
 
 #controller {
   visibility: hidden;
-  display: flex;
 }
 
 body.ready #controller {
@@ -57,18 +56,35 @@ body.ready #controller {
 
 .title {
   display: inline-block;
-  width: 160px;
+  vertical-align: top;
+  margin-top: 6px;
+  padding-top: 0;
+  margin-right: 10px;
+  font-style: italic;
+  text-align: center;
 }
 
 h1 {
-  margin-right: 30px;
-  font-style: italic;
+  margin: 0;
+  font-size: 26px;
+}
+
+#reset {
+  margin-top: 7px;
+}
+
+#controller > * {
+  margin-bottom: 10px;
 }
 
 fieldset:not(:last-of-type) {
-  height: 6em;
-  display: inline-block;
   margin-right: 15px;
+}
+
+fieldset {
+  display: inline-block;
+  height: 6em;
+  vertical-align: top;
 }
 
 .options-group > label {
@@ -88,4 +104,8 @@ legend {
 
 .ui-widget {
   font-size: 16px !important;
+}
+
+.item {
+  white-space: nowrap;
 }

@@ -1,5 +1,7 @@
 // TODO clean up code
 
+'use strict';
+
 function getChartConfig(options, isLine2Different) {
   var yAxes = [
     {
@@ -67,6 +69,11 @@ function getChartConfig(options, isLine2Different) {
     },
     time: {
       parser: 'MM/DD/YYYY'
+    },
+    legend: {
+      labels: {
+        fontSize: 14
+      }
     }
   };
 }

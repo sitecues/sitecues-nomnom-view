@@ -1,3 +1,5 @@
+'use strict';
+
 $( function() {
   $.widget("custom.combobox", {
     _create: function () {

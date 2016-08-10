@@ -2,20 +2,20 @@
  * View controller
  */
 
-// TODO param for which lines to show
-// TODO fix bug where it no longer redraws on change
 // TODO alarms, e.g. Fullerton hiding badge in IE
 
+'use strict';
+
 // Get a parameter value fro the URL query
-function getStringParameterByName(name, defaultVal) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+function getStringParameterByName(name) {
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
     results = regex.exec(location.search);
-  return results === null ? (defaultVal || ''): decodeURIComponent(results[1].replace(/\+/g, " "));
+  return results ? decodeURIComponent(results[1].replace(/\+/g, ' ')) : undefined;
 }
 
-function getBooleanParameterByName(name, defaultVal) {
-  return getStringParameterByName(name, defaultVal) === 'true';
+function getBooleanParameterByName(name) {
+  var stringVal = getStringParameterByName(name);
+  return stringVal && stringVal === 'true';
 }
 
 function changeUrl(title, url) {
@@ -44,23 +44,44 @@ function updateUrlAndTitle(options) {
   changeUrl(title, href);
 }
 
-function getParameterMap() {
+function getDefaultParameterMap() {
   var BEGINNING_OF_TIME = '01/26/2016';
   return {
-    doEnableLine1: getBooleanParameterByName('doEnableLine1', 'true'),
-    doEnableLine2: getBooleanParameterByName('doEnableLine2', 'true'),
-    event1: getStringParameterByName('event1', 'badge-hovered'),
-    event2: getStringParameterByName('event2', 'page-visited::operational'),
-    ua1: getStringParameterByName('ua1', '@supported'),
-    ua2: getStringParameterByName('ua2', '<same>'),
-    loc1: getStringParameterByName('loc1', '@long-running-customers'),
-    loc2: getStringParameterByName('loc2', '<same>'),
-    startDate: getStringParameterByName('startDate', BEGINNING_OF_TIME),
-    endDate: getStringParameterByName('endDate', ''),
-    doSmooth: getBooleanParameterByName('doSmooth', 'true'),
-    doUltraSmooth: getBooleanParameterByName('doUltraSmooth', 'false'),
-    doStretch: getBooleanParameterByName('doStretch', 'false')
+    doEnableLine1: true,
+    doEnableLine2: true,
+    event1: 'badge-hovered',
+    event2: 'page-visited::operational',
+    ua1: '@supported',
+    ua2: '<same>',
+    loc1: '@long-running-customers',
+    loc2: '<same>',
+    startDate: BEGINNING_OF_TIME,
+    endDate: '',
+    doSmooth: true,
+    doUltraSmooth: false,
+    doStretch: false,
   }
+}
+
+function getParameterMap() {
+  var defaultParams = getDefaultParameterMap(),
+    params = {
+      doEnableLine1: getBooleanParameterByName('doEnableLine1'),
+      doEnableLine2: getBooleanParameterByName('doEnableLine2'),
+      event1: getStringParameterByName('event1'),
+      event2: getStringParameterByName('event2'),
+      ua1: getStringParameterByName('ua1'),
+      ua2: getStringParameterByName('ua2'),
+      loc1: getStringParameterByName('loc1'),
+      loc2: getStringParameterByName('loc2'),
+      startDate: getStringParameterByName('startDate'),
+      endDate: getStringParameterByName('endDate'),
+      doSmooth: getBooleanParameterByName('doSmooth'),
+      doUltraSmooth: getBooleanParameterByName('doUltraSmooth'),
+      doStretch: getBooleanParameterByName('doStretch')
+    };
+
+  return $.extend({}, defaultParams, params);
 }
 
 function getStringValue(id) {
@@ -113,8 +134,7 @@ function changeBooleanValue(id, isChecked) {
 }
 
 // Inits non-combo box defaults which have to be done in a different place
-function setFormValues() {
-  var paramMap = getParameterMap();
+function setFormValues(paramMap) {
   changeBooleanValue('doEnableLine1', paramMap.doEnableLine1);
   changeBooleanValue('doEnableLine2', paramMap.doEnableLine2);
   changeStringValue('event1', paramMap.event1);
@@ -137,25 +157,32 @@ function ensureValidCheckboxOptions() {
 }
 
 function onDataAvailable(data) {
-  initEventOptions(data.eventTotals.byNameOnly);
-  initUserAgentOptions(data.eventTotals.byUserAgentOnly);
-  initLocationOptions(data.siteInfo.locationToSiteIdMap, data.siteInfo.siteIdToLocationsMap);
-  initDatePickers();
-  setFormValues();
-  ensureValidCheckboxOptions();
+  initOptions(data);
+  populateFormWithValues();
+  listenForUserActions(data);
+  prettify();
+
+  // Show form
+  $('body').addClass('ready');
+
+  // Show current visualization
+  updateChartView(data, getChartOptions());
+}
+
+function listenForUserActions(data) {
+
+  function onHistoryChange() {
+    setFormValues(getParameterMap());
+    updateChartView(data, getChartOptions());
+  }
+
+  window.addEventListener('popstate', onHistoryChange);
 
   function onFormChange() {
     var options = getChartOptions();
     updateUrlAndTitle(options);
     updateChartView(data, options);
   }
-
-  function onHistoryChange() {
-    setFormValues();
-    updateChartView(data, getChartOptions());
-  }
-
-  window.addEventListener('popstate', onHistoryChange);
 
   // Listen for changes
   $(window).on('submit change', onFormChange);
@@ -169,21 +196,37 @@ function onDataAvailable(data) {
     }
   });
 
+  $('#reset').on('click', function() {
+    setFormValues(getDefaultParameterMap());
+  });
+}
+
+function prettify() {
+  // Use jQuery UI tooltips
+  $(document).tooltip();
+
+  // Use jQuery UI button
+  $('#reset').button();
+
   // Make native inputs have similar size and font
+  // Select text on focus
   $('input')
     .addClass('ui-widget ui-widget-content ui-corner-all')
     .on('focus', function(evt) {
       evt.target.select();
     });
+}
 
-  // Show form
-  $('body').addClass('ready');
+function populateFormWithValues() {
+  setFormValues(getParameterMap());
+  ensureValidCheckboxOptions();
+}
 
-  // Use jQuery UI tooltips
-  $(document).tooltip();
-
-  // Show current visualization
-  updateChartView(data, getChartOptions());
+function initOptions(data) {
+  initEventOptions(data.eventTotals.byNameOnly);
+  initUserAgentOptions(data.eventTotals.byUserAgentOnly);
+  initLocationOptions(data.siteInfo.locationToSiteIdMap, data.siteInfo.siteIdToLocationsMap);
+  initDatePickers();
 }
 
 function createOption(optionName, readableName) {
