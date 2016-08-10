@@ -49,8 +49,8 @@ function getDefaultParameterMap() {
   return {
     doEnableLine1: true,
     doEnableLine2: true,
-    event1: 'badge-hovered',
-    event2: 'page-visited::operational',
+    event1: 'page-visited::operational',
+    event2: 'badge-hovered',
     ua1: '@supported',
     ua2: '<same>',
     loc1: '@long-running-customers',

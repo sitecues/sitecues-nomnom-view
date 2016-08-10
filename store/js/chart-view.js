@@ -186,8 +186,7 @@ function toPrecision(val, precision) {
 
 function getRatioDataPoints(data1, data2, options) {
   var dataPoints = data1.map(function(value, index) {
-    var value2 = data2[index];
-    return value2 ? toPrecision(value / data2[index], 4) : null; // null means skip this data point -- no data
+    return value ? toPrecision(data2[index] / value, 4) : null; // null means skip this data point -- no data
   });
   return smoothData(dataPoints, options);
 }
@@ -242,8 +241,8 @@ function createChartView(data, options) {
     if (options.doEnableLine1) {
       datasets = datasets.concat([{
         label: getLabel(options, '1'),
-        borderColor: 'rgba(255,110,0,.5)',
-        backgroundColor: 'rgba(255,110,0,0.1)',
+        backgroundColor: 'rgba(20,20,255,0.1)',
+        borderColor: 'rgba(20,20,255,.4)',
         fill: true,
         pointHitRadius: 10,
         data: data1 || [0],
@@ -252,7 +251,7 @@ function createChartView(data, options) {
         label: 'total: ' + total1.toLocaleString() + ' (' + toPrecision(total1 / numDays, 4).toLocaleString() + ' per day)',
         backgroundColor: 'rgba(0,0,0,0)',
         pointBorderColor: 'rgba(0,0,0,0)',
-        borderColor: 'rgba(255,110,0,.4)',
+        borderColor: 'rgba(20,20,255,.4)',
         borderDash: [10, 5],
         fill: false,
         pointHitRadius: 0,
@@ -266,15 +265,15 @@ function createChartView(data, options) {
     total2 = getTotal(data2);
     datasets = datasets.concat([{
       label: getLabel(options, '2'),
-      backgroundColor: 'rgba(20,20,255,0.1)',
-      borderColor: 'rgba(20,20,255,.4)',
+      borderColor: 'rgba(255,110,0,.5)',
+      backgroundColor: 'rgba(255,110,0,0.1)',
       pointHitRadius: 10,
       data: data2 || [0],
       yAxisID: options.doStretch ? 'y-axis-2' : 'y-axis-1'
     }, {
       label: 'total: ' + total2.toLocaleString() + ' (' + toPrecision(total2 / numDays, 4).toLocaleString() + ' per day)',
       backgroundColor: 'rgba(0,0,0,0)',
-      borderColor: 'rgba(20,20,255,.4)',
+      borderColor: 'rgba(255,110,0,.4)',
       pointBorderColor: 'rgba(0,0,0,0)',
       borderDash: [10, 5],
       pointHitRadius: 0,
