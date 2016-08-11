@@ -1,8 +1,12 @@
 body {
-  font-family: Verdana,Arial,sans-serif;;
-  font-size: 16px;
   height: 100%;
 }
+
+body, .ui-widget {
+  font-family: Verdana,Arial,sans-serif;;
+  font-size: 15px !important;
+}
+
 
 #security {
   position: fixed;
@@ -79,7 +83,7 @@ h1 {
 }
 
 fieldset:not(:last-of-type) {
-  margin-right: 15px;
+  margin-right: 10px;
 }
 
 fieldset {
@@ -101,10 +105,6 @@ legend {
   height: 27px;
   margin-bottom: 2px;
   width: 110px;
-}
-
-.ui-widget {
-  font-size: 16px !important;
 }
 
 .item {
