@@ -6,6 +6,8 @@
 
 'use strict';
 
+var SAME_OPTION_NAME = '<same>';
+
 // Get a parameter value fro the URL query
 function getStringParameterByName(name) {
   var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
@@ -52,9 +54,9 @@ function getDefaultParameterMap() {
     event1: 'page-visited::operational',
     event2: 'badge-hovered',
     ua1: '@supported',
-    ua2: '<same>',
+    ua2: SAME_OPTION_NAME,
     loc1: '@long-running-customers',
-    loc2: '<same>',
+    loc2: SAME_OPTION_NAME,
     startDate: BEGINNING_OF_TIME,
     endDate: '',
     doSmooth: true,
@@ -92,7 +94,7 @@ function getBooleanValue(id) {
   return $('#' + id).is(':checked');
 }
 
-function getChartOptions() {
+function getChartOptions(doConvertSame) {
   var
     event1 = getStringValue('event1'),
     event2 = getStringValue('event2'),
@@ -105,17 +107,31 @@ function getChartOptions() {
     doEnableLine1: getBooleanValue('doEnableLine1'),
     doEnableLine2: getBooleanValue('doEnableLine2'),
     event1: event1,
-    event2: event2 === '<same>' ? event1 : event2,
+    event2: doConvertSame && event2 === SAME_OPTION_NAME ? event1 : event2,
     ua1: ua1,
-    ua2: ua2 === '<same>' ? ua1 : ua2,
+    ua2: doConvertSame && ua2 === SAME_OPTION_NAME ? ua1 : ua2,
     loc1: loc1,
-    loc2: loc2 === '<same>' ? loc1 : loc2,
+    loc2: doConvertSame && loc2 === SAME_OPTION_NAME ? loc1 : loc2,
     startDate: getStringValue('startDate'),
     endDate: getStringValue('endDate'),
     doSmooth: getBooleanValue('doSmooth'),
     doUltraSmooth: getBooleanValue('doUltraSmooth'),
     doStretch: getBooleanValue('doStretch')
   };
+}
+
+function convertSameOptions(chartOptions) {
+  var newOptions = $.extend({}, chartOptions);
+  if (newOptions.event2 === SAME_OPTION_NAME) {
+    newOptions.event2 = newOptions.event1;
+  }
+  if (newOptions.ua2 === SAME_OPTION_NAME) {
+    newOptions.ua2 = newOptions.ua1;
+  }
+  if (newOptions.loc2 === SAME_OPTION_NAME) {
+    newOptions.loc2 = newOptions.loc1;
+  }
+  return newOptions;
 }
 
 function changeStringValue(id, val) {
@@ -125,8 +141,10 @@ function changeStringValue(id, val) {
     var $possibleInput = $formControl.next().children().first();
     if ($possibleInput.is('input')) {
       $possibleInput.val(val);
+      $possibleInput.css('color', val === SAME_OPTION_NAME ? 'green' : ''); // Color <same> as green
     }
   }
+
 }
 
 function changeBooleanValue(id, isChecked) {
@@ -166,14 +184,48 @@ function onDataAvailable(data) {
   $('body').addClass('ready');
 
   // Show current visualization
-  updateChartView(data, getChartOptions());
+  updateChartView(data, convertSameOptions(getChartOptions()));
+}
+
+function getSelectFromTextField(textField) {
+  var $select = $(textField).parent().parent().find('select');
+  return $select[0];
+}
+
+// Ratios make sense when the second line only changes one variable
+function changeOtherLine2ItemsToSame(event) {
+  var selectElem = getSelectFromTextField(event.target),
+    selectId = selectElem.id;
+  if (!selectId) {
+    return;
+  }
+
+  var currVal = $('#' + selectId).val();
+  if (currVal === SAME_OPTION_NAME) {
+    return;
+  }
+
+  $(event.target).css('color', '');
+
+  if (selectId === 'event2') {
+    changeStringValue('ua2', SAME_OPTION_NAME);
+    changeStringValue('loc2', SAME_OPTION_NAME);
+  }
+  else if (selectId === 'ua2') {
+    changeStringValue('event2', SAME_OPTION_NAME);
+    changeStringValue('loc2', SAME_OPTION_NAME);
+  }
+  else if (selectId === 'loc2') {
+    changeStringValue('event2', SAME_OPTION_NAME);
+    changeStringValue('ua2', SAME_OPTION_NAME);
+  }
 }
 
 function listenForUserActions(data) {
 
   function onHistoryChange() {
     setFormValues(getParameterMap());
-    updateChartView(data, getChartOptions());
+    updateChartView(data, convertSameOptions(getChartOptions()));
   }
 
   window.addEventListener('popstate', onHistoryChange);
@@ -181,12 +233,8 @@ function listenForUserActions(data) {
   function onFormChange() {
     var options = getChartOptions();
     updateUrlAndTitle(options);
-    updateChartView(data, options);
+    updateChartView(data, convertSameOptions(options));
   }
-
-  // Listen for changes
-  $(window).on('submit change', onFormChange);
-  $('.ui-menu').on('click', onFormChange); // Our weird unsupported autocomplete hack isn't creating change events
 
   // If ultra smooth is checked, smooth must be as well
   $('#doUltraSmooth').on('click', ensureValidCheckboxOptions);
@@ -198,6 +246,13 @@ function listenForUserActions(data) {
 
   $('#reset').on('click', function() {
     setFormValues(getDefaultParameterMap());
+  });
+
+  $('#line2-controller').on('autocompleteselect', changeOtherLine2ItemsToSame);
+
+  // Listen for changes
+  $(window).on('submit change autocompleteselect', function() {
+    setTimeout(onFormChange, 0);  // Wait until <same> set on other line 2 items
   });
 }
 
@@ -234,11 +289,20 @@ function createOption(optionName, readableName) {
     .attr('value', optionName).text(readableName || optionName);
 }
 
+// Make sure IE10 > IE9
+function alphaNumComparator(a, b) {
+  var END_DIGIT_REGEX = /(\w)(\d)$/;
+  function leadingZeroForEndDigit(s) {
+    return s.replace(END_DIGIT_REGEX, '$10$2');
+  }
+  return leadingZeroForEndDigit(a) > leadingZeroForEndDigit(b) ? 1 : -1;
+}
+
 function initUserAgentOptions(userAgentTotals) {
-  var userAgentNames = Object.keys(userAgentTotals).sort(),
+  var userAgentNames = Object.keys(userAgentTotals).sort(alphaNumComparator),
     $uaSelects = $('.ua-chooser');
 
-  $('#ua2').append(createOption('<same>'));
+  $('#ua2').append(createOption(SAME_OPTION_NAME));
 
   userAgentNames.forEach(function(eventName) {
     $uaSelects.each(function() {
@@ -262,7 +326,7 @@ function initEventOptions(allEventTotals) {
   var allEventNames = Object.keys(allEventTotals).sort(eventNameComparator),
     $eventNameSelects = $('.event-chooser');
 
-  $('#event2').append(createOption('<same>'));
+  $('#event2').append(createOption(SAME_OPTION_NAME));
 
   allEventNames.forEach(function(eventName) {
     $eventNameSelects.each(function() {
@@ -353,7 +417,7 @@ function initLocationOptions(locationToSiteIdMap, siteIdToLocationsMap) {
     PAGE_VISIT_THRESHOLD = 100, // Don't list locations with fewer than this # of page visits
     SITE_ID_REGEX = /^#s-[\da-f\?]{8}$/;   // Currently no use
 
-  $('#loc2').append(createOption('<same>'));
+  $('#loc2').append(createOption(SAME_OPTION_NAME));
 
   allLocations.forEach(function(locationName) {
     var readableName = locationName,
