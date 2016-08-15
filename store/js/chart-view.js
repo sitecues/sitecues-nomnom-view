@@ -294,7 +294,7 @@ function createChartView(data, options) {
   if (doEnableRatioLine) {
     averageRatio = total1 ? toPrecision(total2 / total1, 4) : null;
     datasets = datasets.concat({
-      label: 'ratio #1/#2', //[average = ' + (total1 / total2).toFixed(4) + ']',
+      label: 'ratio #2/#1', //[average = ' + (total1 / total2).toFixed(4) + ']',
       data: getRatioDataPoints(data1, data2, options),
       yAxisID: 'y-axis-ratio'
     }, {
