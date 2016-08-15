@@ -5,23 +5,26 @@
 .custom-combobox-toggle {
   position: absolute;
   top: -2px;
-  height: 29px;
-  margin-left: -1px;
+  height: 28px;
+  margin-left: -3px;
   padding: 0;
 }
 .custom-combobox-input {
   margin: 0;
-  padding: 5px 10px;
+  padding: 5px 6px;
+}
+.ui-button-icon-only {
+  width: 1.6em !important;
 }
 
 .event-container .custom-combobox-input {
-  width: 210px;
+  width: 170px;
 }
 
 .ua-container .custom-combobox-input {
-  width: 120px;
+  width: 80px;
 }
 
 .loc-container .custom-combobox-input {
-  width: 160px;
+  width: 150px;
 }

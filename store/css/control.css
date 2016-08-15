@@ -71,7 +71,7 @@ body.ready #controller {
 
 h1 {
   margin: 0;
-  font-size: 26px;
+  font-size: 24px;
 }
 
 #reset {
@@ -82,13 +82,13 @@ h1 {
   margin-bottom: 10px;
 }
 
-fieldset:not(:last-of-type) {
-  margin-right: 10px;
+fieldset {
+  margin-right: 7px;
 }
 
 fieldset {
   display: inline-block;
-  height: 6em;
+  height: 6.5em;
   vertical-align: top;
 }
 
@@ -98,7 +98,7 @@ fieldset {
 }
 
 legend {
-  margin-bottom: .5em;
+  margin-bottom: .3em;
 }
 
 .date {
@@ -111,10 +111,13 @@ legend {
   white-space: nowrap;
 }
 
-#label-line-1 {
+.line1 {
   color: rgb(20,20,255);
 }
 
-#label-line-2 {
+.line2 {
   color: rgb(255,110,0);
+}
+.date {
+  width: 10ch;
 }

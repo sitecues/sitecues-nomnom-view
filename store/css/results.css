@@ -1,0 +1,38 @@
+.results {
+  margin-top: .5em;
+  border: 2px groove threedface;  /* Border should look similar to fieldsets */
+  display: inline-block;
+  height: 7em;
+  vertical-align: top;
+  padding: 0 8px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,td {
+  text-align: right;
+  font-weight: normal;
+}
+
+#ratio-label {
+  text-align: left;
+}
+
+thead > tr > th {
+  padding: .4em 0;
+  font-weight: bold;
+}
+
+td {
+  padding-left: .8em;
+}
+
+tr.line1 {
+  border-bottom: 1px solid gray;
+}
+
+.line2 > td {
+  padding-bottom: .4em;
+}

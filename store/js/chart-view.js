@@ -233,6 +233,17 @@ function getLabel(options, which) {
   return labelParts.join(' ');
 }
 
+function updateSummaryBox(total1, total2, avg1, avg2, avgRatio) {
+  function toStr(num) {
+    return num ? Math.round(num).toLocaleString() : '';
+  }
+  $('#total1').text(toStr(total1));
+  $('#total2').text(toStr(total2));
+  $('#avg1').text(toStr(avg1));
+  $('#avg2').text(toStr(avg2));
+  $('#avg-ratio').text(avgRatio ? avgRatio.toPrecision(3): '');
+}
+
 function createChartView(data, options) {
   var
     datesWithDataAvailable = data.summary.config.dates,
@@ -242,8 +253,10 @@ function createChartView(data, options) {
     data2 = getDataPoints('2', data, startDateIndex, endDateIndex, options),
     numDays = data1.length || data2.length,
     total1 = getTotal(data1),
-    total2,
-    averageRatio,
+    total2 = getTotal(data2),
+    avg1 = total1 / numDays,
+    avg2 = total2 / numDays,
+    avgRatio = total1 ? total2 / total1 : 0,
     datasets = [],
     doEnableLine1 = options.doEnableLine1 && data1.length,
     doEnableLine2 = options.doEnableLine2 && data2.length,
@@ -251,10 +264,13 @@ function createChartView(data, options) {
       (options.event2 !== options.event1 ||
       options.ua2 !== options.ua1 ||
       options.loc2 !== options.loc1),
+    doEnableAverageLines = false,
     yAxis2;
 
+  updateSummaryBox(total1, total2, avg1, avg2, avgRatio);
+
   if (doEnableLine1) {
-    datasets = datasets.concat([{
+    datasets = datasets.concat({
       label: getLabel(options, '1'),
       backgroundColor: 'rgba(20,20,255,0.1)',
       borderColor: 'rgba(20,20,255,.4)',
@@ -262,57 +278,64 @@ function createChartView(data, options) {
       pointHitRadius: 10,
       data: data1 || [0],
       yAxisID: 'y-axis-1'
-    }, {
-      label: 'average: ' + toPrecision(total1 / numDays, 4).toLocaleString() + ' (' + total1.toLocaleString()  + ' total)     ',
-      backgroundColor: 'rgba(0,0,0,0)',
-      pointBorderColor: 'rgba(0,0,0,0)',
-      borderColor: 'rgba(20,20,255,.4)',
-      borderDash: [10, 5],
-      fill: false,
-      pointHitRadius: 0,
-      data: new Array(numDays).fill(toPrecision(total1 / numDays, 4)),
-      yAxisID: 'y-axis-1'
-    }]);
+    });
+    if (doEnableAverageLines) {
+      datasets = datasets.concat({
+        label: 'average: ' + toPrecision(total1 / numDays, 4).toLocaleString() + ' (' + total1.toLocaleString() + ' total)     ',
+        backgroundColor: 'rgba(0,0,0,0)',
+        pointBorderColor: 'rgba(0,0,0,0)',
+        borderColor: 'rgba(20,20,255,.4)',
+        borderDash: [10, 5],
+        fill: false,
+        pointHitRadius: 0,
+        data: new Array(numDays).fill(toPrecision(avg1, 4)),
+        yAxisID: 'y-axis-1'
+      });
+    }
   }
 
   // If event2 is different, add it as a dataset as well as ration between the two
   if (doEnableLine2) {
-    total2 = getTotal(data2);
     yAxis2 = (options.doStretch || !doEnableLine1) ? 'y-axis-2' : 'y-axis-1';
-    datasets = datasets.concat([{
+    datasets = datasets.concat({
       label: getLabel(options, '2'),
       borderColor: 'rgba(255,110,0,.5)',
       backgroundColor: 'rgba(255,110,0,0.1)',
       pointHitRadius: 10,
       data: data2 || [0],
       yAxisID: yAxis2
-    }, {
-      label: 'average: ' + toPrecision(total2 / numDays, 4).toLocaleString() + ' (' + total2.toLocaleString() + ' total)     ',
-      backgroundColor: 'rgba(0,0,0,0)',
-      borderColor: 'rgba(255,110,0,.4)',
-      pointBorderColor: 'rgba(0,0,0,0)',
-      borderDash: [10, 5],
-      pointHitRadius: 0,
-      data: new Array(numDays).fill(toPrecision(total2 / numDays, 4)),
-      yAxisID: yAxis2
-    }]);
+    });
+    if (doEnableAverageLines) {
+      datasets = datasets.concat({
+        label: 'average: ' + toPrecision(total2 / numDays, 4).toLocaleString() + ' (' + total2.toLocaleString() + ' total)     ',
+        backgroundColor: 'rgba(0,0,0,0)',
+        borderColor: 'rgba(255,110,0,.4)',
+        pointBorderColor: 'rgba(0,0,0,0)',
+        borderDash: [10, 5],
+        pointHitRadius: 0,
+        data: new Array(numDays).fill(toPrecision(avg2, 4)),
+        yAxisID: yAxis2
+      });
+    }
   }
 
   if (doEnableRatioLine) {
-    averageRatio = total1 ? toPrecision(total2 / total1, 4) : null;
     datasets = datasets.concat({
       label: 'ratio #2/#1', //[average = ' + (total1 / total2).toFixed(4) + ']',
       data: getRatioDataPoints(data1, data2, options),
       yAxisID: 'y-axis-ratio'
-    }, {
-      label: 'average ratio ' + averageRatio,
-      backgroundColor: 'rgba(0,0,0,0)',
-      pointBorderColor: 'rgba(0,0,0,0)',
-      borderDash: [10, 5],
-      pointHitRadius: 0,
-      data: new Array(numDays).fill( averageRatio ),
-      yAxisID: 'y-axis-ratio'
     });
+    if (doEnableAverageLines) {
+      datasets = datasets.concat({
+        label: 'average ratio ' + avgRatio,
+        backgroundColor: 'rgba(0,0,0,0)',
+        pointBorderColor: 'rgba(0,0,0,0)',
+        borderDash: [10, 5],
+        pointHitRadius: 0,
+        data: new Array(numDays).fill(avgRatio),
+        yAxisID: 'y-axis-ratio'
+      });
+    }
   }
 
   var

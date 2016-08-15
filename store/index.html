@@ -4,6 +4,7 @@
     <title>Sitecues metrics viewer</title>
     <link rel="stylesheet" href="./css/chart-view.css"/>
     <link rel="stylesheet" href="./css/control.css"/>
+    <link rel="stylesheet" href="./css/results.css"/>
     <link rel="stylesheet" href="./css/autocomplete-combo.css"/>
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
@@ -39,13 +40,13 @@
         <fieldset>
           <legend>Metrics selection</legend>
           <div class="item" id="line1-controller">
-            <input type="checkbox" id="doEnableLine1"><label id="label-line-1" for="doEnableLine1">Line 1:</label>
+            <input type="checkbox" id="doEnableLine1"><label id="label-line-1" class="line1" for="doEnableLine1">Line 1:</label>
             <span class="event-container"><select size="1" id="event1" class="event-chooser"></select></span> using
             <span class="ua-container"><select size="1" id="ua1" class="ua-chooser"></select></span> on
             <span class="loc-container"><select size="1" id="loc1" class="location-chooser"></select></span>
           </div>
           <div class="item" id="line2-controller">
-            <input type="checkbox" id="doEnableLine2"><label id="label-line-2" for="doEnableLine2">Line 2:</label>
+            <input type="checkbox" id="doEnableLine2"><label id="label-line-2" class="line2" for="doEnableLine2">Line 2:</label>
             <span class="event-container"><select size="1" id="event2" class="event-chooser"></select></span> using
             <span class="ua-container"><select size="1" id="ua2" class="ua-chooser"></select></span> on
             <span class="loc-container"><select size="1" id="loc2" class="location-chooser"></select></span>
@@ -71,10 +72,35 @@
             <input id="doUltraSmooth" type="checkbox"><label for="doUltraSmooth">Smooth&nbsp;3&nbsp;weeks</label>&nbsp;
           </div>
           <div class="item" title="Stretch: Use independent y axes for line 1 and line 2, allowing easier trend line comparison">
-            <input id="doStretch" type="checkbox"><label for="doStretch">Independent y axes</label>&nbsp;
+            <input id="doStretch" type="checkbox"><label for="doStretch">Independent y</label>&nbsp;
           </div>
         </fieldset>
 
+        <div class="results">
+          <table>
+            <thead>
+              <tr>
+                <td></td>
+                <th>Total</th>
+                <th>Avg</th>
+              </tr>
+            </thead>
+            <tr class="line1">
+              <th>#1</th>
+              <td id="total1"></td>
+              <td id="avg1"></td>
+            </tr>
+            <tr class="line2">
+              <th>#2</th>
+              <td id="total2"></td>
+              <td id="avg2"></td>
+            </tr>
+            <tr>
+              <th colspan="2" id="ratio-label">Ratio #2/#1</th>
+              <td id="avg-ratio"></td>
+            </tr>
+          </table>
+        </div>
       </form>
 
       <div id="chartContainer">
