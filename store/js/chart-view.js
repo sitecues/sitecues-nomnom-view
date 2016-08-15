@@ -6,10 +6,11 @@ function getChartConfig(options, doEnableRatioLine, doEnableLine1, doEnableLine2
   var yAxes = [],
     doUseSameScaleForAllEvents = doEnableLine1 && !options.doStretch,
     doUseSecondAxis = doEnableLine2 && !doUseSameScaleForAllEvents,
-    useThousandsSeparator = {
+    tickConfig = {
       callback: function(value, index, values) {
         return value.toLocaleString();
-      }
+      },
+      beginAtZero: true
     };
 
   if (doEnableLine1) {
@@ -17,8 +18,7 @@ function getChartConfig(options, doEnableRatioLine, doEnableLine1, doEnableLine2
       type: 'linear',
       id: 'y-axis-1',
       position: 'left',
-      beginAtZero: !options.doStretch,
-      ticks: useThousandsSeparator,
+      ticks: tickConfig,
       scaleLabel: {
         display: true,
         fontColor: doUseSameScaleForAllEvents ? 'black' : 'rgba(20,20,255,1)',
@@ -32,8 +32,7 @@ function getChartConfig(options, doEnableRatioLine, doEnableLine1, doEnableLine2
     yAxes = yAxes.concat({
       type: 'linear',
       position: 'left',
-      beginAtZero: !options.doStretch,
-      ticks: useThousandsSeparator,
+      ticks: tickConfig,
       scaleLabel: {
         display: true,
         fontColor: 'rgba(255,110,0,1)',
@@ -53,8 +52,6 @@ function getChartConfig(options, doEnableRatioLine, doEnableLine1, doEnableLine2
       type: 'linear',
       position: 'right',
       // display: false,
-      beginAtZero: true,
-      min: 0,
       scaleLabel: {
         display: true,
         labelString: 'ratio',
