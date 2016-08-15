@@ -317,9 +317,14 @@ function initUserAgentOptions(userAgentTotals) {
     .combobox();
 }
 
-// Sort alphabetically except for panel-clicked (show at end)
+// Sort alphabetically except for key-command or panel-clicked (show at end)
 function eventNameComparator(event1, event2) {
-  return event1.replace(/^panel-clicked::/, 'zzz::') > event2.replace(/^panel-clicked::/, 'zzz::') ? 1 : -1;
+  function getEventName(eventName) {
+    return eventName
+      .replace(/^key-command::/, 'zzy::')
+      .replace(/^panel-clicked::/, 'zzz::');
+  }
+  return getEventName(event1) > getEventName(event2) ? 1 : -1;
 }
 
 function initEventOptions(allEventTotals) {

@@ -3,7 +3,14 @@
 'use strict';
 
 function getChartConfig(options, doEnableRatioLine, doEnableLine1, doEnableLine2) {
-  var yAxes = [];
+  var yAxes = [],
+    doUseSameScaleForAllEvents = doEnableLine1 && !options.doStretch,
+    doUseSecondAxis = doEnableLine2 && !doUseSameScaleForAllEvents,
+    useThousandsSeparator = {
+      callback: function(value, index, values) {
+        return value.toLocaleString();
+      }
+    };
 
   if (doEnableLine1) {
     yAxes = yAxes.concat([{
@@ -11,19 +18,22 @@ function getChartConfig(options, doEnableRatioLine, doEnableLine1, doEnableLine2
       id: 'y-axis-1',
       position: 'left',
       beginAtZero: !options.doStretch,
+      ticks: useThousandsSeparator,
       scaleLabel: {
         display: true,
-        fontColor: 'rgba(20,20,255,1)',
+        fontColor: doUseSameScaleForAllEvents ? 'black' : 'rgba(20,20,255,1)',
         fontSize: 14,
-        labelString: getLabel(options, '1')
+        labelString: doUseSameScaleForAllEvents ? 'Events' : getLabel(options, '1')
       }
     }]);
   }
 
-  if (doEnableLine2 && (options.doStretch || !doEnableLine1)) {
+  if (doUseSecondAxis) {
     yAxes = yAxes.concat({
       type: 'linear',
-      position: 'right',
+      position: 'left',
+      beginAtZero: !options.doStretch,
+      ticks: useThousandsSeparator,
       scaleLabel: {
         display: true,
         fontColor: 'rgba(255,110,0,1)',

@@ -110,3 +110,11 @@ legend {
 .item {
   white-space: nowrap;
 }
+
+#label-line-1 {
+  color: rgb(20,20,255);
+}
+
+#label-line-2 {
+  color: rgb(255,110,0);
+}
