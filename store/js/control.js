@@ -256,6 +256,7 @@ function listenForUserActions(data) {
   });
 }
 
+// Make the UI more attractive and visually consistent
 function prettify() {
   // Use jQuery UI tooltips
   $(document).tooltip();
@@ -384,10 +385,8 @@ function getReadableNameForLocation(locationToPageVisitsMap, location, totalPage
   }
 
   function addPageVisits(locationName) {
-    return locationName.split(' ')[0] + ':' + locationToPageVisitsMap[locationName];
+    return locationName.split(' ')[0] + ':' + locationToPageVisitsMap[locationName].toLocaleString();
   }
-
-
 
   var locationNames = [];
   if (locationToPageVisitsMap && !isTLDOrGroup(location)) {
@@ -397,7 +396,7 @@ function getReadableNameForLocation(locationToPageVisitsMap, location, totalPage
   }
 
   if (!locationNames.length) {
-    return location + ':' + totalPageVisits;
+    return location + ':' + totalPageVisits.toLocaleString();
   }
 
   return location + ' => ' + locationNames.map(addPageVisits).join(', ');
