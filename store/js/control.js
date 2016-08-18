@@ -51,7 +51,7 @@ function getDefaultParameterMap() {
   return {
     doEnableLine1: true,
     doEnableLine2: true,
-    event1: 'page-visited::operational',
+    event1: 'page-visited::nonbounce',
     event2: 'badge-hovered',
     ua1: '@supported',
     ua2: SAME_OPTION_NAME,

@@ -121,3 +121,7 @@ legend {
 .date {
   width: 10ch;
 }
+
+input[type="checkbox"] {
+  margin-left: 0;
+}
