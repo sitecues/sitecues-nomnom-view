@@ -6,56 +6,69 @@
 
 class AbController extends CommonController {
   getDefaultParameterMap() {
-    var BEGINNING_OF_TIME = '01/26/2016';
     return {
-      test: '',
+      testName: 'Test name',
       event1: 'page-visited::nonbounce',
       event2: 'badge-hovered',
-      doSmooth: true,
+      doSmooth: true
     }
   }
 
   getParameterMap() {
-    var defaultParams = getDefaultParameterMap(),
+    var defaultParams = this.getDefaultParameterMap(),
       params = {
-        test:  getStringParameterByName('test'),
-        event1: getStringParameterByName('event1'),
-        event2: getStringParameterByName('event2'),
-        doSmooth: getBooleanParameterByName('doSmooth')
+        testName:  this.getStringParameterByName('testName'),
+        event1: this.getStringParameterByName('event1'),
+        event2: this.getStringParameterByName('event2'),
+        doSmooth: this.getBooleanParameterByName('doSmooth')
       };
 
     return $.extend({}, defaultParams, params);
   }
 
-  getChartOptions(doConvertSame) {
-    var
-      test = getStringValue('test'),
-      event1 = getStringValue('event1'),
-      event2 = getStringValue('event2');
-
+  getChartOptions() {
     return {
-      test: getStringValue('test'),
-      event1: getStringValue('event1'),
-      event2: getStringValue('event2'),
-      doSmooth: getBooleanValue('doSmooth')
+      testName: this.getStringValue('testName'),
+      event1: this.getStringValue('event1'),
+      event2: this.getStringValue('event2'),
+      doSmooth: this.getBooleanValue('doSmooth')
     };
+  }
+
+  getCleanedOptions(chartOptions) {
+    return chartOptions;
   }
 
   // Inits non-combo box defaults which have to be done in a different place
   setFormValues(paramMap) {
-    changeBooleanValue('test', paramMap.test);
-    changeStringValue('event1', paramMap.event1);
-    changeStringValue('event2', paramMap.event2);
-    changeBooleanValue('doSmooth', paramMap.doSmooth);
+    this.changeBooleanValue('testName', paramMap.testName);
+    this.changeStringValue('event1', paramMap.event1);
+    this.changeStringValue('event2', paramMap.event2);
+    this.changeBooleanValue('doSmooth', paramMap.doSmooth);
   }
 
-  initOptions(data) {
-    super.initOptions(data);
-    initAbTestNames(data);
+  initOptions() {
+    this.initEventOptions(data.eventTotals.byNameOnly);
+    this.initAbTestNames((data.abTest && data.abTest.dateInfo) || {});
   }
 
-  initAbTestNames(data) {
+  initAbTestNames(dateInfo) {
+    function getTestNameText(testName) {
+      const ourTest = dateInfo[testName];
+      return testName + ' (' + convertIndexToDate(ourTest.startIndex) + ' - ' + convertIndexToDate(ourTest.endIndex) + ')';
+    }
 
+    var allTestNames = Object.keys(dateInfo),
+      $testNameSelect = $('#testName');
+
+    allTestNames.forEach((testName) => {
+      $testNameSelect.each((index, elem) => {
+        var option = this.createOption(getTestNameText(testName));
+        $(elem).append(option);
+      });
+    });
+
+    $testNameSelect.combobox();
   }
 }
 

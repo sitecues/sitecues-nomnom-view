@@ -88,29 +88,9 @@ function getChartConfig(options, doEnableRatioLine, doEnableLine1, doEnableLine2
   };
 }
 
-function convertDateToIndex(date, datesWithDataAvailable, defaultValueIfNotFound) {
-  var extractParts = date.split('/'),
-    month = extractParts[0],
-    day = extractParts[1],
-    year = extractParts[2],
-    dateAsInt = parseInt(year + month + day),
-    dateIndex = datesWithDataAvailable.indexOf(dateAsInt);
-
-  return dateIndex < 0 ? defaultValueIfNotFound : dateIndex;
-}
-
-function getDateLabels(startDateIndex, endDateIndex, datesWithDataAvailable) {
+function getDateLabels(startDateIndex, endDateIndex) {
   var labels = [],
     index = startDateIndex;
-
-  function convertIndexToDate(dateIndex) {
-    var dateAsYYYYMMDD = datesWithDataAvailable[dateIndex].toString(),
-      year = dateAsYYYYMMDD.substr(2, 2),
-      month = dateAsYYYYMMDD.substr(4, 2),
-      day = dateAsYYYYMMDD.substr(6, 2);
-
-    return month + '/' + day + '/' + year;
-  }
 
   while (index <= endDateIndex) {
     labels.push(convertIndexToDate(index ++ ));
@@ -169,8 +149,8 @@ function smoothData(origData, options) {
 // }
 
 // which === '1'|'2' for which line in the graph
-function getDataPoints(which, data, startDateIndex, endDateIndex, options) {
-  var dataSource = getDataSource(which, data, options),
+function getDataPoints(which, startDateIndex, endDateIndex, options) {
+  var dataSource = getDataSource(which, options),
     smoothedData;
 
   if (dataSource) {
@@ -180,7 +160,7 @@ function getDataPoints(which, data, startDateIndex, endDateIndex, options) {
 }
 
 // which === '1'|'2' for which line in the graph
-function getDataSource(which, data, options) {
+function getDataSource(which, options) {
   var eventName = options['event' + which],
     uaName = options['ua' + which],
     location = options['loc' + which],
@@ -202,8 +182,8 @@ function getRatioDataPoints(data1, data2, options) {
   return smoothData(dataPoints, options);
 }
 
-function getTotal(data) {
-  if (!data) {
+function getTotal(dataPoints) {
+  if (!dataPoints) {
     return 0;
   }
 
@@ -211,7 +191,7 @@ function getTotal(data) {
     return a + b;
   }
 
-  return data.reduce(sum, 0);
+  return dataPoints.reduce(sum, 0);
 }
 
 function getLabel(options, which) {
@@ -244,13 +224,12 @@ function updateSummaryBox(total1, total2, avg1, avg2, avgRatio) {
   $('#avg-ratio').text(avgRatio ? avgRatio.toPrecision(3): '');
 }
 
-function createChartView(data, options) {
+function createChartView(options) {
   var
-    datesWithDataAvailable = data.summary.config.dates,
-    startDateIndex = convertDateToIndex(options.startDate, datesWithDataAvailable, 0),
-    endDateIndex = convertDateToIndex(options.endDate, datesWithDataAvailable, data.summary.config.dates.length - 1),
-    data1 = getDataPoints('1', data, startDateIndex, endDateIndex, options),
-    data2 = getDataPoints('2', data, startDateIndex, endDateIndex, options),
+    startDateIndex = convertDateToIndex(options.startDate, 0),
+    endDateIndex = convertDateToIndex(options.endDate, data.summary.config.dates.length - 1),
+    data1 = getDataPoints('1', startDateIndex, endDateIndex, options),
+    data2 = getDataPoints('2', startDateIndex, endDateIndex, options),
     numDays = data1.length || data2.length,
     total1 = getTotal(data1),
     total2 = getTotal(data2),
@@ -340,7 +319,7 @@ function createChartView(data, options) {
 
   var
     lineChartData = {
-      labels: getDateLabels(startDateIndex, endDateIndex, datesWithDataAvailable),
+      labels: getDateLabels(startDateIndex, endDateIndex),
       datasets: datasets
     },
     chartEl = document.getElementById('chartView');
@@ -352,26 +331,24 @@ function createChartView(data, options) {
   });
 }
 
-function refresh(data, options) {
-  refresh.data = data;
-
+function refresh(options) {
   if (refresh.chartView) {
     refresh.chartView.destroy();
   }
 
-  refresh.chartView = createChartView(data, options);
+  refresh.chartView = createChartView(options);
 
   return refresh.view;
 }
 
 // To help with debugging
 function getData() {
-  return refresh.data;
+  return data;
 }
 
-function updateChartView(data, options) {
+function updateChartView(options) {
 
-  refresh(data, options);
+  refresh(options);
 
   // Snippet to update points and animate to new values
   // myLiveChart.datasets[1].points[indexToUpdate].value = Math.random() * 100;

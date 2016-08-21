@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="/common/css/chart.css"/>
   <link rel="stylesheet" href="/common/css/results.css"/>
   <link rel="stylesheet" href="/common/css/autocomplete-combo.css"/>
+  <link rel="stylesheet" href="/common/css/controller.css"/>
   <link rel="stylesheet" href="/ab/css/controller.css"/>
   <!-- jQuery -->
   <!-- (Latest version that worked with Chart.js 2.1.6) -->
@@ -16,7 +17,8 @@
   <!-- From CDN -- they have minified versions too: see the list at https://cdnjs.com/libraries/Chart.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.js"></script>
   <!-- Custom script -->
-  <! -- <script src="/ab/common/chart.js"></script> -->
+  <script src="/common/js/util.js"></script>
+  <!-- <script src="/ab/common/chart.js"></script> -->
   <script src="/ab/js/chart.js"></script>
   <script src="/common/js/CommonController.js"></script>
   <script src="/ab/js/AbController.js"></script>
@@ -42,30 +44,23 @@
     </div>
 
     <fieldset>
-      <legend>Test selection</legend>
-      <div class="item">
-        <label class="test-container" for="test">Test name:</label><br><select size="1" id="test" class="test-chooser"></select>
+      <legend>Test options</legend>
+      <div class="col">
+        <select size="1" id="testName" class="test-chooser"></select>
+        <div class="item" title="Smooth: Show moving average using 1 week spread">
+          <input id="doSmooth" type="checkbox"><label for="doSmooth">Smooth week</label>
+        </div>
       </div>
-    </fieldset>
-    <fieldset>
-      <legend>Event selection</legend>
-      <div class="item">
-        <label class="event-container" for="event1">Primary event: <select size="1" id="event1" class="event-chooser"></select></label>
+      <div class="col">
+        <div class="item event-container">
+          <label for="event1">Primary event: </label>
+          <select size="1" id="event1" class="event-chooser"></select>
+        </div>
+        <div class="item event-container">
+          <label for="event2" title="Optional: used for ratios">Secondary event: </label>
+          <select size="1" id="event2" class="event-chooser"></select>
+          </label>
       </div>
-      <div class="item">
-        <label class="event-container" for="event2" title="Optional: used for ratios">
-          Secondary event: <select size="1" id="event2" class="event-chooser"></select>
-        </label>
-    </div>
-    </fieldset>
-
-    <fieldset class="options-group">
-      <legend>Options</legend>
-      <div class="item" title="Smooth: Show moving average using 1 week spread">
-        <input id="doSmooth" type="checkbox"><label for="doSmooth">Smooth&nbsp;week</label>
-      </div>
-      <div class="item" title="Ultra smooth: Show moving average using 3 week spread">
-        <input id="doUltraSmooth" type="checkbox"><label for="doUltraSmooth">Smooth&nbsp;3&nbsp;wks</label>&nbsp;
       </div>
     </fieldset>
 

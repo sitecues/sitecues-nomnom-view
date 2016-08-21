@@ -1,114 +1,8 @@
-body {
-  height: 100%;
-}
-
-body, .ui-widget {
-  font-family: Verdana,Arial,sans-serif;
-  font-size: 15px !important;
-}
-
-
-#security {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin-left: -140px;
-  margin-top: -.5em;
-  transition: opacity .2s;
-}
-
-#wait {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin-left: -60px;
-  margin-top: -60px;
-  transition: opacity .2s;
-}
-
-body.password-entered #security {
-  display: none;
-}
-
-body.password-entered #wait {
-  display: block;
-}
-
-body.error #wait {
-  display: none;
-}
-
-body.ready #wait {
-  opacity: 0;
-}
-
-#error {
-  display: none;
-}
-
-.error #error {
-  display: block;
-}
-
-#controller {
-  visibility: hidden;
-}
-
-body.ready #controller {
-  visibility: visible;
-}
-
-.title {
-  display: inline-block;
-  vertical-align: top;
-  margin-top: 6px;
-  padding-top: 0;
-  margin-right: 10px;
-  font-style: italic;
-  text-align: center;
-}
-
-h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-#reset {
-  margin-top: 7px;
-}
-
-#controller > * {
-  margin-bottom: 10px;
-}
-
-fieldset:not(:last-of-type) {
-  margin-right: 7px;
-}
-
-fieldset {
-  display: inline-block;
-  height: 6.5em;
-  vertical-align: top;
-}
-
-.options-group > label {
-  width: 80px;
-  display: inline-block;
-}
-
-legend {
-  margin-bottom: .3em;
-}
-
 .date {
   height: 27px;
   margin-bottom: 2px;
   width: 110px;
-}
-
-.item {
-  white-space: nowrap;
+  width: 10ch;
 }
 
 .line1 {
@@ -118,10 +12,19 @@ legend {
 .line2 {
   color: rgb(255,110,0);
 }
-.date {
-  width: 10ch;
-}
 
 input[type="checkbox"] {
   margin-left: 0;
+}
+
+.event-container .custom-combobox-input {
+  width: 170px;
+}
+
+.ua-container .custom-combobox-input {
+  width: 80px;
+}
+
+.loc-container .custom-combobox-input {
+  width: 150px;
 }

@@ -1,3 +1,5 @@
+var data; // Store as global
+
 function onReady() {
   $('#security').one('submit', loadData);
 }
@@ -22,7 +24,8 @@ function loadData() {
   xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ':' + password));
   xhr.onload = function() {
     if (xhr.status < 400) {
-      controller.onDataAvailable(JSON.parse(xhr.responseText));
+      data = JSON.parse(xhr.responseText);
+      controller.onDataAvailable();
     }
     else {
       onError(xhr.status, xhr.statusText);

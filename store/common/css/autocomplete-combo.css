@@ -17,14 +17,3 @@
   width: 1.6em !important;
 }
 
-.event-container .custom-combobox-input {
-  width: 170px;
-}
-
-.ua-container .custom-combobox-input {
-  width: 80px;
-}
-
-.loc-container .custom-combobox-input {
-  width: 150px;
-}

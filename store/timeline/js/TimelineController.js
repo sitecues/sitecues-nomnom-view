@@ -75,7 +75,7 @@ class TimelineController extends CommonController {
     };
   }
 
-  convertSameOptions(chartOptions) {
+  getCleanedOptions(chartOptions) {
     var newOptions = $.extend({}, chartOptions);
     if (newOptions.event2 === SAME_OPTION_NAME) {
       newOptions.event2 = newOptions.event1;
@@ -112,9 +112,9 @@ class TimelineController extends CommonController {
     }
   }
 
-  listenForUserActions(data) {
+  listenForUserActions() {
 
-    super.listenForUserActions(data);
+    super.listenForUserActions();
 
     // If ultra smooth is checked, smooth must be as well
     $('#doUltraSmooth').on('click', this.ensureValidCheckboxOptions);
@@ -299,8 +299,8 @@ class TimelineController extends CommonController {
       });
   }
 
-  initOptions(data) {
-    super.initOptions(data);
+  initOptions() {
+    this.initEventOptions(data.eventTotals.byNameOnly);
     this.initUserAgentOptions(data.eventTotals.byUserAgentOnly);
     this.initLocationOptions(data.siteInfo.locationToSiteIdMap, data.siteInfo.siteIdToLocationsMap);
     this.initDatePickers();

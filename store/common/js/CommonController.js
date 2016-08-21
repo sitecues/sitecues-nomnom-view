@@ -77,26 +77,26 @@ class CommonController {
     }
   }
 
-  onDataAvailable(data) {
-    this.initOptions(data);
+  onDataAvailable() {
+    this.initOptions();
     this.populateFormWithValues();
-    this.listenForUserActions(data);
+    this.listenForUserActions();
     this.prettify();
 
     // Show form
     $('body').addClass('ready');
 
     // Show current visualization
-    updateChartView(data, this.convertSameOptions(this.getChartOptions()));
+    updateChartView(this.getCleanedOptions(this.getChartOptions()));
   }
 
-  listenForUserActions(data) {
+  listenForUserActions() {
 
     var self = this;
 
     function onHistoryChange() {
       self.setFormValues(self.getParameterMap());
-      updateChartView(data, self.convertSameOptions(self.getChartOptions()));
+      updateChartView(self.getCleanedOptions(self.getChartOptions()));
     }
 
     window.addEventListener('popstate', () => onHistoryChange());
@@ -104,7 +104,7 @@ class CommonController {
     function onFormChange() {
       var options = self.getChartOptions();
       self.updateUrlAndTitle(options);
-      updateChartView(data, self.convertSameOptions(options));
+      updateChartView(self.getCleanedOptions(options));
     }
 
     $('#reset').on('click', function () {
@@ -137,13 +137,6 @@ class CommonController {
   populateFormWithValues() {
     this.setFormValues(this.getParameterMap());
     this.ensureValidCheckboxOptions();
-  }
-
-  initOptions(data) {
-    this.initEventOptions(data.eventTotals.byNameOnly);
-    this.initUserAgentOptions(data.eventTotals.byUserAgentOnly);
-    this.initLocationOptions(data.siteInfo.locationToSiteIdMap, data.siteInfo.siteIdToLocationsMap);
-    this.initDatePickers();
   }
 
   createOption(optionName, readableName) {
