@@ -64,7 +64,7 @@ class AbController extends CommonController {
 
     allTestNames.forEach((testName) => {
       $testNameSelect.each((index, elem) => {
-        var option = this.createOption(getTestNameText(testName));
+        var option = this.createOption(testName, getTestNameText(testName));
         $(elem).append(option);
       });
     });
