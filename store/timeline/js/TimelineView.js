@@ -45,6 +45,10 @@ class TimelineView extends CommonView {
     return labelParts.join(' ');
   }
 
+  getChartTitle(userOptions) {
+    return 'Sitecues ' + this.getLabel(userOptions, '1') + ' vs ' + this.getLabel(userOptions, '2');
+  }
+
   updateSummaryBox(total1, total2, avg1, avg2, avgRatio) {
     function toStr(num) {
       return num ? Math.round(num).toLocaleString() : '';

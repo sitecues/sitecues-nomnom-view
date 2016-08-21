@@ -195,6 +195,9 @@ class AbView extends CommonView {
       options: getChartConfig(options, doEnableRatioLine, doEnableLine1, doEnableLine2)
     });
   }
-}
+
+  getChartTitle(userOptions) {
+    return 'Sitecues AB test viewer: ' + userOptions.testName);
+  }}
 
 var view = new AbView();

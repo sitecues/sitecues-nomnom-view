@@ -42,7 +42,7 @@ class CommonController {
     });
 
     var href = getCurrentLocationWithoutParams() + '?' + params.join('&'),
-      title = 'Sitecues ' + getLabel(options, '1') + ' vs ' + getLabel(options, '2');
+      title = view.getChartTitle(options);
 
     this.changeUrl(title, href);
   }
