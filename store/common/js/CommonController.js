@@ -146,6 +146,7 @@ class CommonController {
 
   initEventOptions(allEventTotals) {
     // Sort alphabetically except for key-command or panel-clicked (show at end)
+    // We show these at the end because there are so many of them -- it makes things difficult to find if they're in the middle
     function eventNameComparator(event1, event2) {
       function getEventName(eventName) {
         return eventName
