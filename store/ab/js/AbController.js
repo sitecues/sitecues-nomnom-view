@@ -17,7 +17,7 @@ class AbController extends CommonController {
   getParameterMap() {
     var defaultParams = this.getDefaultParameterMap(),
       params = {
-        testName:  this.getStringParameterByName('testName'),
+        testName: this.getStringParameterByName('testName'),
         event1: this.getStringParameterByName('event1'),
         event2: this.getStringParameterByName('event2'),
         doSmooth: this.getBooleanParameterByName('doSmooth')
@@ -58,7 +58,8 @@ class AbController extends CommonController {
       return testName + ' (' + convertIndexToDate(ourTest.startIndex) + ' - ' + convertIndexToDate(ourTest.endIndex) + ')';
     }
 
-    var allTestNames = Object.keys(dateInfo),
+    // TODO should we provide option to sort by most recent? That would mean simply not sorting
+    var allTestNames = Object.keys(dateInfo).sort(),
       $testNameSelect = $('#testName');
 
     allTestNames.forEach((testName) => {
