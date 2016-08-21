@@ -1,12 +1,14 @@
-<!DOCTYPE html>
+<!-- Fallback for IE -->
+  <!DOCTYPE html>
 <html>
   <head>
     <title>Sitecues metrics viewer</title>
-    <link rel="stylesheet" href="/timeline/css/chart.css"/>
-    <link rel="stylesheet" href="/timeline/css/control.css"/>
+    <link rel="stylesheet" href="/common/css/chart.css"/>
     <link rel="stylesheet" href="/common/css/results.css"/>
     <link rel="stylesheet" href="/common/css/autocomplete-combo.css"/>
+    <link rel="stylesheet" href="/timeline/css/controller.css"/>
     <!-- jQuery -->
+    <!-- (Latest version that worked with Chart.js 2.1.6) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <!-- jQuery UI -->
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -16,10 +18,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.js"></script>
     <!-- Custom script -->
     <script src="/timeline/js/chart.js"></script>
-    <script src="/timeline/js/control.js"></script>
+    <script src="/common/js/CommonController.js"></script>
+    <script src="/timeline/js/TimelineController.js"></script>
     <script src="/common/js/autocomplete-combo.js"></script>
-
+    <script src="/common/js/init.js"></script>
   </head>
+
   <body>
     <form id="security" action="javascript:void(0);">
       <label for="password">Password:</label> <input type="password" id="password" autofocus/>

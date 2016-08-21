@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Sitecues metrics viewer</title>
-  <link rel="stylesheet" href="/css/chart-view.css"/>
-  <link rel="stylesheet" href="/css/control.css"/>
-  <link rel="stylesheet" href="/css/results.css"/>
-  <link rel="stylesheet" href="/css/autocomplete-combo.css"/>
+  <title>Sitecues AB test results viewer</title>
+  <link rel="stylesheet" href="/common/css/chart.css"/>
+  <link rel="stylesheet" href="/common/css/results.css"/>
+  <link rel="stylesheet" href="/common/css/autocomplete-combo.css"/>
+  <link rel="stylesheet" href="/ab/css/controller.css"/>
   <!-- jQuery -->
+  <!-- (Latest version that worked with Chart.js 2.1.6) -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
   <!-- jQuery UI -->
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -15,17 +16,20 @@
   <!-- From CDN -- they have minified versions too: see the list at https://cdnjs.com/libraries/Chart.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.js"></script>
   <!-- Custom script -->
-  <script src="/js/chart-view.js"></script>
-  <script src="/js/control.js"></script>
-  <script src="/js/autocomplete-combo.js"></script>
-
+  <! -- <script src="/ab/common/chart.js"></script> -->
+  <script src="/ab/js/chart.js"></script>
+  <script src="/common/js/CommonController.js"></script>
+  <script src="/ab/js/AbController.js"></script>
+  <script src="/common/js/autocomplete-combo.js"></script>
+  <script src="/common/js/init.js"></script>
 </head>
+
 <body>
 <form id="security" action="javascript:void(0);">
   <label for="password">Password:</label> <input type="password" id="password" autofocus/>
   <button type="submit">Go</button>
 </form>
-<img id="wait" src="/images/wait.svg"/>
+<img id="wait" src="/common/images/wait.svg"/>
 <p id="error"></p>
 <div id="controllerAndView">
   <form id="controller" action="javascript:void(0);">
