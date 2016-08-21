@@ -149,8 +149,8 @@ class CommonController {
     function eventNameComparator(event1, event2) {
       function getEventName(eventName) {
         return eventName
-          .replace(/^key-command::/, 'zzy::')
-          .replace(/^panel-clicked::/, 'zzz::');
+          .replace(/^key-command/, 'zzy')
+          .replace(/^panel-clicked/, 'zzz');
       }
 
       return getEventName(event1) > getEventName(event2) ? 1 : -1;
