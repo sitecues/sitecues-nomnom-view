@@ -87,7 +87,7 @@ class CommonController {
     $('body').addClass('ready');
 
     // Show current visualization
-    updateChartView(this.getCleanedOptions(this.getChartOptions()));
+    view.updateChartView(this.getCleanedOptions(this.getChartOptions()));
   }
 
   listenForUserActions() {
@@ -96,7 +96,7 @@ class CommonController {
 
     function onHistoryChange() {
       self.setFormValues(self.getParameterMap());
-      updateChartView(self.getCleanedOptions(self.getChartOptions()));
+      view.updateChartView(self.getCleanedOptions(self.getChartOptions()));
     }
 
     window.addEventListener('popstate', () => onHistoryChange());
@@ -104,7 +104,7 @@ class CommonController {
     function onFormChange() {
       var options = self.getChartOptions();
       self.updateUrlAndTitle(options);
-      updateChartView(self.getCleanedOptions(options));
+      view.updateChartView(self.getCleanedOptions(options));
     }
 
     $('#reset').on('click', function () {

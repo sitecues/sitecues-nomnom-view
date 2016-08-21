@@ -20,3 +20,7 @@ function convertDateToIndex(date, defaultValueIfNotFound) {
   return dateIndex < 0 ? defaultValueIfNotFound : dateIndex;
 }
 
+function toPrecision(val, precision) {
+  return parseFloat(val.toPrecision(precision));
+}
+
