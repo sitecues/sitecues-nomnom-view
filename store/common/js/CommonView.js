@@ -32,6 +32,7 @@ class CommonView {
 
     return movingAverage;
   }
+
   getRatioDataPoints(data1, data2, smoothSize) {
     var dataPoints = data1.map(function (value, index) {
       return value ? toPrecision(data2[index] / value, 4) : null; // null means skip this data point -- no data
@@ -69,14 +70,14 @@ class CommonView {
     }
 
     // Get chart info
-    var chartInfo = this.getChartInfo(userOptions),
+    var chartInfo = this.getChart(userOptions),
       chartEl = document.getElementById('chart');
 
     // Create the actual chart
     this.chart = new Chart(chartEl, {
-      type: userOptions.type === 'line' ? 'line' : 'bar',
+      type: userOptions.type === 'bar' ? 'bar' : 'line', // line is the default for most graphs, and some only support line
       data: {
-        labels: chartInfo.labels || this.getDateLabels(chartInfo.startDateIndex, chartInfo.endDateIndex),
+        labels: chartInfo.textLabels || this.getDateLabels(chartInfo.dateLabelStartIndex, chartInfo.dateLabelEndIndex),
         datasets: chartInfo.datasets
       },
       options: chartInfo.chartOptions

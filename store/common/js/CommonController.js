@@ -47,15 +47,19 @@ class CommonController {
     this.changeUrl(title, href);
   }
 
-  getStringValue(id) {
+  getTextFieldValue(id) {
     return $('#' + id).val();
   }
 
-  getBooleanValue(id) {
+  getRadioValue(id) {
+    return $('[name="'+ id + '"]:checked').attr('id')
+  }
+
+  getCheckboxValue(id) {
     return $('#' + id).is(':checked');
   }
 
-  changeStringValue(id, val) {
+  changeTextFieldValue(id, val) {
     var $formControl = $('#' + id);
     $formControl.val(val);
     if ($formControl.is('select')) {
@@ -67,7 +71,7 @@ class CommonController {
     }
   }
 
-  changeBooleanValue(id, isChecked) {
+  changeCheckableValue(id, isChecked) {
     $('#' + id).prop('checked', isChecked);
   }
 

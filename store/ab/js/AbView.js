@@ -3,25 +3,32 @@
 
 class AbView extends CommonView {
 
-  updateSummaryBox(valueNames, averages, colors) {
-    const numItems = valueNames.length;
+  updateSummaryBox(valueNames, isRatio, values, colors) {
+    const numValues = valueNames.length,
+      ROW_LABELS = ['Total #1', 'Total #2', 'Average'];
 
-    let tableHeaders = '',
-      tableAverages = '';
+    let tableHeaders = '<th></th>',
+      rows = ROW_LABELS.map((label) => '<tr><th>' + label + '</th>');
 
-
-    for (let index = 0; index < numItems; index ++) {
-      let colorStr = ' style="color:' + colors[index] + ';"';
-      tableHeaders += '<th' + colorStr + '>' + valueNames[index] + '</th>';
-      tableAverages += '<td ' + colorStr + '>' + toPrecision(averages[index], 3) + '</td>';
+    for (let valueIndex = 0; valueIndex < numValues; valueIndex ++) {
+      let colorStr = ' style="color:' + colors[valueIndex] + ';"';
+      tableHeaders += '<th' + colorStr + '>' + valueNames[valueIndex] + '</th>';
+      for (let rowIndex = 0; rowIndex < ROW_LABELS.length; rowIndex ++) {
+        rows[rowIndex] += '<td ' + colorStr + '>' + toPrecision(values[rowIndex][valueIndex], 3) + '</td>';
+      }
+    }
+    for (let rowIndex = 0; rowIndex < ROW_LABELS.length; rowIndex ++) {
+      rows[rowIndex] += '</tr>';
     }
 
+    const allRows = rows[0] + (isRatio ? rows[1] : '') + rows[2];
+
     $('#results-labels').html(tableHeaders);
-    $('#results-averages').html(tableAverages);
+    $('#results-values').html(allRows);
   }
 
   getColor(valueIndex, totalValues, alpha) {
-    return 'hsl(' + (valueIndex / totalValues) + '.7,.7,' + alpha + ')';
+    return 'hsla(' + 360 * (valueIndex / totalValues) + ',70%,40%,' + alpha + ')';
   }
 
   getColors(numColors, alpha) {
@@ -32,16 +39,10 @@ class AbView extends CommonView {
     return colors;
   }
 
-  // TODO sort by size? (Especially nice for bar chart)
-  // TODO show info for baseline (default)
-  // TODO also show totals in summary results box
-  getChartInfo(userOptions) {
+  getChart(userOptions) {
     const testName = userOptions.testName,
       event1 = userOptions.event1,
       event2 = userOptions.event2,
-      dateInfo = data.abTest.dateInfo[userOptions.testName],
-      startDateIndex = dateInfo.startIndex,
-      endDateIndex = dateInfo.endIndex,
       eventCounts = data.abTest.eventCount,
       abData1 = (event1 && eventCounts[event1] && eventCounts[event1][testName]) || [],
       abData2 = (event2 && eventCounts[event2] && eventCounts[event2][testName]) || [],
@@ -50,39 +51,58 @@ class AbView extends CommonView {
       testValues = [ ... new Set(testValues1.concat(testValues2))].sort(),
       numValues = testValues.length,
       isRatio = Boolean(userOptions.event2),
-      fgColors = this.getColors(numValues, 0.4),
-      bgColors = this.getColors(numValues, 0.1),
+      fgColors = this.getColors(numValues, 0.8),
+      bgColors = this.getColors(numValues, 0.2),
       chartType = userOptions.type,
-      averages = testValues.map((testValue) => {
-        const total1 = this.getTotal(abData1[testValue]);
-        if (abData2) {
-          return this.getTotal(abData2[testValue]) / total1;
-        }
-        return total1;
-      }),
-      chartOptions = this.getChartOptions(isRatio, chartType, testValues);
+      isBar = chartType === 'bar',
+      totals1 = testValues.map((testValue) => this.getTotal(abData1[testValue])),
+      totals2 = testValues.map((testValue) => this.getTotal(abData2[testValue])),
+      averages = testValues.map((testValue, index) =>
+        isRatio ? totals2[index] / totals1[index] : totals1[index]
+      ),
+      chartOptions = this.getChartOptions(isRatio, chartType, testValues),
+      smoothSize = userOptions.type === 'line' ? 3 : 0;
 
-    // Summarize numbers as text
-    this.updateSummaryBox(testValues, averages, fgColors);
+      // Summarize numbers as text
+    this.updateSummaryBox(testValues, isRatio, [totals1, totals2, averages], fgColors);
 
-    const dataFn = chartType === 'bar' ? this.getBarData : this.getLineData,
-      datasets = dataFn(testValues, abData1, abData2, isRatio, bgColors, fgColors),
-      labels = chartType === 'bar' && testValues;
+    if (isBar) {
+      // Sort labels and data by data amount
+      const sourceData = isRatio ? averages : totals1,
+        labels = testValues.slice(), // Make a copy
+        labelToData = {};
+      labels.forEach((label, index) => {
+        labelToData[label] = sourceData[index];
+      });
+      const sortedLabels = labels.sort((a,b) => labelToData[a] > labelToData[b] ? 1 : -1),
+        sortedData = labels.map((label) => labelToData[label]);
 
+      return {
+        datasets: sortedData,
+        textLabels: sortedLabels,
+        backgroundColor: fgColors,
+        chartOptions
+      }
+    }
+
+    const
+      dateInfo = data.abTest.dateInfo[userOptions.testName],
+      dateLabelStartIndex = dateInfo.startIndex,
+      dateLabelEndIndex = dateInfo.endIndex;
+
+      // Line graph
     return {
-      datasets,
-      labels,
+      datasets: this.getLineData(testValues, abData1, abData2, isRatio, bgColors, fgColors, smoothSize),
       chartOptions,
-      startDateIndex,
-      endDateIndex
+      dateLabelStartIndex,
+      dateLabelEndIndex
     };
   }
 
-  getLineData(testValues, abData1, abData2, isRatio, bgColors, fgColors) {
+  getLineData(testValues, abData1, abData2, isRatio, bgColors, fgColors, smoothSize) {
     return testValues.map((testValue, index) => {
       const data1 = abData1[testValue],
         data2 = abData2[testValue],
-        smoothSize = options.type === 'line' ? 3 : 0,
         data = isRatio ? this.getRatioDataPoints(data1, data2, smoothSize) :
           this.smoothData(data1, smoothSize);
       return {
@@ -94,21 +114,6 @@ class AbView extends CommonView {
         data: data || [0]
       }
     });
-  }
-
-  getBarData(testValues, abData1, abData2, isRatio, bgColors, fgColors) {
-    const dataPoints = testValues.map((testValue, index) => {
-      const data1 = abData1[testValue],
-        data2 = abData2[testValue],
-        total1 = this.getTotal(data1),
-        total2 = this.getTotal(data2);
-      return isRatio ? total2 / total1 : total1;
-    });
-
-    return {
-      data: dataPoints,
-      backgroundColor: fgColors
-    };
   }
 
   getChartTitle(userOptions) {

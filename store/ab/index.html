@@ -48,10 +48,10 @@
       <legend>Test selection</legend>
       <div class="col test-chooser-container">
         <select size="1" id="testName" class="test-chooser"></select>
-        <div class="item" id="type" title="Type of chart">
-          <input id="doLine" name="type" type="radio"><label for="doSmooth">Timeline</label>
-          <input id="doSmooth" name="type" type="radio"><label for="doSmooth">Smooth timeline</label>
-          <input id="doBar" name="type" type="radio"><label for="doSmooth">Bar</label>
+        <div class="item" title="Type of chart">
+          <input id="line" name="type" type="radio"><label for="line">Timeline</label>
+          <input id="smooth" name="type" type="radio"><label for="smooth">Smooth timeline</label>
+          <input id="bar" name="type" type="radio"><label for="bar">Bar</label>
         </div>
       </div>
       <div class="col">
@@ -72,26 +72,11 @@
       <table>
         <thead>
           <tr id="results-labels">
-            <th>#1</th>
-            <th>#2</th>
-            <th>#3</th>
-            <th>#4</th>
-            <th>#5</th>
-            <th>#6</th>
-            <th>#7</th>
-            <th>#8</th>
           </tr>
         </thead>
-        <tr id="results-averages">
-          <td id="avg1"></td>
-          <td id="avg2"></td>
-          <td id="avg3"></td>
-          <td id="avg4"></td>
-          <td id="avg5"></td>
-          <td id="avg6"></td>
-          <td id="avg7"></td>
-          <td id="avg8"></td>
-        </tr>
+        <tbody id ="results-values">
+
+        </tbody>
       </table>
     </fieldset>
   </form>

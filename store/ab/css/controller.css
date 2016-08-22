@@ -26,3 +26,12 @@
 input[type="radio"]:not(:first-of-type) {
   margin-left: 9px;
 }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 10px 0;
+}
+
+tr:not(:first-of-type) {
+  border-top: 1px solid #999;
+}

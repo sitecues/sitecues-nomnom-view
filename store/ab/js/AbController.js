@@ -20,7 +20,7 @@ class AbController extends CommonController {
         testName: this.getStringParameterByName('testName'),
         event1: this.getStringParameterByName('event1'),
         event2: this.getStringParameterByName('event2'),
-        type: this.getStringParameterByName('line')
+        type: this.getStringParameterByName('type')
       };
 
     return $.extend({}, defaultParams, params);
@@ -28,10 +28,10 @@ class AbController extends CommonController {
 
   getChartOptions() {
     return {
-      testName: this.getStringValue('testName'),
-      event1: this.getStringValue('event1'),
-      event2: this.getStringValue('event2'),
-      type: this.getStringValue('line')
+      testName: this.getTextFieldValue('testName'),
+      event1: this.getTextFieldValue('event1'),
+      event2: this.getTextFieldValue('event2'),
+      type: this.getRadioValue('type')
     };
   }
 
@@ -41,10 +41,10 @@ class AbController extends CommonController {
 
   // Inits non-combo box defaults which have to be done in a different place
   setFormValues(paramMap) {
-    this.changeBooleanValue('testName', paramMap.testName);
-    this.changeStringValue('event1', paramMap.event1);
-    this.changeStringValue('event2', paramMap.event2);
-    this.changeStringValue('type', paramMap.line);
+    this.changeTextFieldValue('testName', paramMap.testName);
+    this.changeTextFieldValue('event1', paramMap.event1);
+    this.changeTextFieldValue('event2', paramMap.event2);
+    this.changeCheckableValue(paramMap.type, true);
   }
 
   initOptions() {

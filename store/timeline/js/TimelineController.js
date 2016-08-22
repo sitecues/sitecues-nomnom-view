@@ -51,27 +51,27 @@ class TimelineController extends CommonController {
 
   getChartOptions(doConvertSame) {
     var
-      event1 = this.getStringValue('event1'),
-      event2 = this.getStringValue('event2'),
-      ua1 = this.getStringValue('ua1'),
-      ua2 = this.getStringValue('ua2'),
-      loc1 = this.getStringValue('loc1'),
-      loc2 = this.getStringValue('loc2');
+      event1 = this.getTextFieldValue('event1'),
+      event2 = this.getTextFieldValue('event2'),
+      ua1 = this.getTextFieldValue('ua1'),
+      ua2 = this.getTextFieldValue('ua2'),
+      loc1 = this.getTextFieldValue('loc1'),
+      loc2 = this.getTextFieldValue('loc2');
 
     return {
-      doEnableLine1: this.getBooleanValue('doEnableLine1'),
-      doEnableLine2: this.getBooleanValue('doEnableLine2'),
+      doEnableLine1: this.getCheckboxValue('doEnableLine1'),
+      doEnableLine2: this.getCheckboxValue('doEnableLine2'),
       event1: event1,
       event2: doConvertSame && event2 === SAME_OPTION_NAME ? event1 : event2,
       ua1: ua1,
       ua2: doConvertSame && ua2 === SAME_OPTION_NAME ? ua1 : ua2,
       loc1: loc1,
       loc2: doConvertSame && loc2 === SAME_OPTION_NAME ? loc1 : loc2,
-      startDate: this.getStringValue('startDate'),
-      endDate: this.getStringValue('endDate'),
-      doSmooth: this.getBooleanValue('doSmooth'),
-      doUltraSmooth: this.getBooleanValue('doUltraSmooth'),
-      doStretch: this.getBooleanValue('doStretch')
+      startDate: this.getTextFieldValue('startDate'),
+      endDate: this.getTextFieldValue('endDate'),
+      doSmooth: this.getCheckboxValue('doSmooth'),
+      doUltraSmooth: this.getCheckboxValue('doUltraSmooth'),
+      doStretch: this.getCheckboxValue('doStretch')
     };
   }
 
@@ -91,19 +91,19 @@ class TimelineController extends CommonController {
 
   // Inits non-combo box defaults which have to be done in a different place
   setFormValues(paramMap) {
-    this.changeBooleanValue('doEnableLine1', paramMap.doEnableLine1);
-    this.changeBooleanValue('doEnableLine2', paramMap.doEnableLine2);
-    this.changeStringValue('event1', paramMap.event1);
-    this.changeStringValue('event2', paramMap.event2);
-    this.changeStringValue('ua1', paramMap.ua1);
-    this.changeStringValue('ua2', paramMap.ua2);
-    this.changeStringValue('loc1', paramMap.loc1);
-    this.changeStringValue('loc2', paramMap.loc2);
-    this.changeStringValue('startDate', paramMap.startDate);
-    this.changeStringValue('endDate', paramMap.endDate);
-    this.changeBooleanValue('doSmooth', paramMap.doSmooth);
-    this.changeBooleanValue('doUltraSmooth', paramMap.doUltraSmooth);
-    this.changeBooleanValue('doStretch', paramMap.doStretch);
+    this.changeCheckableValue('doEnableLine1', paramMap.doEnableLine1);
+    this.changeCheckableValue('doEnableLine2', paramMap.doEnableLine2);
+    this.changeTextFieldValue('event1', paramMap.event1);
+    this.changeTextFieldValue('event2', paramMap.event2);
+    this.changeTextFieldValue('ua1', paramMap.ua1);
+    this.changeTextFieldValue('ua2', paramMap.ua2);
+    this.changeTextFieldValue('loc1', paramMap.loc1);
+    this.changeTextFieldValue('loc2', paramMap.loc2);
+    this.changeTextFieldValue('startDate', paramMap.startDate);
+    this.changeTextFieldValue('endDate', paramMap.endDate);
+    this.changeCheckableValue('doSmooth', paramMap.doSmooth);
+    this.changeCheckableValue('doUltraSmooth', paramMap.doUltraSmooth);
+    this.changeCheckableValue('doStretch', paramMap.doStretch);
   }
 
   ensureValidCheckboxOptions() {
@@ -148,16 +148,16 @@ class TimelineController extends CommonController {
     $(event.target).css('color', '');
 
     if (selectId === 'event2') {
-      this.changeStringValue('ua2', SAME_OPTION_NAME);
-      this.changeStringValue('loc2', SAME_OPTION_NAME);
+      this.changeTextFieldValue('ua2', SAME_OPTION_NAME);
+      this.changeTextFieldValue('loc2', SAME_OPTION_NAME);
     }
     else if (selectId === 'ua2') {
-      this.changeStringValue('event2', SAME_OPTION_NAME);
-      this.changeStringValue('loc2', SAME_OPTION_NAME);
+      this.changeTextFieldValue('event2', SAME_OPTION_NAME);
+      this.changeTextFieldValue('loc2', SAME_OPTION_NAME);
     }
     else if (selectId === 'loc2') {
-      this.changeStringValue('event2', SAME_OPTION_NAME);
-      this.changeStringValue('ua2', SAME_OPTION_NAME);
+      this.changeTextFieldValue('event2', SAME_OPTION_NAME);
+      this.changeTextFieldValue('ua2', SAME_OPTION_NAME);
     }
   }
 
