@@ -10,7 +10,7 @@ class AbController extends CommonController {
       testName: 'Test name',
       event1: 'page-visited::nonbounce',
       event2: 'badge-hovered',
-      doSmooth: true
+      type: 'line'
     }
   }
 
@@ -20,7 +20,7 @@ class AbController extends CommonController {
         testName: this.getStringParameterByName('testName'),
         event1: this.getStringParameterByName('event1'),
         event2: this.getStringParameterByName('event2'),
-        doSmooth: this.getBooleanParameterByName('doSmooth')
+        type: this.getStringParameterByName('line')
       };
 
     return $.extend({}, defaultParams, params);
@@ -31,7 +31,7 @@ class AbController extends CommonController {
       testName: this.getStringValue('testName'),
       event1: this.getStringValue('event1'),
       event2: this.getStringValue('event2'),
-      doSmooth: this.getBooleanValue('doSmooth')
+      type: this.getStringValue('line')
     };
   }
 
@@ -44,7 +44,7 @@ class AbController extends CommonController {
     this.changeBooleanValue('testName', paramMap.testName);
     this.changeStringValue('event1', paramMap.event1);
     this.changeStringValue('event2', paramMap.event2);
-    this.changeBooleanValue('doSmooth', paramMap.doSmooth);
+    this.changeStringValue('type', paramMap.line);
   }
 
   initOptions() {

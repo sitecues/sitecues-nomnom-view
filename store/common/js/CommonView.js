@@ -4,9 +4,8 @@
 
 class CommonView {
 
-  smoothData(origData, options) {
+  smoothData(origData, smoothSize) {
     var length = origData.length,
-      smoothSize = options.doSmooth ? (options.doUltraSmooth ? 10 : 3) : 0, // +/- 3 days = 1 week vs +/- 10 days = 3 weeks
       movingAverage = [],
       numPointsAveragedPerPoint = 1 + smoothSize * 2; // Current point + number on each side
     for (var index = 0; index < length; index++) {
@@ -33,11 +32,12 @@ class CommonView {
 
     return movingAverage;
   }
-  getRatioDataPoints(data1, data2, options) {
+  getRatioDataPoints(data1, data2, smoothSize) {
     var dataPoints = data1.map(function (value, index) {
       return value ? toPrecision(data2[index] / value, 4) : null; // null means skip this data point -- no data
     });
-    return this.smoothData(dataPoints, options);
+
+    return this.smoothData(dataPoints, smoothSize);
   }
 
   getTotal(dataPoints) {
@@ -74,9 +74,9 @@ class CommonView {
 
     // Create the actual chart
     this.chart = new Chart(chartEl, {
-      type: 'line',
+      type: userOptions.type === 'line' ? 'line' : 'bar',
       data: {
-        labels: this.getDateLabels(chartInfo.startDateIndex, chartInfo.endDateIndex),
+        labels: chartInfo.labels || this.getDateLabels(chartInfo.startDateIndex, chartInfo.endDateIndex),
         datasets: chartInfo.datasets
       },
       options: chartInfo.chartOptions

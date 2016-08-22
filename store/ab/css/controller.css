@@ -22,3 +22,7 @@
 #doSmooth {
   margin-top: 12px;
 }
+
+input[type="radio"]:not(:first-of-type) {
+  margin-left: 9px;
+}

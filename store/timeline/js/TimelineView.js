@@ -4,12 +4,13 @@
 
 class TimelineView extends CommonView {
   // which === '1'|'2' for which line in the graph
-  getDataPoints(which, startDateIndex, endDateIndex, options) {
-    var dataSource = this.getDataSource(which, options),
-      smoothedData;
+  getDataPoints(which, startDateIndex, endDateIndex, userOptions) {
+    var dataSource = this.getDataSource(which, userOptions),
+      smoothedData,
+      smoothSize = userOptions.doSmooth ? (userOptions.doUltraSmooth ? 10 : 3) : 0; // +/- 3 days = 1 week vs +/- 10 days = 3 weeks
 
     if (dataSource) {
-      smoothedData = this.smoothData(dataSource, options);
+      smoothedData = this.smoothData(dataSource, smoothSize);
       return smoothedData.slice(startDateIndex, endDateIndex + 1);
     }
   }

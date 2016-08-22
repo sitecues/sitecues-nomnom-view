@@ -32,6 +32,9 @@ class AbView extends CommonView {
     return colors;
   }
 
+  // TODO sort by size? (Especially nice for bar chart)
+  // TODO show info for baseline (default)
+  // TODO also show totals in summary results box
   getChartInfo(userOptions) {
     const testName = userOptions.testName,
       event1 = userOptions.event1,
@@ -40,47 +43,71 @@ class AbView extends CommonView {
       startDateIndex = dateInfo.startIndex,
       endDateIndex = dateInfo.endIndex,
       eventCounts = data.abTest.eventCount,
-      abData1 = eventCounts[event1] && eventCounts[event1][testName],
-      abData2 = event2 && eventCounts[event2] && eventCounts[event2][testName],
+      abData1 = (event1 && eventCounts[event1] && eventCounts[event1][testName]) || [],
+      abData2 = (event2 && eventCounts[event2] && eventCounts[event2][testName]) || [],
       testValues1 = Object.keys(abData1 || []),
       testValues2 = Object.keys(abData2 || []),
       testValues = [ ... new Set(testValues1.concat(testValues2))].sort(),
       numValues = testValues.length,
       isRatio = Boolean(userOptions.event2),
-      chartOptions = this.getChartOptions(isRatio),
       fgColors = this.getColors(numValues, 0.4),
       bgColors = this.getColors(numValues, 0.1),
+      chartType = userOptions.type,
       averages = testValues.map((testValue) => {
         const total1 = this.getTotal(abData1[testValue]);
         if (abData2) {
           return this.getTotal(abData2[testValue]) / total1;
         }
         return total1;
-      });
+      }),
+      chartOptions = this.getChartOptions(isRatio, chartType, testValues);
 
+    // Summarize numbers as text
     this.updateSummaryBox(testValues, averages, fgColors);
 
-    const datasets =
-      testValues.map((testValue, index) => {
-        const data1 = abData1[testValue],
-          data2 = abData2[testValue],
-          data = isRatio ? this.getRatioDataPoints(data1, data2, userOptions) : data1;
-        return {
-          label: testValue,
-          backgroundColor: bgColors[index],
-          borderColor: fgColors[index],
-          fill: false,
-          pointHitRadius: 10,
-          data: data || [0],
-          yAxisID: 'y-axis'
-        }
-      });
+    const dataFn = chartType === 'bar' ? this.getBarData : this.getLineData,
+      datasets = dataFn(testValues, abData1, abData2, isRatio, bgColors, fgColors),
+      labels = chartType === 'bar' && testValues;
 
     return {
       datasets,
+      labels,
       chartOptions,
       startDateIndex,
       endDateIndex
+    };
+  }
+
+  getLineData(testValues, abData1, abData2, isRatio, bgColors, fgColors) {
+    return testValues.map((testValue, index) => {
+      const data1 = abData1[testValue],
+        data2 = abData2[testValue],
+        smoothSize = options.type === 'line' ? 3 : 0,
+        data = isRatio ? this.getRatioDataPoints(data1, data2, smoothSize) :
+          this.smoothData(data1, smoothSize);
+      return {
+        label: testValue,
+        backgroundColor: bgColors[index],
+        borderColor: fgColors[index],
+        fill: false,
+        pointHitRadius: 10,
+        data: data || [0]
+      }
+    });
+  }
+
+  getBarData(testValues, abData1, abData2, isRatio, bgColors, fgColors) {
+    const dataPoints = testValues.map((testValue, index) => {
+      const data1 = abData1[testValue],
+        data2 = abData2[testValue],
+        total1 = this.getTotal(data1),
+        total2 = this.getTotal(data2);
+      return isRatio ? total2 / total1 : total1;
+    });
+
+    return {
+      data: dataPoints,
+      backgroundColor: fgColors
     };
   }
 
@@ -88,7 +115,20 @@ class AbView extends CommonView {
     return 'Sitecues AB test viewer: ' + userOptions.testName;
   }
 
-  getChartOptions(isRatio) {
+  getXAxes(type, values) {
+    if (type === 'bar') {
+      return; // No need to define?
+      // return values.map((values) => {
+      // });
+    }
+
+    // Line chart (time series)
+    return [{
+      type: 'time'
+    }];
+  }
+
+  getChartOptions(isRatio, type, values) {
     const
       tickConfig = {
         callback: function (value) {
@@ -99,7 +139,6 @@ class AbView extends CommonView {
       yAxes = [
         {
           type: 'linear',
-          id: 'y-axis',
           position: 'left',
           ticks: tickConfig,
           scaleLabel: {
@@ -119,9 +158,7 @@ class AbView extends CommonView {
       stacked: true,
       scales: {
         yAxes: yAxes,
-        xAxes: [{
-          type: 'time'
-        }],
+        xAxes: this.getXAxes(type, values)
       },
       time: {
         parser: 'MM/DD/YYYY'

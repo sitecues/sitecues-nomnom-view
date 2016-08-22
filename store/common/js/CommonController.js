@@ -127,7 +127,7 @@ class CommonController {
 
     // Make native inputs have similar size and font
     // Select text on focus
-    $('input')
+    $('input[type="text"] ')
       .addClass('ui-widget ui-widget-content ui-corner-all')
       .on('focus', function (evt) {
         evt.target.select();

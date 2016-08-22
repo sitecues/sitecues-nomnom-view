@@ -48,8 +48,10 @@
       <legend>Test selection</legend>
       <div class="col test-chooser-container">
         <select size="1" id="testName" class="test-chooser"></select>
-        <div class="item" title="Smooth: Show moving average using 1 week spread">
-          <input id="doSmooth" type="checkbox"><label for="doSmooth">Smooth week</label>
+        <div class="item" id="type" title="Type of chart">
+          <input id="doLine" name="type" type="radio"><label for="doSmooth">Timeline</label>
+          <input id="doSmooth" name="type" type="radio"><label for="doSmooth">Smooth timeline</label>
+          <input id="doBar" name="type" type="radio"><label for="doSmooth">Bar</label>
         </div>
       </div>
       <div class="col">
