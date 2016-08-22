@@ -5,16 +5,20 @@ class AbView extends CommonView {
 
   updateSummaryBox(valueNames, isRatio, values, colors) {
     const numValues = valueNames.length,
-      ROW_LABELS = ['Total #1', 'Total #2', 'Average'];
+      ROW_LABELS = ['#1', '#2', '#2/#1'];
 
     let tableHeaders = '<th></th>',
       rows = ROW_LABELS.map((label) => '<tr><th>' + label + '</th>');
+
+    function asPrettyNumber(val) {
+      return toPrecision(val, 3).toLocaleString();
+    }
 
     for (let valueIndex = 0; valueIndex < numValues; valueIndex ++) {
       let colorStr = ' style="color:' + colors[valueIndex] + ';"';
       tableHeaders += '<th' + colorStr + '>' + valueNames[valueIndex] + '</th>';
       for (let rowIndex = 0; rowIndex < ROW_LABELS.length; rowIndex ++) {
-        rows[rowIndex] += '<td ' + colorStr + '>' + toPrecision(values[rowIndex][valueIndex], 3) + '</td>';
+        rows[rowIndex] += '<td ' + colorStr + '>' + asPrettyNumber(values[rowIndex][valueIndex]) + '</td>';
       }
     }
     for (let rowIndex = 0; rowIndex < ROW_LABELS.length; rowIndex ++) {
@@ -44,6 +48,10 @@ class AbView extends CommonView {
       event1 = userOptions.event1,
       event2 = userOptions.event2,
       eventCounts = data.abTest.eventCount,
+      dateInfo = data.abTest.dateInfo[userOptions.testName],
+      dateLabelStartIndex = dateInfo.startIndex,
+      dateLabelEndIndex = dateInfo.endIndex,
+      numDays = dateLabelEndIndex - dateLabelStartIndex + 1,
       abData1 = (event1 && eventCounts[event1] && eventCounts[event1][testName]) || [],
       abData2 = (event2 && eventCounts[event2] && eventCounts[event2][testName]) || [],
       testValues1 = Object.keys(abData1 || []),
@@ -57,18 +65,20 @@ class AbView extends CommonView {
       isBar = chartType === 'bar',
       totals1 = testValues.map((testValue) => this.getTotal(abData1[testValue])),
       totals2 = testValues.map((testValue) => this.getTotal(abData2[testValue])),
-      averages = testValues.map((testValue, index) =>
+      averages1 = totals1.map((total) => Math.round(total / numDays)),
+      averages2 = totals2.map((total) => Math.round(total / numDays)),
+      ratios = testValues.map((testValue, index) =>
         isRatio ? totals2[index] / totals1[index] : totals1[index]
       ),
       chartOptions = this.getChartOptions(isRatio, chartType, testValues),
       smoothSize = userOptions.type === 'line' ? 3 : 0;
 
       // Summarize numbers as text
-    this.updateSummaryBox(testValues, isRatio, [totals1, totals2, averages], fgColors);
+    this.updateSummaryBox(testValues, isRatio, [averages1, averages2, ratios], fgColors);
 
     if (isBar) {
       // Sort labels and data by data amount
-      const sourceData = isRatio ? averages : totals1,
+      const sourceData = isRatio ? ratios : totals1,
         labels = testValues.slice(), // Make a copy
         labelToData = {};
       labels.forEach((label, index) => {
@@ -85,12 +95,7 @@ class AbView extends CommonView {
       }
     }
 
-    const
-      dateInfo = data.abTest.dateInfo[userOptions.testName],
-      dateLabelStartIndex = dateInfo.startIndex,
-      dateLabelEndIndex = dateInfo.endIndex;
-
-      // Line graph
+    // Line graph
     return {
       datasets: this.getLineData(testValues, abData1, abData2, isRatio, bgColors, fgColors, smoothSize),
       chartOptions,

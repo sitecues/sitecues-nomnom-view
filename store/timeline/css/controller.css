@@ -28,3 +28,27 @@ input[type="checkbox"] {
 .loc-container .custom-combobox-input {
   width: 150px;
 }
+
+thead > tr > th {
+  padding: .4em 0;
+  font-weight: bold;
+}
+
+td {
+  padding-left: .8em;
+}
+
+tr.line1 {
+  border-bottom: 1px solid gray;
+}
+
+.line2 > td {
+  padding-bottom: .4em;
+}
+
+#ratio-label {
+  text-align: left;
+}
+
+
+

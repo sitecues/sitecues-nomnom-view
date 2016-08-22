@@ -1,9 +1,14 @@
 .col {
   display: inline-block;
+  vertical-align: top;
 }
 
 .col:not(:last-of-type) {
   margin-right: 20px;
+}
+
+.test-chooser-container {
+  margin-bottom: 6px;
 }
 
 .test-chooser-container .custom-combobox-input {
@@ -27,9 +32,12 @@ input[type="radio"]:not(:first-of-type) {
   margin-left: 9px;
 }
 
-table {
-  border-collapse: collapse;
-  border-spacing: 10px 0;
+th, td {
+  padding-left: 15px;
+}
+
+tr > th:first-child {
+  padding-left: 0;
 }
 
 tr:not(:first-of-type) {

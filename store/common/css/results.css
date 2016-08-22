@@ -11,23 +11,3 @@ th,td {
   font-weight: normal;
 }
 
-#ratio-label {
-  text-align: left;
-}
-
-thead > tr > th {
-  padding: .4em 0;
-  font-weight: bold;
-}
-
-td {
-  padding-left: .8em;
-}
-
-tr.line1 {
-  border-bottom: 1px solid gray;
-}
-
-.line2 > td {
-  padding-bottom: .4em;
-}
