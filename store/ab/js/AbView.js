@@ -32,7 +32,7 @@ class AbView extends CommonView {
   }
 
   getColor(valueIndex, totalValues, alpha) {
-    return 'hsla(' + 360 * (valueIndex / totalValues) + ',70%,40%,' + alpha + ')';
+    return 'hsla(' + Math.round(360 * (valueIndex / totalValues)) + ',70%,40%,' + alpha + ')';
   }
 
   getColors(numColors, alpha) {
@@ -80,7 +80,7 @@ class AbView extends CommonView {
       averages1 = totals1.map((total) => Math.round(total / numDays)),
       averages2 = totals2.map((total) => Math.round(total / numDays)),
       ratios = testValues.map((testValue, index) =>
-        isRatio ? totals2[index] / totals1[index] : totals1[index]
+        isRatio ? toPrecision(totals2[index] / totals1[index], 3) : totals1[index]
       ),
       chartOptions = this.getChartOptions(isRatio, chartType, testValues),
       smoothSize = userOptions.type === 'line' ? 3 : 0;
@@ -102,13 +102,17 @@ class AbView extends CommonView {
       });
       const sortedLabels = labels.sort((a,b) => bar[a].data > bar[b].data ? 1 : -1),
         bars = sortedLabels.map((label) => bar[label]),
-        datasets = [{
-          backgroundColor:  bars.map((bar) => bar.backgroundColor),
-          data: bars.map((bar) => bar.data)
-        }];
+        datasets =
+          bars.map((bar) => {
+            return {
+              backgroundColor: bar.backgroundColor,
+              data: [bar.data],
+              label: bar.label
+            }
+          });
 
       return {
-        labels: sortedLabels,
+        //labels: sortedLabels, // Causes empty areas of bar chart
         datasets,
         chartOptions
       }
@@ -184,7 +188,7 @@ class AbView extends CommonView {
         labels: {
           fontSize: 14
         },
-        display: isLine
+        display: true
       }
     };
   }

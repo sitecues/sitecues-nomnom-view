@@ -34,11 +34,13 @@ class CommonView {
   }
 
   getRatioDataPoints(data1, data2, smoothSize) {
-    var dataPoints = data1.map(function (value, index) {
-      return value ? toPrecision(data2[index] / value, 4) : null; // null means skip this data point -- no data
-    });
+    const
+      dataPoints = data1.map((value, index) =>
+        typeof value === 'number' ? data2[index] / value : null // null means skip this data point -- no data
+      ),
+      smoothed = this.smoothData(dataPoints, smoothSize);
 
-    return this.smoothData(dataPoints, smoothSize);
+    return smoothed.map((value) => typeof value === 'number' ? value.toPrecision(4) : null);
   }
 
   getTotal(dataPoints) {
