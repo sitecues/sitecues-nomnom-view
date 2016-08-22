@@ -44,11 +44,23 @@ class AbView extends CommonView {
   }
 
   getChart(userOptions) {
-    const testName = userOptions.testName,
+    const testName = userOptions.testName;
+
+    if (!testName) {
+      return;
+    }
+
+    const
+      eventCounts = data.abTest.eventCount,
+      dateInfo = data.abTest.dateInfo[userOptions.testName];
+
+    if (!dateInfo) {
+      return;
+    }
+
+    const
       event1 = userOptions.event1,
       event2 = userOptions.event2,
-      eventCounts = data.abTest.eventCount,
-      dateInfo = data.abTest.dateInfo[userOptions.testName],
       dateLabelStartIndex = dateInfo.startIndex,
       dateLabelEndIndex = dateInfo.endIndex,
       numDays = dateLabelEndIndex - dateLabelStartIndex + 1,
@@ -82,15 +94,20 @@ class AbView extends CommonView {
         labels = testValues.slice(), // Make a copy
         labelToData = {};
       labels.forEach((label, index) => {
-        labelToData[label] = sourceData[index];
+        labelToData[label] = {
+          label,
+          data: [ sourceData[index] ],
+          backgroundColor: fgColors[index]
+        };
       });
-      const sortedLabels = labels.sort((a,b) => labelToData[a] > labelToData[b] ? 1 : -1),
-        sortedData = labels.map((label) => labelToData[label]);
+      const sortedLabels = labels.sort((a,b) => labelToData[a].data > labelToData[b].data ? 1 : -1),
+        datasets = sortedLabels.map((label) => labelToData[label]);
+
+      console.log(sortedLabels);
 
       return {
-        datasets: sortedData,
-        textLabels: sortedLabels,
-        backgroundColor: fgColors,
+        labels: sortedLabels,
+        datasets,
         chartOptions
       }
     }
@@ -165,7 +182,7 @@ class AbView extends CommonView {
       //   display: true,
       //   text: 'Sitecues Metrics Chart'
       // },
-      stacked: true,
+      stacked: type !== 'bar',
       scales: {
         yAxes: yAxes,
         xAxes: this.getXAxes(type, values)

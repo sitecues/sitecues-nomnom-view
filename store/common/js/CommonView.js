@@ -73,15 +73,23 @@ class CommonView {
     var chartInfo = this.getChart(userOptions),
       chartEl = document.getElementById('chart');
 
-    // Create the actual chart
-    this.chart = new Chart(chartEl, {
+    if (!chartInfo) {
+      return;
+    }
+
+    const finalChartOptions = {
       type: userOptions.type === 'bar' ? 'bar' : 'line', // line is the default for most graphs, and some only support line
       data: {
-        labels: chartInfo.textLabels || this.getDateLabels(chartInfo.dateLabelStartIndex, chartInfo.dateLabelEndIndex),
+        labels: chartInfo.labels || this.getDateLabels(chartInfo.dateLabelStartIndex, chartInfo.dateLabelEndIndex),
         datasets: chartInfo.datasets
       },
       options: chartInfo.chartOptions
-    });
+    };
+
+    console.log(JSON.stringify(finalChartOptions, null, 2));
+
+    // Create the actual chart
+    this.chart = new Chart(chartEl, finalChartOptions);
 
     return this.view;
   }
