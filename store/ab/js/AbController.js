@@ -35,8 +35,12 @@ class AbController extends CommonController {
     };
   }
 
-  getCleanedOptions(chartOptions) {
-    return chartOptions;
+  getCleanedOptions(userOptions) {
+    var newOptions = $.extend({}, userOptions);
+    if (newOptions.event2 === this.OFF_OPTION_NAME) {
+      newOptions.event2 = '';
+    }
+    return newOptions;
   }
 
   // Inits non-combo box defaults which have to be done in a different place

@@ -50,8 +50,7 @@ class CommonController {
   }
 
   getTextFieldValue(id) {
-    const val = $('#' + id).val();
-    return val === this.OFF_OPTION_NAME ? '' : val;
+    return $('#' + id).val();
   }
 
   getRadioValue(id) {

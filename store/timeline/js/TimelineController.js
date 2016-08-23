@@ -47,7 +47,7 @@ class TimelineController extends CommonController {
     return $.extend({}, defaultParams, params);
   }
 
-  getUserOptions(doConvertSame) {
+  getUserOptions() {
     var
       event1 = this.getTextFieldValue('event1'),
       event2 = this.getTextFieldValue('event2'),
@@ -60,11 +60,11 @@ class TimelineController extends CommonController {
       doEnableLine1: this.getCheckboxValue('doEnableLine1'),
       doEnableLine2: this.getCheckboxValue('doEnableLine2'),
       event1: event1,
-      event2: doConvertSame && event2 === this.OFF_OPTION_NAME ? event1 : event2,
+      event2: event2,
       ua1: ua1,
-      ua2: doConvertSame && ua2 === this.OFF_OPTION_NAME ? ua1 : ua2,
+      ua2: ua2,
       loc1: loc1,
-      loc2: doConvertSame && loc2 === this.OFF_OPTION_NAME ? loc1 : loc2,
+      loc2: loc2,
       startDate: this.getTextFieldValue('startDate'),
       endDate: this.getTextFieldValue('endDate'),
       doSmooth: this.getCheckboxValue('doSmooth'),
@@ -73,8 +73,8 @@ class TimelineController extends CommonController {
     };
   }
 
-  getCleanedOptions(chartOptions) {
-    var newOptions = $.extend({}, chartOptions);
+  getCleanedOptions(userOptions) {
+    var newOptions = $.extend({}, userOptions);
     if (newOptions.event2 === this.OFF_OPTION_NAME) {
       newOptions.event2 = newOptions.event1;
     }
