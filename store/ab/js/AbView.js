@@ -102,17 +102,13 @@ class AbView extends CommonView {
       });
       const sortedLabels = labels.sort((a,b) => bar[a].data > bar[b].data ? 1 : -1),
         bars = sortedLabels.map((label) => bar[label]),
-        datasets =
-          bars.map((bar) => {
-            return {
-              backgroundColor: bar.backgroundColor,
-              data: [bar.data],
-              label: bar.label
-            }
-          });
+        datasets = [{
+          backgroundColor:  bars.map((bar) => bar.backgroundColor),
+          data: bars.map((bar) => bar.data)
+        }];
 
       return {
-        //labels: sortedLabels, // Causes empty areas of bar chart
+        labels: sortedLabels,
         datasets,
         chartOptions
       }
@@ -188,7 +184,7 @@ class AbView extends CommonView {
         labels: {
           fontSize: 14
         },
-        display: true
+        display: isLine
       }
     };
   }

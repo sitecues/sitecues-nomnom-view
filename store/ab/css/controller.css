@@ -1,3 +1,7 @@
+fieldset {
+  height: 5.5em;
+}
+
 .col {
   display: inline-block;
   vertical-align: top;
