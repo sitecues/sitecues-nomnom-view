@@ -79,6 +79,9 @@ class CommonView {
       return;
     }
 
+    // Visible results panel
+    $('#results').css('display', 'inline-block');
+
     Chart.defaults.global.defaultFontSize = 16;
 
     const finalChartOptions = {
