@@ -305,6 +305,10 @@ class TimelineController extends CommonController {
     this.initLocationOptions(data.siteInfo.locationToSiteIdMap, data.siteInfo.siteIdToLocationsMap);
     this.initDatePickers();
   }
+
+  adjustTextfieldTextColor($possibleInput, val) {
+    $possibleInput.css('color', val === OFF_OPTION_NAME ? 'green' : ''); // Color <same> as green
+  }
 }
 
 var controller = new TimelineController();

@@ -5,7 +5,7 @@ class AbView extends CommonView {
 
   updateSummaryBox(valueNames, isRatio, values, colors) {
     const numValues = valueNames.length,
-      ROW_LABELS = ['#1', '#2', '#2/#1'];
+      ROW_LABELS = ['Event #1', 'Event #2', '#2/#1'];
 
     let tableHeaders = '<th></th>',
       rows = ROW_LABELS.map((label) => '<tr><th>' + label + '</th>');
@@ -25,7 +25,7 @@ class AbView extends CommonView {
       rows[rowIndex] += '</tr>';
     }
 
-    const allRows = rows[0] + (isRatio ? rows[1] : '') + rows[2];
+    const allRows = rows[0] + (isRatio ? rows[1] + rows[2] : '');
 
     $('#results-labels').html(tableHeaders);
     $('#results-values').html(allRows);
@@ -70,7 +70,7 @@ class AbView extends CommonView {
       testValues2 = Object.keys(abData2 || []),
       testValues = [ ... new Set(testValues1.concat(testValues2))].sort(),
       numValues = testValues.length,
-      isRatio = Boolean(userOptions.event2),
+      isRatio = Boolean(userOptions.event2) && userOptions.event2 !== userOptions.event1,
       fgColors = this.getColors(numValues, 0.8),
       bgColors = this.getColors(numValues, 0.2),
       chartType = userOptions.type,

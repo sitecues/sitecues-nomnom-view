@@ -26,7 +26,7 @@ class AbController extends CommonController {
     return $.extend({}, defaultParams, params);
   }
 
-  getChartOptions() {
+  getUserOptions() {
     return {
       testName: this.getTextFieldValue('testName'),
       event1: this.getTextFieldValue('event1'),
@@ -70,6 +70,9 @@ class AbController extends CommonController {
     });
 
     $testNameSelect.combobox();
+  }
+
+  adjustTextfieldTextColor() { // noop in this class
   }
 }
 

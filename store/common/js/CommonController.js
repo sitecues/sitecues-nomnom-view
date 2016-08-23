@@ -6,7 +6,7 @@
 
 'use strict';
 
-var SAME_OPTION_NAME = '<same>';
+var OFF_OPTION_NAME = '<off>';
 
 class CommonController {
   // Get a parameter value fro the URL query
@@ -22,7 +22,7 @@ class CommonController {
   }
 
   changeUrl(title, url) {
-    if (typeof (history.pushState) != "undefined") {
+    if (typeof (history.pushState) != 'undefined') {
       var obj = {title: title, URL: url};
       history.pushState(obj, obj.title, obj.URL);
       document.title = title;
@@ -48,7 +48,8 @@ class CommonController {
   }
 
   getTextFieldValue(id) {
-    return $('#' + id).val();
+    const val = $('#' + id).val();
+    return val === OFF_OPTION_NAME ? '' : val;
   }
 
   getRadioValue(id) {
@@ -66,7 +67,7 @@ class CommonController {
       var $possibleInput = $formControl.next().children().first();
       if ($possibleInput.is('input')) {
         $possibleInput.val(val);
-        $possibleInput.css('color', val === SAME_OPTION_NAME ? 'green' : ''); // Color <same> as green
+        this.adjustTextfieldTextColor($possibleInput, val);
       }
     }
   }
@@ -91,7 +92,7 @@ class CommonController {
     $('body').addClass('ready');
 
     // Show current visualization
-    view.updateChartView(this.getCleanedOptions(this.getChartOptions()));
+    view.updateChartView(this.getCleanedOptions(this.getUserOptions()));
   }
 
   listenForUserActions() {
@@ -100,13 +101,13 @@ class CommonController {
 
     function onHistoryChange() {
       self.setFormValues(self.getParameterMap());
-      view.updateChartView(self.getCleanedOptions(self.getChartOptions()));
+      view.updateChartView(self.getCleanedOptions(self.getUserOptions()));
     }
 
     window.addEventListener('popstate', () => onHistoryChange());
 
     function onFormChange() {
-      var options = self.getChartOptions();
+      var options = self.getUserOptions();
       self.updateUrlAndTitle(options);
       view.updateChartView(self.getCleanedOptions(options));
     }
@@ -164,7 +165,7 @@ class CommonController {
     var allEventNames = Object.keys(allEventTotals).sort(eventNameComparator),
       $eventNameSelects = $('.event-chooser');
 
-    $('#event2').append(this.createOption(SAME_OPTION_NAME));
+    $('#event2').append(this.createOption(OFF_OPTION_NAME));
 
     allEventNames.forEach((eventName) => {
       $eventNameSelects.each((index, elem) => {
