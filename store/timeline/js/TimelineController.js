@@ -6,8 +6,6 @@
 
 'use strict';
 
-var SAME_OPTION_NAME = '<same>';
-
 class TimelineController extends CommonController {
   getDefaultParameterMap() {
     var BEGINNING_OF_TIME = '01/26/2016';
@@ -17,9 +15,9 @@ class TimelineController extends CommonController {
       event1: 'page-visited::nonbounce',
       event2: 'badge-hovered',
       ua1: '@supported',
-      ua2: SAME_OPTION_NAME,
+      ua2: this.OFF_OPTION_NAME,
       loc1: '@long-running-customers',
-      loc2: SAME_OPTION_NAME,
+      loc2: this.OFF_OPTION_NAME,
       startDate: BEGINNING_OF_TIME,
       endDate: '',
       doSmooth: true,
@@ -49,7 +47,7 @@ class TimelineController extends CommonController {
     return $.extend({}, defaultParams, params);
   }
 
-  getChartOptions(doConvertSame) {
+  getUserOptions(doConvertSame) {
     var
       event1 = this.getTextFieldValue('event1'),
       event2 = this.getTextFieldValue('event2'),
@@ -62,11 +60,11 @@ class TimelineController extends CommonController {
       doEnableLine1: this.getCheckboxValue('doEnableLine1'),
       doEnableLine2: this.getCheckboxValue('doEnableLine2'),
       event1: event1,
-      event2: doConvertSame && event2 === SAME_OPTION_NAME ? event1 : event2,
+      event2: doConvertSame && event2 === this.OFF_OPTION_NAME ? event1 : event2,
       ua1: ua1,
-      ua2: doConvertSame && ua2 === SAME_OPTION_NAME ? ua1 : ua2,
+      ua2: doConvertSame && ua2 === this.OFF_OPTION_NAME ? ua1 : ua2,
       loc1: loc1,
-      loc2: doConvertSame && loc2 === SAME_OPTION_NAME ? loc1 : loc2,
+      loc2: doConvertSame && loc2 === this.OFF_OPTION_NAME ? loc1 : loc2,
       startDate: this.getTextFieldValue('startDate'),
       endDate: this.getTextFieldValue('endDate'),
       doSmooth: this.getCheckboxValue('doSmooth'),
@@ -77,13 +75,13 @@ class TimelineController extends CommonController {
 
   getCleanedOptions(chartOptions) {
     var newOptions = $.extend({}, chartOptions);
-    if (newOptions.event2 === SAME_OPTION_NAME) {
+    if (newOptions.event2 === this.OFF_OPTION_NAME) {
       newOptions.event2 = newOptions.event1;
     }
-    if (newOptions.ua2 === SAME_OPTION_NAME) {
+    if (newOptions.ua2 === this.OFF_OPTION_NAME) {
       newOptions.ua2 = newOptions.ua1;
     }
-    if (newOptions.loc2 === SAME_OPTION_NAME) {
+    if (newOptions.loc2 === this.OFF_OPTION_NAME) {
       newOptions.loc2 = newOptions.loc1;
     }
     return newOptions;
@@ -141,23 +139,23 @@ class TimelineController extends CommonController {
     }
 
     var currVal = $('#' + selectId).val();
-    if (currVal === SAME_OPTION_NAME) {
+    if (currVal === this.OFF_OPTION_NAME) {
       return;
     }
 
     $(event.target).css('color', '');
 
     if (selectId === 'event2') {
-      this.changeTextFieldValue('ua2', SAME_OPTION_NAME);
-      this.changeTextFieldValue('loc2', SAME_OPTION_NAME);
+      this.changeTextFieldValue('ua2', this.OFF_OPTION_NAME);
+      this.changeTextFieldValue('loc2', this.OFF_OPTION_NAME);
     }
     else if (selectId === 'ua2') {
-      this.changeTextFieldValue('event2', SAME_OPTION_NAME);
-      this.changeTextFieldValue('loc2', SAME_OPTION_NAME);
+      this.changeTextFieldValue('event2', this.OFF_OPTION_NAME);
+      this.changeTextFieldValue('loc2', this.OFF_OPTION_NAME);
     }
     else if (selectId === 'loc2') {
-      this.changeTextFieldValue('event2', SAME_OPTION_NAME);
-      this.changeTextFieldValue('ua2', SAME_OPTION_NAME);
+      this.changeTextFieldValue('event2', this.OFF_OPTION_NAME);
+      this.changeTextFieldValue('ua2', this.OFF_OPTION_NAME);
     }
   }
 
@@ -176,7 +174,7 @@ class TimelineController extends CommonController {
     var userAgentNames = Object.keys(userAgentTotals).sort(alphaNumComparator),
       $uaSelects = $('.ua-chooser');
 
-    $('#ua2').append(this.createOption(SAME_OPTION_NAME));
+    $('#ua2').append(this.createOption(this.OFF_OPTION_NAME));
 
     userAgentNames.forEach((eventName) => {
       $uaSelects.each((index, elem) => {
@@ -266,7 +264,7 @@ class TimelineController extends CommonController {
       PAGE_VISIT_THRESHOLD = 100, // Don't list locations with fewer than this # of page visits
       SITE_ID_REGEX = /^#s-[\da-f\?]{8}$/;   // Currently no use
 
-    $('#loc2').append(this.createOption(SAME_OPTION_NAME));
+    $('#loc2').append(this.createOption(this.OFF_OPTION_NAME));
 
     allLocations.forEach((locationName) => {
       var readableName = locationName,
@@ -307,7 +305,7 @@ class TimelineController extends CommonController {
   }
 
   adjustTextfieldTextColor($possibleInput, val) {
-    $possibleInput.css('color', val === OFF_OPTION_NAME ? 'green' : ''); // Color <same> as green
+    $possibleInput.css('color', val === this.OFF_OPTION_NAME ? 'green' : ''); // Color <same> as green
   }
 }
 

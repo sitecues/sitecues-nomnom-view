@@ -6,9 +6,11 @@
 
 'use strict';
 
-var OFF_OPTION_NAME = '<off>';
-
 class CommonController {
+  constructor() {
+    this.OFF_OPTION_NAME = '<off>'; // Eww no class properties or consts in ES6
+  }
+
   // Get a parameter value fro the URL query
   getStringParameterByName(name) {
     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
@@ -49,7 +51,7 @@ class CommonController {
 
   getTextFieldValue(id) {
     const val = $('#' + id).val();
-    return val === OFF_OPTION_NAME ? '' : val;
+    return val === this.OFF_OPTION_NAME ? '' : val;
   }
 
   getRadioValue(id) {
@@ -165,7 +167,7 @@ class CommonController {
     var allEventNames = Object.keys(allEventTotals).sort(eventNameComparator),
       $eventNameSelects = $('.event-chooser');
 
-    $('#event2').append(this.createOption(OFF_OPTION_NAME));
+    $('#event2').append(this.createOption(this.OFF_OPTION_NAME));
 
     allEventNames.forEach((eventName) => {
       $eventNameSelects.each((index, elem) => {
