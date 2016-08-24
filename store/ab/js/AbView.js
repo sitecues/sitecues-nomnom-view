@@ -144,14 +144,14 @@ class AbView extends CommonView {
     return 'Sitecues AB test viewer: ' + userOptions.testName;
   }
 
-  getChartOptions(isRatio, type, values) {
+  getChartOptions(isRatio, type) {
     const
       isLine = type !== 'bar',
       tickConfig = {
         callback: function (value) {
           return value.toLocaleString();
         },
-        beginAtZero: !isRatio
+        beginAtZero: true
       },
       yAxes = [
         {
