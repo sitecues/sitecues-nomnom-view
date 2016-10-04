@@ -1,5 +1,3 @@
-// TODO clean up code
-
 'use strict';
 
 class CommonView {

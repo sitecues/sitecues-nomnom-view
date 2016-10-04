@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sitecues metrics viewer</title>
+    <link rel="stylesheet" href="/common/css/chart.css"/>
+    <link rel="stylesheet" href="/common/css/results.css"/>
+    <link rel="stylesheet" href="/common/css/autocomplete-combo.css"/>
+    <link rel="stylesheet" href="/common/css/controller.css"/>
+    <link rel="stylesheet" href="/all/css/controller.css"/>
+    <!-- jQuery -->
+    <!-- (Latest version that worked with Chart.js 2.1.6) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <!-- Charts -->
+    <!-- From CDN -- they have minified versions too: see the list at https://cdnjs.com/libraries/Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.js"></script>
+    <!-- Custom script -->
+    <script src="/common/js/util.js"></script>
+    <!-- <script src="/ab/common/AbView.js"></script> -->
+    <script src="/common/js/CommonView.js"></script>
+    <script src="/all/js/AllView.js"></script>
+    <script src="/common/js/CommonController.js"></script>
+    <script src="/all/js/AllController.js"></script>
+    <script src="/common/js/autocomplete-combo.js"></script>
+    <script src="/common/js/init.js"></script>
+  </head>
+
+  <body>
+    <form id="security" action="javascript:void(0);">
+      <label for="password">Password:</label> <input type="password" id="password" autofocus/>
+      <button type="submit">Go</button>
+    </form>
+    <img id="wait" src="/common/images/wait.svg"/>
+    <p id="error"></p>
+    <div id="controllerAndView">
+      <form id="controller" action="javascript:void(0);">
+
+        <div class="title">
+          <h1>
+            Sitecues<br>Metrics
+          </h1>
+          <button id="reset">Reset</button>
+        </div>
+
+        <fieldset>
+          <legend>Metrics selection</legend>
+          <div class="item" id="line1-controller">
+            <input type="checkbox" id="doEnableLine1"><label id="label-line-1" class="line1" for="doEnableLine1">Line 1:</label>
+            <span class="event-container"><select size="1" id="event1" class="event-chooser"></select></span> using
+            <span class="ua-container"><select size="1" id="ua1" class="ua-chooser"></select></span> on
+            <span class="loc-container"><select size="1" id="loc1" class="location-chooser"></select></span>
+          </div>
+          <div class="item" id="line2-controller">
+            <input type="checkbox" id="doEnableLine2"><label id="label-line-2" class="line2" for="doEnableLine2">Line 2:</label>
+            <span class="event-container"><select size="1" id="event2" class="event-chooser"></select></span> using
+            <span class="ua-container"><select size="1" id="ua2" class="ua-chooser"></select></span> on
+            <span class="loc-container"><select size="1" id="loc2" class="location-chooser"></select></span>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Date range</legend>
+          <div class="item">
+            <input id="startDate" class="date" type="text" value="01/26/2016"> to
+          </div>
+          <div>
+            <input id="endDate" placeholder="(yesterday)" class="date" type="text">
+          </div>
+        </fieldset>
+
+        <fieldset class="options-group">
+          <legend>Options</legend>
+          <div class="item" title="Smooth: Show moving average using 1 week spread">
+            <input id="doSmooth" type="checkbox"><label for="doSmooth">Smooth&nbsp;week</label>
+          </div>
+          <div class="item" title="Ultra smooth: Show moving average using 3 week spread">
+            <input id="doUltraSmooth" type="checkbox"><label for="doUltraSmooth">Smooth&nbsp;3&nbsp;wks</label>&nbsp;
+          </div>
+          <div class="item" title="Stretch: Use independent y axes for line 1 and line 2, allowing easier trend line comparison">
+            <input id="doStretch" type="checkbox"><label for="doStretch">Independent y</label>&nbsp;
+          </div>
+        </fieldset>
+
+        <fieldset id="results">
+          <legend>Results</legend>
+          <table>
+            <thead>
+              <tr>
+                <td></td>
+                <th>Total</th>
+                <th>Avg</th>
+              </tr>
+            </thead>
+            <tr class="line1">
+              <th>#1</th>
+              <td id="total1"></td>
+              <td id="avg1"></td>
+            </tr>
+            <tr class="line2">
+              <th>#2</th>
+              <td id="total2"></td>
+              <td id="avg2"></td>
+            </tr>
+            <tr>
+              <th colspan="2" id="ratio-label">Ratio #2/#1</th>
+              <td id="avg-ratio"></td>
+            </tr>
+          </table>
+        </fieldset>
+      </form>
+
+      <div id="chartContainer">
+        <canvas id="chart"></canvas>
+      </div>
+
+    </div>
+
+  </body>
+</html>

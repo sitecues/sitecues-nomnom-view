@@ -1,0 +1,54 @@
+.date {
+  height: 27px;
+  margin-bottom: 2px;
+  width: 110px;
+  width: 10ch;
+}
+
+.line1 {
+  color: rgb(20,20,255);
+}
+
+.line2 {
+  color: rgb(255,110,0);
+}
+
+input[type="checkbox"] {
+  margin-left: 0;
+}
+
+.event-container .custom-combobox-input {
+  width: 170px;
+}
+
+.ua-container .custom-combobox-input {
+  width: 80px;
+}
+
+.loc-container .custom-combobox-input {
+  width: 150px;
+}
+
+thead > tr > th {
+  padding: .4em 0;
+  font-weight: bold;
+}
+
+td {
+  padding-left: .8em;
+}
+
+tr.line1 {
+  border-bottom: 1px solid gray;
+}
+
+.line2 > td {
+  padding-bottom: .4em;
+}
+
+#ratio-label {
+  text-align: left;
+}
+
+
+

@@ -1,6 +1,6 @@
 'use strict';
 
-class TimelineView extends CommonView {
+class AllView extends CommonView {
 
   getSmoothSize(userOptions) {
     return userOptions.doSmooth ? (userOptions.doUltraSmooth ? 10 : 3) : 0;
@@ -255,4 +255,4 @@ class TimelineView extends CommonView {
   }
 }
 
-const view = new TimelineView();
+const view = new AllView();
