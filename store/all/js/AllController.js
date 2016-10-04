@@ -298,9 +298,9 @@ class AllController extends CommonController {
   }
 
   initOptions() {
-    this.initEventOptions(data.eventTotals.byNameOnly);
-    this.initUserAgentOptions(data.eventTotals.byUserAgentOnly);
-    this.initLocationOptions(data.siteInfo.locationToSiteIdMap, data.siteInfo.siteIdToLocationsMap);
+    this.initEventOptions(globalData.eventTotals.byNameOnly);
+    this.initUserAgentOptions(globalData.eventTotals.byUserAgentOnly);
+    this.initLocationOptions(globalData.siteInfo.locationToSiteIdMap, globalData.siteInfo.siteIdToLocationsMap);
     this.initDatePickers();
   }
 

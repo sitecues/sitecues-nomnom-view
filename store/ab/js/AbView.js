@@ -51,8 +51,8 @@ class AbView extends CommonView {
     }
 
     const
-      eventCounts = data.abTest.eventCount,
-      dateInfo = data.abTest.dateInfo[userOptions.testName];
+      eventCounts = globalData.abTest.eventCount,
+      dateInfo = globalData.abTest.dateInfo[userOptions.testName];
 
     if (!dateInfo) {
       return;

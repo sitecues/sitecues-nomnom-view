@@ -22,7 +22,7 @@ class TimelineView extends CommonView {
     var eventName = options['event' + which],
       uaName = options['ua' + which],
       location = options['loc' + which],
-      eventTotals = data.eventTotals,
+      eventTotals = globalData.eventTotals,
       eventMap = eventTotals.byLocation[location],
       dataSource = eventMap && eventMap[eventName] && eventMap[eventName][uaName];
 
@@ -67,7 +67,7 @@ class TimelineView extends CommonView {
   getChart(userOptions) {
     var
       startDateIndex = convertDateToIndex(userOptions.startDate, 0),
-      endDateIndex = convertDateToIndex(userOptions.endDate, data.summary.config.dates.length - 1),
+      endDateIndex = convertDateToIndex(userOptions.endDate, globalData.summary.config.dates.length - 1),
       smoothSize = this.getSmoothSize(userOptions),
       data1 = this.getDataPoints('1', startDateIndex, endDateIndex, userOptions, smoothSize),
       data2 = this.getDataPoints('2', startDateIndex, endDateIndex, userOptions, smoothSize),

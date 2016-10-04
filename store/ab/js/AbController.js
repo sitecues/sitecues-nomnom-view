@@ -52,8 +52,8 @@ class AbController extends CommonController {
   }
 
   initOptions() {
-    this.initEventOptions(data.eventTotals.byNameOnly);
-    this.initAbTestNames((data.abTest && data.abTest.dateInfo) || {});
+    this.initEventOptions(globalData.eventTotals.byNameOnly);
+    this.initAbTestNames((globalData.abTest && globalData.abTest.dateInfo) || {});
   }
 
   initAbTestNames(dateInfo) {

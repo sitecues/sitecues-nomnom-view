@@ -1,5 +1,5 @@
 function convertIndexToDate(dateIndex) {
-  const datesWithDataAvailable = data.summary.config.dates;
+  const datesWithDataAvailable = globalData.summary.config.dates;
   var dateAsYYYYMMDD = datesWithDataAvailable[dateIndex].toString(),
     year = dateAsYYYYMMDD.substr(2, 2),
     month = dateAsYYYYMMDD.substr(4, 2),
@@ -9,7 +9,7 @@ function convertIndexToDate(dateIndex) {
 }
 
 function convertDateToIndex(date, defaultValueIfNotFound) {
-  const datesWithDataAvailable = data.summary.config.dates;
+  const datesWithDataAvailable = globalData.summary.config.dates;
   var extractParts = date.split('/'),
     month = extractParts[0],
     day = extractParts[1],
