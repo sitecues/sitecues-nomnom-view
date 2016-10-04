@@ -8,7 +8,7 @@
 
 class TimelineController extends CommonController {
   getDefaultParameterMap() {
-    var BEGINNING_OF_TIME = '01/26/2016';
+    var BEGINNING_OF_TIME = '02/01/2016';
     return {
       doEnableLine1: true,
       doEnableLine2: true,
