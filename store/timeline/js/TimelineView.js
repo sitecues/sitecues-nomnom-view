@@ -160,12 +160,12 @@ class TimelineView extends CommonView {
 
     var chartOptions = this.getChartOptions(userOptions, doEnableRatioLine, doEnableLine1, doEnableLine2);
 
-    return {
+    return Promise.resolve({
       datasets,
       chartOptions,
       dateLabelStartIndex: startDateIndex,
       dateLabelEndIndex: endDateIndex
-    };
+    });
   }
 
   getChartOptions(userOptions, doEnableRatioLine, doEnableLine1, doEnableLine2) {

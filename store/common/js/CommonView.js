@@ -69,31 +69,30 @@ class CommonView {
       this.chart.destroy();
     }
 
-    // Get chart info
-    var chartInfo = this.getChart(userOptions),
-      chartEl = document.getElementById('chart');
+    const showChart = (chartInfo) => {
+      var chartEl = document.getElementById('chart');
+      // Visible results panel
+      $('#results').css('display', 'inline-block');
 
-    if (!chartInfo) {
-      return;
-    }
+      Chart.defaults.global.defaultFontSize = 16;
 
-    // Visible results panel
-    $('#results').css('display', 'inline-block');
+      const finalChartOptions = {
+        type: userOptions.type === 'bar' ? 'bar' : 'line', // line is the default for most graphs, and some only support line
+        data: {
+          labels: chartInfo.labels || this.getDateLabels(chartInfo.dateLabelStartIndex, chartInfo.dateLabelEndIndex),
+          datasets: chartInfo.datasets
+        },
+        options: chartInfo.chartOptions
+      };
 
-    Chart.defaults.global.defaultFontSize = 16;
+      // Create the actual chart
+      this.chart = new Chart(chartEl, finalChartOptions);
 
-    const finalChartOptions = {
-      type: userOptions.type === 'bar' ? 'bar' : 'line', // line is the default for most graphs, and some only support line
-      data: {
-        labels: chartInfo.labels || this.getDateLabels(chartInfo.dateLabelStartIndex, chartInfo.dateLabelEndIndex),
-        datasets: chartInfo.datasets
-      },
-      options: chartInfo.chartOptions
+      return this.view;
     };
 
-    // Create the actual chart
-    this.chart = new Chart(chartEl, finalChartOptions);
-
-    return this.view;
+    // Get chart info
+    this.getChart(userOptions)
+      .then(showChart);
   }
 }

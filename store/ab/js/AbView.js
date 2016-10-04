@@ -47,7 +47,7 @@ class AbView extends CommonView {
     const testName = userOptions.testName;
 
     if (!testName) {
-      return;
+      return Promise.reject('No test name');
     }
 
     const
@@ -55,7 +55,7 @@ class AbView extends CommonView {
       dateInfo = globalData.abTest.dateInfo[userOptions.testName];
 
     if (!dateInfo) {
-      return;
+      return Promise.reject('No test data');
     }
 
     const
@@ -107,20 +107,20 @@ class AbView extends CommonView {
           data: bars.map((bar) => bar.data)
         }];
 
-      return {
+      return Promise.resolve({
         labels: sortedLabels,
         datasets,
         chartOptions
-      }
+      });
     }
 
     // Line graph
-    return {
+    return Promise.resolve({
       datasets: this.getLineData(testValues, abData1, abData2, isRatio, bgColors, fgColors, smoothSize),
       chartOptions,
       dateLabelStartIndex,
       dateLabelEndIndex
-    };
+    });
   }
 
   getLineData(testValues, abData1, abData2, isRatio, bgColors, fgColors, smoothSize) {
