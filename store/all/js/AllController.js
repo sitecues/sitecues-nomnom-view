@@ -309,4 +309,4 @@ class AllController extends CommonController {
   }
 }
 
-var controller = new TimelineController();
+var controller = new AllController();
