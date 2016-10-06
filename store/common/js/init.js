@@ -4,7 +4,7 @@ var globalData; // Store as global
 
 function onReady() {
   $('#security').one('submit', function() {
-    loadData()
+    loadData('all.json')
       .then(function(data) {
         globalData = data;
         controller.onDataAvailable();
@@ -19,25 +19,15 @@ function onError(err) {
   $('#error').text('An error occurred: ' + err);
 }
 
-function encodeQueryData(params)
-{
-  const ret = [];
-  for (let paramName of Object.keys(params)) {
-    ret.push(encodeURIComponent(paramName) + "=" + encodeURIComponent(params[paramName]));
-  }
-  return ret.join("&");
-}
-
-function loadData(optionalSelectionParams) {
+function loadData(apiPath) {
   return new Promise(function(resolve, reject) {
     $('body').addClass('password-entered');
 
     var username = 'sitecues',
       password = $('#password').val(),
-      api = optionalSelectionParams ? 'selection?' + encodeQueryData(optionalSelectionParams) : 'all.json',
       // webServiceUrl = 'http://localhost:3001/all.json';
       // webServiceUrl = 'http://ec2-54-221-79-114.compute-1.amazonaws.com:3001/all.json';
-      webServiceUrl = window.location.protocol + '//' + window.location.hostname + ':3001/' + api;
+      webServiceUrl = window.location.protocol + '//' + window.location.hostname + ':3001/' + apiPath;
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", webServiceUrl, true);

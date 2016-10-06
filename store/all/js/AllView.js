@@ -7,15 +7,11 @@ class AllView extends CommonView {
   }
 
   // which === '1'|'2' for which line in the graph
-  getDataPoints(dataSource, startDateIndex, endDateIndex, smoothSize, callback) {
-    var smoothedData; // +/- 3 days = 1 week vs +/- 10 days = 3 weeks
-
+  // smoothSize === +/- 3 days = 1 week vs +/- 10 days = 3 weeks
+  getDataPoints(dataSource, startDateIndex, endDateIndex, smoothSize) {
     if (dataSource) {
-      smoothedData = this.smoothData(dataSource, smoothSize);
-      callback(smoothedData.slice(startDateIndex, endDateIndex + 1));
-    }
-    else {
-      callback();
+      const smoothedData = smoothSize ? this.smoothData(dataSource, smoothSize) : dataSource;
+      return smoothedData.slice(startDateIndex, endDateIndex + 1);
     }
   }
 
@@ -56,22 +52,31 @@ class AllView extends CommonView {
 
   getSourceDataSet(options, which) {
     // which === '1'|'2' for which line in the graph
-    const name = options['event' + which],
+    const eventName = options['event' + which],
       ua = options['ua' + which],
-      loc = options['loc' + which];
+      loc = options['loc' + which],
+      type = 'eventCounts', // can be 'sessions' or 'users'
+      apiPath = ['counts-by-date', loc, ua, eventName, type ].join('/');
 
-    return loadData({
-      name,
-      ua,
-      loc
-    });
+    function convertToArray(data) {
+      if (!data.startIndex) {
+        console.log(data.err);
+        return [];
+      }
+
+      let finalCountsArray = [];
+      finalCountsArray.length = data.startIndex;
+      finalCountsArray = finalCountsArray.concat(data.countsArray);
+      console.log(finalCountsArray);
+      return finalCountsArray;
+    }
+
+    return loadData(apiPath)
+      .then(convertToArray);
   }
 
   getChart(userOptions) {
-    return Promise.all([ this.getSourceDataSet(userOptions, '1'), this.getSourceDataSet(userOptions, '2') ])
-      .then(getChartImpl);
-
-    function getChartImpl(sourceDataSets) {
+    const getChartImpl = (sourceDataSets) => {
       var
         startDateIndex = convertDateToIndex(userOptions.startDate, 0),
         endDateIndex = convertDateToIndex(userOptions.endDate, globalData.summary.config.dates.length - 1),
@@ -93,6 +98,8 @@ class AllView extends CommonView {
           userOptions.loc2 !== userOptions.loc1),
         doEnableAverageLines = false,
         yAxis2;
+
+      console.log(data1);
 
       this.updateSummaryBox(total1, total2, avg1, avg2, avgRatio);
 
@@ -167,13 +174,16 @@ class AllView extends CommonView {
 
       var chartOptions = this.getChartOptions(userOptions, doEnableRatioLine, doEnableLine1, doEnableLine2);
 
-      Promise.resolve({
+      return Promise.resolve({
         datasets,
         chartOptions,
         dateLabelStartIndex: startDateIndex,
         dateLabelEndIndex: endDateIndex
       });
-    }
+    };
+
+    return Promise.all([ this.getSourceDataSet(userOptions, '1'), this.getSourceDataSet(userOptions, '2') ])
+      .then(getChartImpl);
   }
 
   getChartOptions(userOptions, doEnableRatioLine, doEnableLine1, doEnableLine2) {
