@@ -55,18 +55,21 @@ class AllView extends CommonView {
     const eventName = options['event' + which],
       ua = options['ua' + which],
       loc = options['loc' + which],
-      type = 'eventCounts', // can be 'sessions' or 'users'
+      type = options['type' + which], // can be 'sessions' or 'users'
       apiPath = ['counts-by-date', loc, ua, eventName, type ].join('/');
 
     function convertToArray(data) {
-      if (!data.startIndex) {
+      console.log(data);
+      const origCountsArray = data.countsArray;
+      if (!origCountsArray) {
         console.log(data.err);
         return [];
       }
 
       let finalCountsArray = [];
+      // Fill from beginning of time to first date with undefined values
       finalCountsArray.length = data.startIndex;
-      finalCountsArray = finalCountsArray.concat(data.countsArray);
+      finalCountsArray = finalCountsArray.concat(origCountsArray);
       console.log(finalCountsArray);
       return finalCountsArray;
     }
@@ -76,6 +79,7 @@ class AllView extends CommonView {
   }
 
   getChart(userOptions) {
+
     const getChartImpl = (sourceDataSets) => {
       var
         startDateIndex = convertDateToIndex(userOptions.startDate, 0),
@@ -187,6 +191,7 @@ class AllView extends CommonView {
   }
 
   getChartOptions(userOptions, doEnableRatioLine, doEnableLine1, doEnableLine2) {
+
     var yAxes = [],
       doUseSameScaleForAllEvents = doEnableLine1 && !userOptions.doStretch,
       doUseSecondAxis = doEnableLine2 && !doUseSameScaleForAllEvents,

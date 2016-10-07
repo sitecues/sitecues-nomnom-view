@@ -37,24 +37,19 @@
     <div id="controllerAndView">
       <form id="controller" action="javascript:void(0);">
 
-        <div class="title">
-          <h1>
-            Sitecues<br>Metrics
-          </h1>
-          <button id="reset">Reset</button>
-        </div>
-
         <fieldset>
-          <legend>Metrics selection</legend>
+          <legend>Sitecues metrics selection</legend>
           <div class="item" id="line1-controller">
-            <input type="checkbox" id="doEnableLine1"><label id="label-line-1" class="line1" for="doEnableLine1">Line 1:</label>
-            <span class="event-container"><select size="1" id="event1" class="event-chooser"></select></span> using
+            <input type="checkbox" id="doEnableLine1"><label id="label-line-1" class="line1" for="doEnableLine1">1:</label>
+            <span class="event-container"><select size="1" id="event1" class="event-chooser"></select></span> by
+            <span class="type-container"><select size="1" id="type1" class="type-chooser"></select></span> using
             <span class="ua-container"><select size="1" id="ua1" class="ua-chooser"></select></span> on
             <span class="loc-container"><select size="1" id="loc1" class="location-chooser"></select></span>
           </div>
           <div class="item" id="line2-controller">
-            <input type="checkbox" id="doEnableLine2"><label id="label-line-2" class="line2" for="doEnableLine2">Line 2:</label>
-            <span class="event-container"><select size="1" id="event2" class="event-chooser"></select></span> using
+            <input type="checkbox" id="doEnableLine2"><label id="label-line-2" class="line2" for="doEnableLine2">2:</label>
+            <span class="event-container"><select size="1" id="event2" class="event-chooser"></select></span> by
+            <span class="type-container"><select size="1" id="type2" class="type-chooser"></select></span> using
             <span class="ua-container"><select size="1" id="ua2" class="ua-chooser"></select></span> on
             <span class="loc-container"><select size="1" id="loc2" class="location-chooser"></select></span>
           </div>
@@ -72,14 +67,19 @@
 
         <fieldset class="options-group">
           <legend>Options</legend>
-          <div class="item" title="Smooth: Show moving average using 1 week spread">
-            <input id="doSmooth" type="checkbox"><label for="doSmooth">Smooth&nbsp;week</label>
-          </div>
-          <div class="item" title="Ultra smooth: Show moving average using 3 week spread">
-            <input id="doUltraSmooth" type="checkbox"><label for="doUltraSmooth">Smooth&nbsp;3&nbsp;wks</label>&nbsp;
+          <div class="item">
+            <span title="Smooth: Show moving average using 1 week spread">
+              <input id="doSmooth" type="checkbox"><label for="doSmooth">Smooth</label>
+            </span>
+            <span class="item" title="Ultra smooth: Show moving average using 3 week spread">
+              <input id="doUltraSmooth" type="checkbox"><label for="doUltraSmooth">Xtra</label>&nbsp;
+            </span>
           </div>
           <div class="item" title="Stretch: Use independent y axes for line 1 and line 2, allowing easier trend line comparison">
             <input id="doStretch" type="checkbox"><label for="doStretch">Independent y</label>&nbsp;
+          </div>
+          <div id="reset-container">
+            <button id="reset">Reset all</button>
           </div>
         </fieldset>
 

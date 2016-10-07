@@ -21,6 +21,10 @@ input[type="checkbox"] {
   width: 170px;
 }
 
+.type-container .custom-combobox-input {
+  width: 65px;
+}
+
 .ua-container .custom-combobox-input {
   width: 80px;
 }

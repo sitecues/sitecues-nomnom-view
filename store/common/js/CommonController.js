@@ -8,7 +8,7 @@
 
 class CommonController {
   constructor() {
-    this.OFF_OPTION_NAME = '<off>'; // Eww no class properties or consts in ES6
+    this.OFF_OPTION_NAME = '<same>'; // Eww no class properties or consts in ES6
   }
 
   // Get a parameter value fro the URL query
@@ -40,7 +40,9 @@ class CommonController {
 
     var params = [];
     Object.keys(options).forEach((optionName) => {
-      params.push(encodeURIComponent(optionName) + '=' + encodeURIComponent(options[optionName]));
+      if (options[optionName] !== null) {
+        params.push(encodeURIComponent(optionName) + '=' + encodeURIComponent(options[optionName]));
+      }
     });
 
     var href = getCurrentLocationWithoutParams() + '?' + params.join('&'),
@@ -67,7 +69,8 @@ class CommonController {
     if ($formControl.is('select')) {
       var $possibleInput = $formControl.next().children().first();
       if ($possibleInput.is('input')) {
-        $possibleInput.val(val);
+        var textVal = $formControl[0].selectedOptions[0].innerText;
+        $possibleInput.val(textVal);
         this.adjustTextfieldTextColor($possibleInput, val);
       }
     }
@@ -136,8 +139,13 @@ class CommonController {
     $('input[type="text"] ')
       .addClass('ui-widget ui-widget-content ui-corner-all')
       .on('focus', function (evt) {
+        console.log(evt.target);
         evt.target.select();
       });
+
+    $('body').on('focus', function(evt) {
+      console.log(evt);
+    });
   }
 
   populateFormWithValues() {
@@ -148,6 +156,21 @@ class CommonController {
   createOption(optionName, readableName) {
     return $('<option></option>')
       .attr('value', optionName).text(readableName || optionName);
+  }
+
+  initTypeOptions() {
+    for (let id of [ '#type1', '#type2']) {
+      $(id).append(this.createOption('eventCounts', 'event'));
+      $(id).append(this.createOption('sessionCounts', 'session'));
+      $(id).append(this.createOption('userCounts', 'user'));
+    }
+
+    $('#type2').append(this.createOption(this.OFF_OPTION_NAME));
+
+    $('#type1')
+      .combobox();
+    $('#type2')
+      .combobox();
   }
 
   initEventOptions(allEventTotals) {

@@ -14,6 +14,8 @@ function onReady() {
 }
 
 function onError(err) {
+  // TODO For some reason, please wait icon still visible
+  // This rule should be working in controller.css: body.error #wait { display: none; }
   console.log(err);
   $('body').addClass('error');
   $('#error').text('An error occurred: ' + err);

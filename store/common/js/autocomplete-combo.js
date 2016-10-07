@@ -26,6 +26,9 @@ $( function() {
           minLength: 0,
           source: $.proxy(this, "_source")
         })
+        .on('focus', function() {
+          this.select();
+        })
         .tooltip({
           classes: {
             "ui-tooltip": "ui-state-highlight"

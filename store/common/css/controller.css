@@ -74,6 +74,11 @@ h1 {
   font-size: 24px;
 }
 
+#reset-container {
+  width: 100%;
+  text-align: center;
+}
+
 #reset {
   margin-top: 7px;
 }

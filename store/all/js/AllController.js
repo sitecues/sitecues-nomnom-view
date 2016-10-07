@@ -12,8 +12,10 @@ class AllController extends CommonController {
     return {
       doEnableLine1: true,
       doEnableLine2: true,
-      event1: 'page-visited::nonbounce',
+      event1: 'page-visited',
       event2: 'badge-hovered',
+      type1: 'eventCounts',
+      type2: this.OFF_OPTION_NAME,
       ua1: '@supported',
       ua2: this.OFF_OPTION_NAME,
       loc1: '@long-running-customers',
@@ -33,6 +35,8 @@ class AllController extends CommonController {
         doEnableLine2: this.getBooleanParameterByName('doEnableLine2'),
         event1: this.getStringParameterByName('event1'),
         event2: this.getStringParameterByName('event2'),
+        type1: this.getStringParameterByName('type1'),
+        type2: this.getStringParameterByName('type2'),
         ua1: this.getStringParameterByName('ua1'),
         ua2: this.getStringParameterByName('ua2'),
         loc1: this.getStringParameterByName('loc1'),
@@ -48,9 +52,11 @@ class AllController extends CommonController {
   }
 
   getUserOptions() {
-    var
+    const
       event1 = this.getTextFieldValue('event1'),
       event2 = this.getTextFieldValue('event2'),
+      type1 = this.getTextFieldValue('type1'),
+      type2 = this.getTextFieldValue('type2'),
       ua1 = this.getTextFieldValue('ua1'),
       ua2 = this.getTextFieldValue('ua2'),
       loc1 = this.getTextFieldValue('loc1'),
@@ -59,12 +65,14 @@ class AllController extends CommonController {
     return {
       doEnableLine1: this.getCheckboxValue('doEnableLine1'),
       doEnableLine2: this.getCheckboxValue('doEnableLine2'),
-      event1: event1,
-      event2: event2,
-      ua1: ua1,
-      ua2: ua2,
-      loc1: loc1,
-      loc2: loc2,
+      event1,
+      event2,
+      type1,
+      type2,
+      ua1,
+      ua2,
+      loc1,
+      loc2,
       startDate: this.getTextFieldValue('startDate'),
       endDate: this.getTextFieldValue('endDate'),
       doSmooth: this.getCheckboxValue('doSmooth'),
@@ -74,9 +82,12 @@ class AllController extends CommonController {
   }
 
   getCleanedOptions(userOptions) {
-    var newOptions = $.extend({}, userOptions);
+    const newOptions = $.extend({}, userOptions);
     if (newOptions.event2 === this.OFF_OPTION_NAME) {
       newOptions.event2 = newOptions.event1;
+    }
+    if (newOptions.type2 === this.OFF_OPTION_NAME) {
+      newOptions.type2 = newOptions.type1;
     }
     if (newOptions.ua2 === this.OFF_OPTION_NAME) {
       newOptions.ua2 = newOptions.ua1;
@@ -93,6 +104,8 @@ class AllController extends CommonController {
     this.changeCheckableValue('doEnableLine2', paramMap.doEnableLine2);
     this.changeTextFieldValue('event1', paramMap.event1);
     this.changeTextFieldValue('event2', paramMap.event2);
+    this.changeTextFieldValue('type1', paramMap.type1);
+    this.changeTextFieldValue('type2', paramMap.type2);
     this.changeTextFieldValue('ua1', paramMap.ua1);
     this.changeTextFieldValue('ua2', paramMap.ua2);
     this.changeTextFieldValue('loc1', paramMap.loc1);
@@ -146,15 +159,23 @@ class AllController extends CommonController {
     $(event.target).css('color', '');
 
     if (selectId === 'event2') {
+      this.changeTextFieldValue('type2', this.OFF_OPTION_NAME);
+      this.changeTextFieldValue('ua2', this.OFF_OPTION_NAME);
+      this.changeTextFieldValue('loc2', this.OFF_OPTION_NAME);
+    }
+    else if (selectId === 'type2') {
+      this.changeTextFieldValue('event2', this.OFF_OPTION_NAME);
       this.changeTextFieldValue('ua2', this.OFF_OPTION_NAME);
       this.changeTextFieldValue('loc2', this.OFF_OPTION_NAME);
     }
     else if (selectId === 'ua2') {
       this.changeTextFieldValue('event2', this.OFF_OPTION_NAME);
+      this.changeTextFieldValue('type2', this.OFF_OPTION_NAME);
       this.changeTextFieldValue('loc2', this.OFF_OPTION_NAME);
     }
     else if (selectId === 'loc2') {
       this.changeTextFieldValue('event2', this.OFF_OPTION_NAME);
+      this.changeTextFieldValue('type2', this.OFF_OPTION_NAME);
       this.changeTextFieldValue('ua2', this.OFF_OPTION_NAME);
     }
   }
@@ -299,6 +320,7 @@ class AllController extends CommonController {
 
   initOptions() {
     this.initEventOptions(globalData.eventTotals.byNameOnly);
+    this.initTypeOptions();
     this.initUserAgentOptions(globalData.eventTotals.byUserAgentOnly);
     this.initLocationOptions(globalData.siteInfo.locationToSiteIdMap, globalData.siteInfo.siteIdToLocationsMap);
     this.initDatePickers();
