@@ -51,19 +51,21 @@
           <select size="1" id="testName" class="test-chooser"></select>
         </div>
         <div class="item" title="Type of chart">
-          <input id="line" name="type" type="radio"><label for="line">Timeline</label>
-          <input id="smooth" name="type" type="radio"><label for="smooth">Smooth timeline</label>
-          <input id="bar" name="type" type="radio"><label for="bar">Bar</label>
+          <input id="line" name="chartType" type="radio"><label for="line">Timeline</label>
+          <input id="smooth" name="chartType" type="radio"><label for="smooth">Smooth timeline</label>
+          <input id="bar" name="chartType" type="radio"><label for="bar">Bar</label>
         </div>
       </div>
       <div class="col">
         <div class="item event-container">
-          <label for="event1">Event #1: </label>
-          <select size="1" id="event1" class="event-chooser"></select>
+          <label for="event1">#1: </label>
+          <select size="1" id="event1" class="event-chooser"></select> by
+          <span class="type-container"><select size="1" id="type1" class="type-chooser"></select></span>
         </div>
         <div class="item event-container">
-          <label for="event2" title="Optional: used for ratios">Event #2: </label>
-          <select size="1" id="event2" class="event-chooser"></select>
+          <label for="event2" title="Optional: used for ratios">#2: </label>
+          <select size="1" id="event2" class="event-chooser"></select> by
+          <span class="type-container"><select size="1" id="type2" class="type-chooser"></select></span>
           </label>
       </div>
       </div>

@@ -22,8 +22,7 @@ class TimelineView extends CommonView {
     var eventName = options['event' + which],
       uaName = options['ua' + which],
       location = options['loc' + which],
-      eventTotals = globalData.eventTotals,
-      eventMap = eventTotals.byLocation[location],
+      eventMap = globalData.byLocation[location],
       dataSource = eventMap && eventMap[eventName] && eventMap[eventName][uaName];
 
     return dataSource || [];

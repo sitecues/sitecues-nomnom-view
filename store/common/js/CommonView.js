@@ -3,11 +3,11 @@
 class CommonView {
 
   smoothData(origData, smoothSize) {
-    var length = origData.length,
+    const length = origData.length,
       movingAverage = [],
       numPointsAveragedPerPoint = 1 + smoothSize * 2; // Current point + number on each side
-    for (var index = 0; index < length; index++) {
-      var total = origData[index],
+    for (let index = 0; index < length; index++) {
+      let total = origData[index],
         smoothDistance = smoothSize,
         numPointsAveragedThisPoint = numPointsAveragedPerPoint;
       while (smoothDistance > 0) {
@@ -54,8 +54,8 @@ class CommonView {
   }
 
   getDateLabels(startDateIndex, endDateIndex) {
-    var labels = [],
-      index = startDateIndex;
+    const labels = [];
+    let index = startDateIndex;
 
     while (index <= endDateIndex) {
       labels.push(convertIndexToDate(index ++));
@@ -70,14 +70,17 @@ class CommonView {
     }
 
     const showChart = (chartInfo) => {
-      var chartEl = document.getElementById('chart');
+      if (!chartInfo) {
+        return; // No chart to show
+      }
+      const chartEl = document.getElementById('chart');
       // Visible results panel
       $('#results').css('display', 'inline-block');
 
       Chart.defaults.global.defaultFontSize = 16;
 
       const finalChartOptions = {
-        type: userOptions.type === 'bar' ? 'bar' : 'line', // line is the default for most graphs, and some only support line
+        type: userOptions.chartType === 'bar' ? 'bar' : 'line', // line is the default for most graphs, and some only support line
         data: {
           labels: chartInfo.labels || this.getDateLabels(chartInfo.dateLabelStartIndex, chartInfo.dateLabelEndIndex),
           datasets: chartInfo.datasets

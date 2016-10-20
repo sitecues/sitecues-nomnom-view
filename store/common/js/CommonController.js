@@ -13,19 +13,19 @@ class CommonController {
 
   // Get a parameter value fro the URL query
   getStringParameterByName(name) {
-    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
+    const regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
       results = regex.exec(location.search);
     return results ? decodeURIComponent(results[1].replace(/\+/g, ' ')) : undefined;
   }
 
   getBooleanParameterByName(name) {
-    var stringVal = this.getStringParameterByName(name);
+    const stringVal = this.getStringParameterByName(name);
     return stringVal && stringVal === 'true';
   }
 
   changeUrl(title, url) {
     if (typeof (history.pushState) != 'undefined') {
-      var obj = {title: title, URL: url};
+      const obj = {title: title, URL: url};
       history.pushState(obj, obj.title, obj.URL);
       document.title = title;
     }
@@ -33,19 +33,19 @@ class CommonController {
 
   updateUrlAndTitle(options) {
     function getCurrentLocationWithoutParams() {
-      var currLoc = window.location.toString();
+      const currLoc = window.location.toString();
 
       return currLoc.substr(0, currLoc.length - window.location.search.length);
     }
 
-    var params = [];
+    const params = [];
     Object.keys(options).forEach((optionName) => {
       if (options[optionName] !== null) {
         params.push(encodeURIComponent(optionName) + '=' + encodeURIComponent(options[optionName]));
       }
     });
 
-    var href = getCurrentLocationWithoutParams() + '?' + params.join('&'),
+    const href = getCurrentLocationWithoutParams() + '?' + params.join('&'),
       title = view.getChartTitle(options);
 
     this.changeUrl(title, href);
@@ -64,12 +64,16 @@ class CommonController {
   }
 
   changeTextFieldValue(id, val) {
-    var $formControl = $('#' + id);
+    function getTextValue(option, defaultVal) {
+      return option ? option.innerText : defaultVal;
+    }
+
+    const $formControl = $('#' + id);
     $formControl.val(val);
     if ($formControl.is('select')) {
-      var $possibleInput = $formControl.next().children().first();
+      const $possibleInput = $formControl.next().children().first();
       if ($possibleInput.is('input')) {
-        var textVal = $formControl[0].selectedOptions[0].innerText;
+        const textVal = getTextValue($formControl[0].selectedOptions[0], val);
         $possibleInput.val(textVal);
         this.adjustTextfieldTextColor($possibleInput, val);
       }
@@ -101,7 +105,7 @@ class CommonController {
 
   listenForUserActions() {
 
-    var self = this;
+    const self = this;
 
     function onHistoryChange() {
       self.setFormValues(self.getParameterMap());
@@ -111,7 +115,7 @@ class CommonController {
     window.addEventListener('popstate', () => onHistoryChange());
 
     function onFormChange() {
-      var options = self.getUserOptions();
+      const options = self.getUserOptions();
       self.updateUrlAndTitle(options);
       view.updateChartView(self.getCleanedOptions(options));
     }
@@ -173,7 +177,7 @@ class CommonController {
       .combobox();
   }
 
-  initEventOptions(allEventTotals) {
+  initEventOptions(eventNames) {
     // Sort alphabetically except for key-command or panel-clicked (show at end)
     // We show these at the end because there are so many of them -- it makes things difficult to find if they're in the middle
     function eventNameComparator(event1, event2) {
@@ -186,14 +190,14 @@ class CommonController {
       return getEventName(event1) > getEventName(event2) ? 1 : -1;
     }
 
-    var allEventNames = Object.keys(allEventTotals).sort(eventNameComparator),
+    const allEventNames = eventNames.sort(eventNameComparator),
       $eventNameSelects = $('.event-chooser');
 
     $('#event2').append(this.createOption(this.OFF_OPTION_NAME));
 
     allEventNames.forEach((eventName) => {
       $eventNameSelects.each((index, elem) => {
-        var option = this.createOption(eventName);
+        const option = this.createOption(eventName);
         $(elem).append(option);
       });
     });

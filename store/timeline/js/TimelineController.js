@@ -12,7 +12,7 @@ class TimelineController extends CommonController {
     return {
       doEnableLine1: true,
       doEnableLine2: true,
-      event1: 'page-visited::nonbounce',
+      event1: 'page-visited::non-bounce',
       event2: 'badge-hovered',
       ua1: '@supported',
       ua2: this.OFF_OPTION_NAME,
@@ -83,6 +83,9 @@ class TimelineController extends CommonController {
     }
     if (newOptions.loc2 === this.OFF_OPTION_NAME) {
       newOptions.loc2 = newOptions.loc1;
+    }
+    if (newOptions.type2 === this.OFF_OPTION_NAME) {
+      newOptions.type2  = newOptions.type1;
     }
     return newOptions;
   }
@@ -159,7 +162,7 @@ class TimelineController extends CommonController {
     }
   }
 
-  initUserAgentOptions(userAgentTotals) {
+  initUserAgentOptions(userAgents) {
     // Make sure IE10 > IE9
     function alphaNumComparator(a, b) {
       var END_DIGIT_REGEX = /(\w)(\d)$/;
@@ -171,7 +174,7 @@ class TimelineController extends CommonController {
       return leadingZeroForEndDigit(a) > leadingZeroForEndDigit(b) ? 1 : -1;
     }
 
-    var userAgentNames = Object.keys(userAgentTotals).sort(alphaNumComparator),
+    var userAgentNames = userAgents.sort(alphaNumComparator),
       $uaSelects = $('.ua-chooser');
 
     $('#ua2').append(this.createOption(this.OFF_OPTION_NAME));
@@ -298,14 +301,23 @@ class TimelineController extends CommonController {
   }
 
   initOptions() {
-    this.initEventOptions(globalData.eventTotals.byNameOnly);
-    this.initUserAgentOptions(globalData.eventTotals.byUserAgentOnly);
+    this.initEventOptions(globalData.eventNames);
+    this.initUserAgentOptions(globalData.userAgents);
     this.initLocationOptions(globalData.siteInfo.locationToSiteIdMap, globalData.siteInfo.siteIdToLocationsMap);
     this.initDatePickers();
   }
 
   adjustTextfieldTextColor($possibleInput, val) {
     $possibleInput.css('color', val === this.OFF_OPTION_NAME ? 'green' : ''); // Color <same> as green
+  }
+
+  getInitialData() {
+    return Promise.all([loadData('list/event'), loadData('list/ua'), loadData('byLocation.json') ])
+      .then(([eventNames, userAgents, byLocation]) => {
+        globalData.eventNames = eventNames;
+        globalData.userAgents = userAgents;
+        globalData.byLocation = byLocation;
+      });
   }
 }
 

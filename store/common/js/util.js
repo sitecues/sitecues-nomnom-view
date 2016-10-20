@@ -10,7 +10,7 @@ function convertIndexToDate(dateIndex) {
 
 function convertDateToIndex(date, defaultValueIfNotFound) {
   const datesWithDataAvailable = globalData.summary.config.dates;
-  var extractParts = date.split('/'),
+  let extractParts = date.split('/'),
     month = extractParts[0],
     day = extractParts[1],
     year = extractParts[2],

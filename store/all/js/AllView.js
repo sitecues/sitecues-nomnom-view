@@ -56,10 +56,9 @@ class AllView extends CommonView {
       ua = options['ua' + which],
       loc = options['loc' + which],
       type = options['type' + which], // can be 'sessions' or 'users'
-      apiPath = ['counts-by-date', loc, ua, eventName, type ].join('/');
+      apiPath = ['by-location-and-ua', loc, ua, eventName, type ].join('/');
 
     function convertToArray(data) {
-      console.log(data);
       const origCountsArray = data.countsArray;
       if (!origCountsArray) {
         console.log(data.err);
@@ -81,7 +80,7 @@ class AllView extends CommonView {
   getChart(userOptions) {
 
     const getChartImpl = (sourceDataSets) => {
-      var
+      const
         startDateIndex = convertDateToIndex(userOptions.startDate, 0),
         endDateIndex = convertDateToIndex(userOptions.endDate, globalData.summary.config.dates.length - 1),
         smoothSize = this.getSmoothSize(userOptions),
@@ -93,14 +92,16 @@ class AllView extends CommonView {
         avg1 = total1 / numDays,
         avg2 = total2 / numDays,
         avgRatio = total1 ? total2 / total1 : 0,
-        datasets = [],
         doEnableLine1 = userOptions.doEnableLine1 && data1.length,
         doEnableLine2 = userOptions.doEnableLine2 && data2.length,
         doEnableRatioLine = doEnableLine1 && doEnableLine2 &&
           (userOptions.event2 !== userOptions.event1 ||
           userOptions.ua2 !== userOptions.ua1 ||
           userOptions.loc2 !== userOptions.loc1),
-        doEnableAverageLines = false,
+        doEnableAverageLines = false;
+
+      let
+        datasets = [],
         yAxis2;
 
       console.log(data1);
@@ -176,7 +177,7 @@ class AllView extends CommonView {
         }
       }
 
-      var chartOptions = this.getChartOptions(userOptions, doEnableRatioLine, doEnableLine1, doEnableLine2);
+      const chartOptions = this.getChartOptions(userOptions, doEnableRatioLine, doEnableLine1, doEnableLine2);
 
       return Promise.resolve({
         datasets,
@@ -192,7 +193,8 @@ class AllView extends CommonView {
 
   getChartOptions(userOptions, doEnableRatioLine, doEnableLine1, doEnableLine2) {
 
-    var yAxes = [],
+    let yAxes = [];
+    const
       doUseSameScaleForAllEvents = doEnableLine1 && !userOptions.doStretch,
       doUseSecondAxis = doEnableLine2 && !doUseSameScaleForAllEvents,
       tickConfig = {

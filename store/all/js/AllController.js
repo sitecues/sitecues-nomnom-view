@@ -8,7 +8,7 @@
 
 class AllController extends CommonController {
   getDefaultParameterMap() {
-    var BEGINNING_OF_TIME = '02/01/2016';
+    const BEGINNING_OF_TIME = '02/01/2016';
     return {
       doEnableLine1: true,
       doEnableLine2: true,
@@ -29,7 +29,7 @@ class AllController extends CommonController {
   }
 
   getParameterMap() {
-    var defaultParams = this.getDefaultParameterMap(),
+    const defaultParams = this.getDefaultParameterMap(),
       params = {
         doEnableLine1: this.getBooleanParameterByName('doEnableLine1'),
         doEnableLine2: this.getBooleanParameterByName('doEnableLine2'),
@@ -141,17 +141,17 @@ class AllController extends CommonController {
   // Ratios make sense when the second line only changes one variable
   changeOtherLine2ItemsToSame(event) {
     function getSelectFromTextField(textField) {
-      var $select = $(textField).parent().parent().find('select');
+      const $select = $(textField).parent().parent().find('select');
       return $select[0];
     }
 
-    var selectElem = getSelectFromTextField(event.target),
+    const selectElem = getSelectFromTextField(event.target),
       selectId = selectElem.id;
     if (!selectId) {
       return;
     }
 
-    var currVal = $('#' + selectId).val();
+    const currVal = $('#' + selectId).val();
     if (currVal === this.OFF_OPTION_NAME) {
       return;
     }
@@ -180,10 +180,10 @@ class AllController extends CommonController {
     }
   }
 
-  initUserAgentOptions(userAgentTotals) {
+  initUserAgentOptions(userAgentNames) {
     // Make sure IE10 > IE9
     function alphaNumComparator(a, b) {
-      var END_DIGIT_REGEX = /(\w)(\d)$/;
+      const END_DIGIT_REGEX = /(\w)(\d)$/;
 
       function leadingZeroForEndDigit(s) {
         return s.replace(END_DIGIT_REGEX, '$10$2');
@@ -192,14 +192,14 @@ class AllController extends CommonController {
       return leadingZeroForEndDigit(a) > leadingZeroForEndDigit(b) ? 1 : -1;
     }
 
-    var userAgentNames = Object.keys(userAgentTotals).sort(alphaNumComparator),
+    const sortedUserAgentNames = userAgentNames.sort(alphaNumComparator),
       $uaSelects = $('.ua-chooser');
 
     $('#ua2').append(this.createOption(this.OFF_OPTION_NAME));
 
-    userAgentNames.forEach((eventName) => {
+    sortedUserAgentNames.forEach((uaName) => {
       $uaSelects.each((index, elem) => {
-        var option = this.createOption(eventName);
+        const option = this.createOption(uaName);
         $(elem).append(option);
       });
     });
@@ -211,13 +211,14 @@ class AllController extends CommonController {
   }
 
   getNumPageVisits(locationToSiteIdMap, locationName) {
-    var siteIdToPageVisitsMap = locationToSiteIdMap[locationName];
+    const siteIdToPageVisitsMap = locationToSiteIdMap[locationName];
 
     if (!siteIdToPageVisitsMap) {
       return;
     }
 
-    var siteIdsForLocation = Object.keys(siteIdToPageVisitsMap),
+    const siteIdsForLocation = Object.keys(siteIdToPageVisitsMap);
+    let
       index = siteIdsForLocation.length,
       totalPageVisits = 0,
       currentSiteId;
@@ -232,12 +233,12 @@ class AllController extends CommonController {
 
   getReadableNameForLocation(locationToPageVisitsMap, location, totalPageVisits) {
     function isTLDOrGroup(location) {
-      var firstChar = location.charAt(0);
+      const firstChar = location.charAt(0);
       return firstChar === '.' || firstChar === '@';
     }
 
     function isInterestingLocation(subLocation) {
-      var PAGE_VISIT_THRESHOLD = 0;
+      const PAGE_VISIT_THRESHOLD = 0;
       return subLocation !== location && !isTLDOrGroup(subLocation) &&
         locationToPageVisitsMap[subLocation] > PAGE_VISIT_THRESHOLD;
     }
@@ -250,7 +251,7 @@ class AllController extends CommonController {
       return locationName.split(' ')[0] + ':' + locationToPageVisitsMap[locationName].toLocaleString();
     }
 
-    var locationNames = [];
+    let locationNames = [];
     if (locationToPageVisitsMap && !isTLDOrGroup(location)) {
       locationNames = Object.keys(locationToPageVisitsMap || {})
         .filter(isInterestingLocation)
@@ -266,7 +267,7 @@ class AllController extends CommonController {
 
   initLocationOptions(locationToSiteIdMap, siteIdToLocationsMap) {
     function locationNameComparator(locA, locB) {
-      var isAGroup = locA.charAt(0) === '@',
+      const isAGroup = locA.charAt(0) === '@',
         isBGroup = locB.charAt(0) === '@';
       if (isAGroup !== isBGroup) {
         return (+isBGroup) - (+isAGroup);
@@ -276,7 +277,7 @@ class AllController extends CommonController {
       }
     }
 
-    var allLocations = Object.keys(locationToSiteIdMap)
+    const allLocations = Object.keys(locationToSiteIdMap)
         .sort(locationNameComparator)
         .filter((locName) => {
           return locName.indexOf('#s-????????') < 0;
@@ -288,9 +289,10 @@ class AllController extends CommonController {
     $('#loc2').append(this.createOption(this.OFF_OPTION_NAME));
 
     allLocations.forEach((locationName) => {
-      var readableName = locationName,
-        totalPageVisits = this.getNumPageVisits(locationToSiteIdMap, locationName),
+      let readableName = locationName,
         locationToPageVisitsMap;
+      const
+        totalPageVisits = this.getNumPageVisits(locationToSiteIdMap, locationName);
 
       if (totalPageVisits < PAGE_VISIT_THRESHOLD) {
         return;  // Otherwise we list too many
@@ -299,7 +301,7 @@ class AllController extends CommonController {
       locationToPageVisitsMap = locationName.match(SITE_ID_REGEX) ? siteIdToLocationsMap : locationToSiteIdMap;
       readableName = this.getReadableNameForLocation(locationToPageVisitsMap[locationName], locationName, totalPageVisits);
       $locationSelects.each((index, elem) => {
-        var option = this.createOption(locationName, readableName);
+        const option = this.createOption(locationName, readableName);
         $(elem).append(option);
       });
     });
@@ -319,9 +321,9 @@ class AllController extends CommonController {
   }
 
   initOptions() {
-    this.initEventOptions(globalData.eventTotals.byNameOnly);
+    this.initEventOptions(globalData.eventNames);
     this.initTypeOptions();
-    this.initUserAgentOptions(globalData.eventTotals.byUserAgentOnly);
+    this.initUserAgentOptions(globalData.uaNames);
     this.initLocationOptions(globalData.siteInfo.locationToSiteIdMap, globalData.siteInfo.siteIdToLocationsMap);
     this.initDatePickers();
   }
@@ -329,6 +331,14 @@ class AllController extends CommonController {
   adjustTextfieldTextColor($possibleInput, val) {
     $possibleInput.css('color', val === this.OFF_OPTION_NAME ? 'green' : ''); // Color <same> as green
   }
+
+  getInitialData() {
+    return Promise.all([loadData('list/event'), loadData('list/ua') ])
+      .then(([eventNames, uaNames]) => {
+        globalData.eventNames = eventNames;
+        globalData.uaNames = uaNames;
+      });
+  }
 }
 
-var controller = new AllController();
+const controller = new AllController();

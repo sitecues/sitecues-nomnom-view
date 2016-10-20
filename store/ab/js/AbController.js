@@ -8,19 +8,23 @@ class AbController extends CommonController {
   getDefaultParameterMap() {
     return {
       testName: 'Test name',
-      event1: 'page-visited::nonbounce',
+      event1: 'page-visited::operational',
       event2: 'badge-hovered',
-      type: 'line'
+      type1: 'eventCounts',
+      type2: this.OFF_OPTION_NAME,
+      chartType: 'line'
     }
   }
 
   getParameterMap() {
-    var defaultParams = this.getDefaultParameterMap(),
+    const defaultParams = this.getDefaultParameterMap(),
       params = {
         testName: this.getStringParameterByName('testName'),
         event1: this.getStringParameterByName('event1'),
         event2: this.getStringParameterByName('event2'),
-        type: this.getStringParameterByName('type')
+        type1: this.getStringParameterByName('type1'),
+        type2: this.getStringParameterByName('type2'),
+        chartType: this.getStringParameterByName('chartType')
       };
 
     return $.extend({}, defaultParams, params);
@@ -31,14 +35,19 @@ class AbController extends CommonController {
       testName: this.getTextFieldValue('testName'),
       event1: this.getTextFieldValue('event1'),
       event2: this.getTextFieldValue('event2'),
-      type: this.getRadioValue('type')
+      type1: this.getTextFieldValue('type1'),
+      type2: this.getTextFieldValue('type2'),
+      chartType: this.getRadioValue('chartType')
     };
   }
 
   getCleanedOptions(userOptions) {
-    var newOptions = $.extend({}, userOptions);
+    const newOptions = $.extend({}, userOptions);
     if (newOptions.event2 === this.OFF_OPTION_NAME) {
       newOptions.event2 = '';
+    }
+    if (newOptions.type2 === this.OFF_OPTION_NAME) {
+      newOptions.type2 = newOptions.type1;
     }
     return newOptions;
   }
@@ -48,12 +57,15 @@ class AbController extends CommonController {
     this.changeTextFieldValue('testName', paramMap.testName);
     this.changeTextFieldValue('event1', paramMap.event1);
     this.changeTextFieldValue('event2', paramMap.event2);
-    this.changeCheckableValue(paramMap.type, true);
+    this.changeTextFieldValue('type1', paramMap.type1);
+    this.changeTextFieldValue('type2', paramMap.type2);
+    this.changeCheckableValue(paramMap.chartType, true);
   }
 
   initOptions() {
-    this.initEventOptions(globalData.eventTotals.byNameOnly);
-    this.initAbTestNames((globalData.abTest && globalData.abTest.dateInfo) || {});
+    this.initEventOptions(globalData.eventNames);
+    this.initTypeOptions();
+    this.initAbTestNames(globalData.abTestNames);
   }
 
   initAbTestNames(dateInfo) {
@@ -63,12 +75,12 @@ class AbController extends CommonController {
     }
 
     // TODO should we provide option to sort by most recent? That would mean simply not sorting
-    var allTestNames = Object.keys(dateInfo).sort(),
+    const allTestNames = Object.keys(dateInfo).sort(),
       $testNameSelect = $('#testName');
 
     allTestNames.forEach((testName) => {
       $testNameSelect.each((index, elem) => {
-        var option = this.createOption(testName, getTestNameText(testName));
+        const option = this.createOption(testName, getTestNameText(testName));
         $(elem).append(option);
       });
     });
@@ -78,9 +90,21 @@ class AbController extends CommonController {
 
   adjustTextfieldTextColor() { // noop in this class
   }
+
+  getInitialData() {
+    return Promise.all([loadData('list/event'), loadData('list/abtest') ])
+      .then(([eventNames, abTestNames]) => {
+        globalData.eventNames = eventNames;
+        globalData.abTestNames = abTestNames;
+      });
+    return loadData('list/abtest')
+      .then((abTest) => {
+        globalData.abTest = abTest;
+      });
+  }
 }
 
-var controller = new AbController();
+const controller = new AbController();
 
 
 
