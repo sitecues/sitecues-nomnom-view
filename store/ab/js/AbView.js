@@ -129,8 +129,11 @@ class AbView extends CommonView {
             data: bars.map((bar) => bar.data)
           }];
 
+        const toPercent = (ratio) => (ratio >= 1 ? '+': '') + (Math.round((ratio -1) * 1000) / 10) + '%',
+          getFriendlyLabel = (label) => label === '*base*' ? label : label + ' ' + toPercent(bar[label].data / bar['*base*'].data);
+
         return Promise.resolve({
-          labels: sortedLabels,
+          labels: sortedLabels.map(getFriendlyLabel),
           datasets,
           chartOptions
         });
