@@ -29,6 +29,8 @@ function loadData(apiPath) {
   return new Promise(function(resolve, reject) {
     $('body').addClass('password-entered');
 
+    console.log('Fetching ' + apiPath);
+
     const username = 'sitecues',
       password = $('#password').val(),
       // webServiceUrl = 'http://localhost:3001/all.json';
@@ -40,11 +42,17 @@ function loadData(apiPath) {
     xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ':' + password));
     xhr.onload = function () {
       if (xhr.status < 400) {
+        console.log('Retrieved ' + apiPath);
         resolve(JSON.parse(xhr.responseText));
       }
       else {
+        console.log('Error: ' + xhr.statusText);
         reject(xhr.statusText);
       }
+    };
+    xhr.onerror = (err) => {
+      console.log(err);
+      reject(err);
     };
     xhr.send();
   });

@@ -97,10 +97,6 @@ class AbController extends CommonController {
         globalData.eventNames = eventNames;
         globalData.abTestNames = abTestNames;
       });
-    return loadData('list/abtest')
-      .then((abTest) => {
-        globalData.abTest = abTest;
-      });
   }
 }
 
